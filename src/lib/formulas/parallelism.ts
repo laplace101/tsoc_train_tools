@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 /**
  * Parallelism strategy calculator: TP/PP/DP split for distributed LLM inference/training.
  */
@@ -77,7 +78,7 @@ export function computeParallelism(
       tpBound--;
     }
     if (tpBound < tp) {
-      warnings.push(`TP clamped to ${tpBound} (GQA bound: ${numKVHeads} KV heads)`);
+      warnings.push(t(`TP clamped to ${tpBound} (GQA bound: ${numKVHeads} KV heads)`, `TP 已收敛到 ${tpBound}（GQA 约束：${numKVHeads} 个 KV head）`));
       tp = tpBound;
     }
   }
@@ -99,7 +100,7 @@ export function computeParallelism(
   // Recompute actual total used
   const actualTotal = tp * pp * dp;
   if (actualTotal !== totalGPUs) {
-    warnings.push(`${totalGPUs - actualTotal} GPU(s) unused (${actualTotal} used in ${tp}×${pp}×${dp} config)`);
+    warnings.push(t(`${totalGPUs - actualTotal} GPU(s) unused (${actualTotal} used in ${tp}×${pp}×${dp} config)`, `有 ${totalGPUs - actualTotal} 张 GPU 未使用（${tp}×${pp}×${dp} 配置实际用到 ${actualTotal} 张）`));
   }
 
   // Pipeline bubble warning
@@ -107,7 +108,7 @@ export function computeParallelism(
   if (pp > 1) {
     const bubblePct = Math.round(((pp - 1) / (pp + microBatches - 1)) * 100);
     if (microBatches < pp) {
-      warnings.push(`PP=${pp} with only ${microBatches} micro-batches creates ${bubblePct}% bubble`);
+      warnings.push(t(`PP=${pp} with only ${microBatches} micro-batches creates ${bubblePct}% bubble`, `PP=${pp} 但只有 ${microBatches} 个微批，会产生 ${bubblePct}% 的流水线气泡`));
     }
   }
 

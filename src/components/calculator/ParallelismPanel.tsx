@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Cpu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { computeParallelism } from '@/lib/formulas/parallelism';
+import { useLanguage } from '@/lib/language';
 
 interface ParallelismPanelProps {
   totalGPUs: number;
@@ -31,6 +32,7 @@ export function ParallelismPanel({
   numKVHeads,
   className,
 }: ParallelismPanelProps) {
+  const { t } = useLanguage();
   const result = React.useMemo(
     () => computeParallelism(totalGPUs, gpusPerNode, modelGB, gpuMemGB, numKVHeads),
     [totalGPUs, gpusPerNode, modelGB, gpuMemGB, numKVHeads],
@@ -43,22 +45,22 @@ export function ParallelismPanel({
       <div className="flex items-center gap-2 mb-3">
         <Cpu size={14} className="text-fg-muted" />
         <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-muted">
-          Parallelism Strategy
+          {t('Parallelism Strategy', '并行策略')}
         </h3>
       </div>
 
       <div className="flex flex-col">
-        <KVRow label="Tensor Parallel (TP)" value={String(config.tp)} highlight />
-        <KVRow label="Pipeline Parallel (PP)" value={String(config.pp)} highlight />
-        <KVRow label="Data Parallel (DP)" value={String(config.dp)} highlight />
-        <KVRow label="Total GPUs" value={`${config.totalGPUs}`} />
+        <KVRow label={t('Tensor Parallel (TP)', '张量并行（TP）')} value={String(config.tp)} highlight />
+        <KVRow label={t('Pipeline Parallel (PP)', '流水线并行（PP）')} value={String(config.pp)} highlight />
+        <KVRow label={t('Data Parallel (DP)', '数据并行（DP）')} value={String(config.dp)} highlight />
+        <KVRow label={t('Total GPUs', 'GPU 总数')} value={`${config.totalGPUs}`} />
         <KVRow
-          label="Scaling efficiency"
+          label={t('Scaling efficiency', '扩展效率')}
           value={`${(scalingEfficiency * 100).toFixed(0)}%`}
           highlight
         />
         <KVRow
-          label="Comm overhead"
+          label={t('Comm overhead', '通信开销')}
           value={`${commOverheadPercent.toFixed(1)}%`}
         />
       </div>

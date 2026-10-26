@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import type { VRAMBreakdown as VRAMBreakdownType, GPUSpec } from '@/lib/formulas/types';
+import { t } from '@/lib/i18n';
+import { useLanguage } from '@/lib/language';
 
 interface VRAMBreakdownProps {
   breakdown: VRAMBreakdownType;
@@ -12,12 +14,12 @@ interface VRAMBreakdownProps {
 }
 
 const SEGMENTS = [
-  { key: 'weightsGB',    label: 'Weights',    color: 'bg-[#7c3aed] dark:bg-[#8b5cf6]',  dot: 'bg-[#7c3aed] dark:bg-[#8b5cf6]' },
+  { key: 'weightsGB',    get label() { return t('Weights', '权重'); },    color: 'bg-[#7c3aed] dark:bg-[#8b5cf6]',  dot: 'bg-[#7c3aed] dark:bg-[#8b5cf6]' },
   { key: 'kvCacheGB',    label: 'KV Cache',   color: 'bg-[#0891b2] dark:bg-[#06b6d4]',  dot: 'bg-[#0891b2] dark:bg-[#06b6d4]' },
-  { key: 'activationsGB',label: 'Activations',color: 'bg-[#ca8a04] dark:bg-[#eab308]',  dot: 'bg-[#ca8a04] dark:bg-[#eab308]' },
-  { key: 'gradientsGB',  label: 'Gradients',  color: 'bg-[#db2777] dark:bg-[#ec4899]',  dot: 'bg-[#db2777] dark:bg-[#ec4899]' },
-  { key: 'optimizerGB',  label: 'Optimizer',  color: 'bg-[#ea580c] dark:bg-[#f97316]',  dot: 'bg-[#ea580c] dark:bg-[#f97316]' },
-  { key: 'overheadGB',   label: 'Overhead',   color: 'bg-[#64748b] dark:bg-[#94a3b8]',  dot: 'bg-[#64748b] dark:bg-[#94a3b8]' },
+  { key: 'activationsGB',get label() { return t('Activations', '激活值'); },color: 'bg-[#ca8a04] dark:bg-[#eab308]',  dot: 'bg-[#ca8a04] dark:bg-[#eab308]' },
+  { key: 'gradientsGB',  get label() { return t('Gradients', '梯度'); },  color: 'bg-[#db2777] dark:bg-[#ec4899]',  dot: 'bg-[#db2777] dark:bg-[#ec4899]' },
+  { key: 'optimizerGB',  get label() { return t('Optimizer', '优化器'); },  color: 'bg-[#ea580c] dark:bg-[#f97316]',  dot: 'bg-[#ea580c] dark:bg-[#f97316]' },
+  { key: 'overheadGB',   get label() { return t('Overhead', '开销'); },   color: 'bg-[#64748b] dark:bg-[#94a3b8]',  dot: 'bg-[#64748b] dark:bg-[#94a3b8]' },
 ] as const;
 
 function formatGB(value: number): string {
@@ -28,6 +30,7 @@ function formatGB(value: number): string {
 }
 
 export function VRAMBreakdown({ breakdown, gpuRef, kvPrecisionLabel = 'FP16', framework = 'vLLM', numGPUs = 1, className }: VRAMBreakdownProps) {
+  const { t } = useLanguage();
   const [hoveredSegment, setHoveredSegment] = React.useState<string | null>(null);
   const prefersReducedMotion = React.useMemo(
     () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
@@ -51,7 +54,7 @@ export function VRAMBreakdown({ breakdown, gpuRef, kvPrecisionLabel = 'FP16', fr
         <span
           className="font-mono font-semibold text-[48px] leading-none tracking-tight text-fg-primary"
           aria-live="polite"
-          aria-label={`${total.toFixed(1)} gigabytes total VRAM`}
+          aria-label={t(`${total.toFixed(1)} gigabytes total VRAM`, `显存总计 ${total.toFixed(1)} GB`)}
         >
           {total.toFixed(1)}
         </span>
@@ -67,8 +70,8 @@ export function VRAMBreakdown({ breakdown, gpuRef, kvPrecisionLabel = 'FP16', fr
       {gpuMemory && utilizationPct !== null && (
         <p className="text-xs text-fg-muted font-mono -mt-2">
           {n > 1
-            ? `${formatGB(perGPU)} GB per GPU · Fits ${utilizationPct}% on ${gpuRef?.name ?? 'GPU'}`
-            : `Fits ${utilizationPct}% on 1× ${gpuRef?.name ?? 'GPU'}`}
+            ? t(`${formatGB(perGPU)} GB per GPU · Fits ${utilizationPct}% on ${gpuRef?.name ?? 'GPU'}`, `${formatGB(perGPU)} GB/GPU · 在 ${gpuRef?.name ?? 'GPU'} 上占用 ${utilizationPct}%`)
+            : t(`Fits ${utilizationPct}% on 1× ${gpuRef?.name ?? 'GPU'}`, `在 1× ${gpuRef?.name ?? 'GPU'} 上占用 ${utilizationPct}%`)}
           {' · '}KV {kvPrecisionLabel}
           {' · '}{framework}
         </p>
@@ -112,7 +115,7 @@ export function VRAMBreakdown({ breakdown, gpuRef, kvPrecisionLabel = 'FP16', fr
                     <div className="font-mono text-fg-muted">{formatGB(breakdown[segment.key])} GB</div>
                     <div className="font-mono text-fg-muted">{pct.toFixed(1)}%</div>
                     {segment.key === 'weightsGB' && (
-                      <div className="text-fg-muted mt-0.5" style={{ fontSize: '9px' }}>includes embedding layer</div>
+                      <div className="text-fg-muted mt-0.5" style={{ fontSize: '9px' }}>{t('includes embedding layer', '包含嵌入层')}</div>
                     )}
                   </div>
                 </div>
@@ -126,7 +129,7 @@ export function VRAMBreakdown({ breakdown, gpuRef, kvPrecisionLabel = 'FP16', fr
           <div
             className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-10"
             style={{ left: `${(gpuMemory / perGPU) * 100}%` }}
-            title={`GPU limit: ${gpuMemory} GB per GPU`}
+            title={t(`GPU limit: ${gpuMemory} GB per GPU`, `GPU 上限：每张 ${gpuMemory} GB`)}
           />
         )}
       </div>

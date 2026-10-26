@@ -8,6 +8,8 @@ import {
   computeTotalVRAM, computeThroughput, recommendGPUs, recommendCloudInstances,
 } from '@/lib/formulas';
 import type { CalculatorState, ModelSpec, GPUSpec, CloudInstance } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
+import { t } from '@/lib/i18n';
 
 interface ComputedConfig {
   state: CalculatorState;
@@ -36,7 +38,7 @@ function computeConfig(state: CalculatorState, modelDb: ModelSpec[], gpuDb: GPUS
 
   const gpuRecs = recommendGPUs(breakdown.totalGB, gpuDb, { activeWeightsGB, efficiencyFactor: DEFAULT_EFFICIENCY });
   const topGPU = gpuRecs.allFits.find(f => f.fitStatus !== 'red');
-  const fitLabel = topGPU ? `${topGPU.gpu.name} (${topGPU.fitStatus})` : 'No fit';
+  const fitLabel = topGPU ? `${topGPU.gpu.name} (${topGPU.fitStatus})` : t('No fit', '装不下');
 
   const tokensPerSecond = topGPU
     ? computeThroughput({ memoryBandwidthGBs: topGPU.gpu.memoryBandwidthGBs, activeWeightsGB, efficiencyFactor: DEFAULT_EFFICIENCY }).tokensPerSecond
@@ -67,6 +69,7 @@ interface CompareDrawerProps {
 }
 
 export function CompareDrawer({ open, onClose }: CompareDrawerProps) {
+  const { t } = useLanguage();
   const { compareConfigs, removeCompareConfig, modelDb, gpuDb, cloudDb, addCompareConfig } = useCalculatorStore();
   const { showToast } = useToast();
 
@@ -79,11 +82,11 @@ export function CompareDrawer({ open, onClose }: CompareDrawerProps) {
 
   const handleAdd = () => {
     if (compareConfigs.length >= 3) {
-      showToast('Maximum 3 configurations', 'error');
+      showToast(t('Maximum 3 configurations', '最多只能保留 3 个配置'), 'error');
       return;
     }
     addCompareConfig();
-    showToast('Added to compare', 'success');
+    showToast(t('Added to compare', '已加入对比'), 'success');
   };
 
   return (
@@ -104,20 +107,20 @@ export function CompareDrawer({ open, onClose }: CompareDrawerProps) {
           'flex flex-col shadow-lg transition-transform duration-300',
           open ? 'translate-x-0' : 'translate-x-full'
         )}
-        aria-label="Compare configurations"
+        aria-label={t('Compare configurations', '对比配置')}
         role="complementary"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border-subtle flex-shrink-0">
           <div className="flex items-center gap-2">
             <ArrowLeftRight size={16} className="text-fg-muted" />
-            <h2 className="text-sm font-semibold text-fg-primary">Compare</h2>
+            <h2 className="text-sm font-semibold text-fg-primary">{t('Compare', '对比')}</h2>
             <span className="text-xs text-fg-muted font-mono">{compareConfigs.length}/3</span>
           </div>
           <button
             onClick={onClose}
             className="text-fg-muted hover:text-fg-default transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-            aria-label="Close compare drawer"
+            aria-label={t('Close compare drawer', '关闭对比抽屉')}
           >
             <X size={16} />
           </button>
@@ -128,8 +131,8 @@ export function CompareDrawer({ open, onClose }: CompareDrawerProps) {
           {computed.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
               <ArrowLeftRight size={32} className="text-fg-muted" />
-              <p className="text-sm text-fg-muted">No configurations to compare.</p>
-              <p className="text-xs text-fg-muted">Press <kbd className="px-1.5 py-0.5 rounded border border-border-default bg-bg-muted font-mono text-[10px]">c</kbd> to add the current config.</p>
+              <p className="text-sm text-fg-muted">{t('No configurations to compare.', '没有可对比的配置。')}</p>
+              <p className="text-xs text-fg-muted">{t('Press', '按下')} <kbd className="px-1.5 py-0.5 rounded border border-border-default bg-bg-muted font-mono text-[10px]">c</kbd> {t('to add the current config.', '即可把当前配置加入对比。')}</p>
             </div>
           ) : (
             computed.map((cfg, i) => {
@@ -148,7 +151,7 @@ export function CompareDrawer({ open, onClose }: CompareDrawerProps) {
                       <div className="flex items-center gap-2">
                         {isAnchor && (
                           <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-accent text-white">
-                            Anchor
+                            {t('Anchor', '基准')}
                           </span>
                         )}
                         <span className="text-xs font-medium text-fg-muted uppercase tracking-wide">
@@ -163,7 +166,7 @@ export function CompareDrawer({ open, onClose }: CompareDrawerProps) {
                     <button
                       onClick={() => removeCompareConfig(i)}
                       className="text-fg-muted hover:text-red-500 transition-colors flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-                      aria-label={`Remove config ${i + 1}`}
+                      aria-label={t(`Remove config ${i + 1}`, `移除配置 ${i + 1}`)}
                     >
                       <X size={14} />
                     </button>
@@ -173,7 +176,7 @@ export function CompareDrawer({ open, onClose }: CompareDrawerProps) {
                   <div className="grid grid-cols-2 gap-2">
                     {/* Total VRAM */}
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-[10px] text-fg-muted uppercase tracking-wide">Total VRAM</span>
+                      <span className="text-[10px] text-fg-muted uppercase tracking-wide">{t('Total VRAM', '显存总计')}</span>
                       <div className="flex items-baseline gap-1.5">
                         <span className="text-sm font-mono font-semibold text-fg-primary">{cfg.totalVRAM.toFixed(1)} GB</span>
                         {!isAnchor && anchor && (
@@ -184,7 +187,7 @@ export function CompareDrawer({ open, onClose }: CompareDrawerProps) {
 
                     {/* Throughput */}
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-[10px] text-fg-muted uppercase tracking-wide">Tok/s</span>
+                      <span className="text-[10px] text-fg-muted uppercase tracking-wide">{t('Tok/s', 'tok/s')}</span>
                       <div className="flex items-baseline gap-1.5">
                         <span className="text-sm font-mono font-semibold text-fg-primary">
                           {cfg.tokensPerSecond != null ? cfg.tokensPerSecond.toLocaleString() : '—'}
@@ -197,7 +200,7 @@ export function CompareDrawer({ open, onClose }: CompareDrawerProps) {
 
                     {/* Best cloud $/h */}
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-[10px] text-fg-muted uppercase tracking-wide">Best $/h</span>
+                      <span className="text-[10px] text-fg-muted uppercase tracking-wide">{t('Best $/h', '最优 $/小时')}</span>
                       <div className="flex items-baseline gap-1.5">
                         <span className="text-sm font-mono font-semibold text-fg-primary">
                           {cfg.bestCloudPerHour != null ? `$${cfg.bestCloudPerHour.toFixed(2)}` : '—'}
@@ -238,7 +241,7 @@ export function CompareDrawer({ open, onClose }: CompareDrawerProps) {
               className="flex items-center justify-center gap-2 w-full py-3 rounded-lg border border-dashed border-border-default text-xs text-fg-muted hover:text-fg-default hover:border-border-strong transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <Plus size={14} />
-              Add current config
+              {t('Add current config', '添加当前配置')}
             </button>
           )}
         </div>

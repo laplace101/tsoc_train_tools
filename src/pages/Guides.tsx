@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/lib/language';
 
 interface Article {
   id: string;
@@ -7,7 +8,10 @@ interface Article {
   sections: { id: string; heading: string; content: React.ReactNode }[];
 }
 
-const ARTICLES: Article[] = [
+// 文案里带 t()，所以整张文章表由 buildArticles(t) 生成：
+// 这样切换语言时会重新求值，而不是停留在模块导入时的结果。
+function buildArticles(t: (en: string, cn: string) => string): Article[] {
+  return [
   {
     id: 'getting-started',
     title: '快速上手',
@@ -44,7 +48,7 @@ const ARTICLES: Article[] = [
               <li>查看显存拆分与 GPU 推荐</li>
             </ol>
             <p className="mt-2">
-              计算器展示三个 GPU 档位：<strong>Budget</strong>（最低成本）、<strong>Balanced</strong>（性价比最高）、<strong>Performance</strong>（吞吐最高）。
+              计算器展示三个 GPU 档位：<strong>{t('Budget', '经济型')}</strong>（最低成本）、<strong>{t('Balanced', '均衡型')}</strong>（性价比最高）、<strong>{t('Performance', '性能型')}</strong>（吞吐最高）。
             </p>
           </>
         ),
@@ -62,7 +66,7 @@ const ARTICLES: Article[] = [
               <li>点击建议的模型即可选中它</li>
             </ol>
             <p className="mt-2">
-              该流程也可在 <strong>Reverse</strong> 页面使用，那里以可排序表格展示全部 318 个模型。
+              该流程也可在 <strong>{t('Reverse', '反查')}</strong> 页面使用，那里以可排序表格展示全部 318 个模型。
             </p>
           </>
         ),
@@ -74,11 +78,11 @@ const ARTICLES: Article[] = [
           <>
             <p>用标签页或键盘快捷键切换模式：</p>
             <ul className="list-disc list-inside space-y-1 text-sm mt-2">
-              <li><strong>Inference</strong> <kbd className="px-1.5 py-0.5 text-xs font-mono bg-bg-muted border border-border-subtle rounded">i</kbd> — 权重 + KV cache + 开销</li>
-              <li><strong>Train</strong> <kbd className="px-1.5 py-0.5 text-xs font-mono bg-bg-muted border border-border-subtle rounded">t</kbd> — 完整训练（激活、梯度、优化器状态）</li>
+              <li><strong>{t('Inference', '推理')}</strong> <kbd className="px-1.5 py-0.5 text-xs font-mono bg-bg-muted border border-border-subtle rounded">i</kbd> — 权重 + KV cache + 开销</li>
+              <li><strong>{t('Train', '训练')}</strong> <kbd className="px-1.5 py-0.5 text-xs font-mono bg-bg-muted border border-border-subtle rounded">t</kbd> — 完整训练（激活、梯度、优化器状态）</li>
             </ul>
             <p className="mt-2">
-              训练模式支持 <strong>Full Fine-tune</strong>、<strong>LoRA</strong>、<strong>QLoRA</strong> 等方法。
+              训练模式支持 <strong>{t('Full Fine-tune', '全量微调')}</strong>、<strong>LoRA</strong>、<strong>QLoRA</strong> 等方法。
             </p>
           </>
         ),
@@ -369,41 +373,41 @@ MLA:          L × B × T × mlaCompressedDim × bytes`}
   },
   {
     id: 'choosing-quantization',
-    title: 'Choosing a Quantization',
+    title: '如何选择量化方式',
     sections: [
       {
         id: 'when-to-quantize',
-        heading: 'When to Quantize',
+        heading: '何时需要量化',
         content: (
           <p>
-            Quantization trades a small amount of model quality for significant VRAM savings. Use FP16/BF16 when you have enough VRAM and need maximum quality. Use INT8 for a ~2× memory reduction with minimal quality loss. Use INT4 or GGUF Q4_K_M when running on consumer hardware.
+            量化是用少量模型质量换取可观的显存节省。显存充足且追求最高质量时用 FP16/BF16；想以极小的质量损失换取约 2 倍的内存节省时用 INT8；在消费级硬件上运行时用 INT4 或 GGUF Q4_K_M。
           </p>
         ),
       },
       {
         id: 'gguf-formats',
-        heading: 'GGUF Formats',
+        heading: 'GGUF 格式',
         content: (
           <>
-            <p>GGUF is the format used by llama.cpp. The K-quants use mixed precision per tensor:</p>
+            <p>GGUF 是 llama.cpp 使用的格式。K 系列量化对每个张量采用混合精度：</p>
             <ul className="list-disc list-inside space-y-1 text-sm mt-2">
-              <li><strong>Q4_K_M</strong> — 0.606 bytes/param. Best quality-to-size ratio for most use cases.</li>
-              <li><strong>Q5_K_M</strong> — 0.711 bytes/param. Better quality, slightly larger.</li>
-              <li><strong>Q8_0</strong> — 1.0625 bytes/param. Near-lossless, good for benchmarking.</li>
+              <li><strong>Q4_K_M</strong> — 0.606 字节/参数。多数场景下质量与体积的比例最佳。</li>
+              <li><strong>Q5_K_M</strong> — 0.711 字节/参数。质量更好，体积略大。</li>
+              <li><strong>Q8_0</strong> — 1.0625 字节/参数。几乎无损，适合做基准测试。</li>
             </ul>
           </>
         ),
       },
       {
         id: 'kv-cache-precision',
-        heading: 'KV Cache Precision',
+        heading: 'KV Cache 精度',
         content: (
           <>
             <p>
-              KV cache precision is independent of weight precision. You can run weights at FP16 but cache at INT8 or FP8 to save memory on long contexts.
+              KV Cache 精度与权重精度相互独立。权重可以用 FP16，而 KV Cache 用 INT8 或 FP8，在长上下文场景下节省内存。
             </p>
             <p className="mt-2">
-              vLLM supports <code className="font-mono text-xs bg-bg-muted px-1 rounded">--kv-cache-dtype fp8</code> for further savings. The calculator shows a KV cache curve chart to visualize memory usage across different context lengths.
+              vLLM 支持 <code className="font-mono text-xs bg-bg-muted px-1 rounded">--kv-cache-dtype fp8</code> 进一步节省显存。计算器提供 KV Cache 曲线图，用于可视化不同上下文长度下的显存占用。
             </p>
           </>
         ),
@@ -412,125 +416,125 @@ MLA:          L × B × T × mlaCompressedDim × bytes`}
   },
   {
     id: 'advanced-features',
-    title: 'Advanced Features',
+    title: '进阶功能',
     sections: [
       {
         id: 'concurrent-users',
-        heading: 'Concurrent User Capacity',
+        heading: '并发用户容量',
         content: (
           <>
             <p>
-              The <strong>Concurrency</strong> panel estimates how many concurrent users your deployment can serve while meeting SLO targets.
+              「<strong>并发</strong>」面板用于估算在满足 SLO 目标的前提下，你的部署能服务多少并发用户。
             </p>
             <ul className="list-disc list-inside space-y-1 text-sm mt-2">
-              <li><strong>TTFT (Time to First Token)</strong> — Prefill latency target (default: 500ms)</li>
-              <li><strong>TPOT (Time Per Output Token)</strong> — Decode latency target (default: 50ms)</li>
-              <li><strong>Batch Mode</strong> — Toggle between online and offline batch processing</li>
+              <li><strong>TTFT（首字延迟）</strong> — Prefill 延迟目标（默认 500 毫秒）</li>
+              <li><strong>TPOT（每输出 token 延迟）</strong> — Decode 延迟目标（默认 50 毫秒）</li>
+              <li><strong>批处理模式</strong> — 在在线与离线批处理之间切换</li>
             </ul>
             <p className="mt-2">
-              The calculator shows a latency curve chart, bottleneck indicator (memory vs throughput vs prefill), and replica scaling table.
+              计算器会展示延迟曲线图、瓶颈指示器（显存 / 吞吐 / prefill 三者对比）以及副本扩缩表。
             </p>
           </>
         ),
       },
       {
         id: 'parallelism',
-        heading: 'Parallelism Strategies',
+        heading: '并行策略',
         content: (
           <>
             <p>
-              The <strong>Parallelism</strong> panel helps you configure multi-GPU deployments:
+              「<strong>并行</strong>」面板用于配置多 GPU 部署：
             </p>
             <ul className="list-disc list-inside space-y-1 text-sm mt-2">
-              <li><strong>Tensor Parallelism (TP)</strong> — Splits weight matrices across GPUs. Requires fast NVLink interconnect.</li>
-              <li><strong>Pipeline Parallelism (PP)</strong> — Splits model layers across GPUs. Works with slower interconnects.</li>
-              <li><strong>ZeRO-3</strong> — Shards optimizer states, gradients, and weights. Best for training.</li>
-              <li><strong>MoE Expert Parallelism</strong> — Shards expert weights while keeping attention on all GPUs.</li>
+              <li><strong>张量并行（TP）</strong> — 把权重矩阵切分到多张 GPU，需要高速 NVLink 互联。</li>
+              <li><strong>流水线并行（PP）</strong> — 把模型层切分到多张 GPU，对互联带宽要求较低。</li>
+              <li><strong>ZeRO-3</strong> — 分片优化器状态、梯度和权重，最适合训练。</li>
+              <li><strong>MoE 专家并行</strong> — 分片专家权重，同时让 attention 保留在所有 GPU 上。</li>
             </ul>
             <p className="mt-2">
-              Use the GPU slider (1-512 GPUs) to see per-GPU VRAM and cluster topology visualization.
+              用 GPU 滑块（1–512 卡）查看单卡显存和集群拓扑可视化。
             </p>
           </>
         ),
       },
       {
         id: 'speculative-decoding',
-        heading: 'Speculative Decoding',
+        heading: '投机解码',
         content: (
           <>
             <p>
-              Speculative decoding uses a small draft model to predict multiple tokens, then verifies with the target model in parallel.
+              投机解码用一个较小的草稿模型预测多个 token，再用目标模型并行验证。
             </p>
-            <p className="mt-2">Supported methods:</p>
+            <p className="mt-2">支持的方法：</p>
             <ul className="list-disc list-inside space-y-1 text-sm mt-2">
-              <li><strong>Draft Model</strong> — Use a smaller model (e.g., 1B) to draft for a larger model (e.g., 70B)</li>
-              <li><strong>Medusa</strong> — Multiple decoding heads predict future tokens</li>
-              <li><strong>EAGLE-2 / EAGLE-3</strong> — Auto-regressive draft heads</li>
-              <li><strong>Lookahead</strong> — N-gram based speculation</li>
-              <li><strong>Prompt Lookup</strong> — Reuse tokens from the prompt</li>
+              <li><strong>Draft Model</strong> — 用较小的模型（如 1B）给较大的模型（如 70B）打草稿</li>
+              <li><strong>Medusa</strong> — 多个解码头预测后续 token</li>
+              <li><strong>EAGLE-2 / EAGLE-3</strong> — 自回归草稿头</li>
+              <li><strong>Lookahead</strong> — 基于 N-gram 的推测</li>
+              <li><strong>Prompt Lookup</strong> — 复用提示词中的 token</li>
             </ul>
             <p className="mt-2">
-              The calculator estimates speedup (1.5-3×) and additional VRAM overhead.
+              计算器会估算加速比（1.5–3 倍）和额外的显存开销。
             </p>
           </>
         ),
       },
       {
         id: 'training-methods',
-        heading: 'Training Methods',
+        heading: '训练方法',
         content: (
           <>
             <p>
-              Training mode supports three methods:
+              训练模式支持三种方法：
             </p>
             <ul className="list-disc list-inside space-y-1 text-sm mt-2">
-              <li><strong>Full Fine-tune</strong> — Train all parameters. Requires 12× model size for optimizer states (FP32 master 4 + momentum 4 + variance 4).</li>
-              <li><strong>LoRA</strong> — Train low-rank adapter matrices. Reduces VRAM by 10-100×.</li>
-              <li><strong>QLoRA</strong> — LoRA with base weights quantized to NF4. Enables fine-tuning on consumer GPUs.</li>
+              <li><strong>全量微调</strong> — 训练全部参数。优化器状态需要 12 倍模型大小（FP32 主权重 4 + 动量 4 + 方差 4）。</li>
+              <li><strong>LoRA</strong> — 只训练低秩适配器矩阵，显存降低 10–100 倍。</li>
+              <li><strong>QLoRA</strong> — 基座权重量化到 NF4 的 LoRA，让消费级 GPU 也能做微调。</li>
             </ul>
             <p className="mt-2">
-              Configure LoRA rank, alpha, and target modules. The calculator shows trainable parameter count and VRAM savings.
+              可配置 LoRA 秩、alpha 和目标模块。计算器会展示可训练参数量和显存节省量。
             </p>
           </>
         ),
       },
       {
         id: 'cloud-cost-analysis',
-        heading: 'Cloud Cost Analysis',
+        heading: '云成本分析',
         content: (
           <>
             <p>
-              The cloud table shows 61 instances across 8 providers: AWS, Azure, GCP, Lambda, RunPod, Vast, CoreWeave, and Together AI.
+              云实例表格展示 8 家服务商的 61 个实例：AWS、Azure、GCP、Lambda、RunPod、Vast、CoreWeave 和 Together AI。
             </p>
-            <p className="mt-2">Metrics include:</p>
+            <p className="mt-2">包含以下指标：</p>
             <ul className="list-disc list-inside space-y-1 text-sm mt-2">
-              <li><strong>On-demand hourly cost</strong> — Pay-as-you-go pricing</li>
-              <li><strong>Spot hourly cost</strong> — Discounted preemptible instances</li>
-              <li><strong>Cost per 1M tokens</strong> — Efficiency metric for inference workloads</li>
-              <li><strong>Breakeven hours</strong> — When on-prem capex equals cloud opex</li>
+              <li><strong>按需每小时价格</strong> — 按量付费定价</li>
+              <li><strong>竞价每小时价格</strong> — 折扣后的可抢占实例</li>
+              <li><strong>每 100 万 token 成本</strong> — 推理负载的效率指标</li>
+              <li><strong>盈亏平衡小时数</strong> — 自建资本支出等于云上运营成本的时间点</li>
             </ul>
             <p className="mt-2">
-              Use the currency picker to view costs in USD, EUR, GBP, JPY, CNY, INR, or BRL.
+              用货币选择器切换 USD、EUR、GBP、JPY、CNY、INR 或 BRL 计价。
             </p>
           </>
         ),
       },
       {
         id: 'tco-analysis',
-        heading: 'Total Cost of Ownership',
+        heading: '总拥有成本',
         content: (
           <>
             <p>
-              The <strong>TCO</strong> panel compares on-prem vs cloud costs over 3 years:
+              「<strong>TCO</strong>」面板对比 3 年内的自建与上云成本：
             </p>
             <ul className="list-disc list-inside space-y-1 text-sm mt-2">
-              <li><strong>Capex</strong> — GPU purchase cost (MSRP or street price)</li>
-              <li><strong>Electricity</strong> — TDP-based power draw × electricity rate × PUE</li>
-              <li><strong>Colocation</strong> — Rack space, cooling, network</li>
-              <li><strong>Staff</strong> — DevOps / SRE labor</li>
+              <li><strong>Capex</strong> — GPU 采购成本（MSRP 或市价）</li>
+              <li><strong>电费</strong> — 按 TDP 估算的功耗 × 电价 × PUE</li>
+              <li><strong>托管</strong> — 机位空间、制冷、网络</li>
+              <li><strong>人力</strong> — DevOps / SRE 成本</li>
             </ul>
             <p className="mt-2">
-              The calculator shows breakeven point and 3-year total cost for both options.
+              计算器会给出盈亏平衡点和两种方案的 3 年总成本。
             </p>
           </>
         ),
@@ -539,36 +543,36 @@ MLA:          L × B × T × mlaCompressedDim × bytes`}
   },
   {
     id: 'compare-mode',
-    title: 'Compare Mode',
+    title: '对比模式',
     sections: [
       {
         id: 'adding-configs',
-        heading: 'Adding Configurations',
+        heading: '添加配置',
         content: (
           <>
             <p>
-              Compare up to 3 configurations side-by-side. Press <kbd className="px-1.5 py-0.5 text-xs font-mono bg-bg-muted border border-border-subtle rounded">c</kbd> or click the Compare button to add the current config.
+              最多可并排对比 3 套配置。按 <kbd className="px-1.5 py-0.5 text-xs font-mono bg-bg-muted border border-border-subtle rounded">c</kbd> 或点击「对比」按钮即可把当前配置加入对比。
             </p>
             <p className="mt-2">
-              Each config is editable in the compare drawer. Change model, precision, context, or batch size independently.
+              每套配置都可以在对比抽屉中单独修改模型、精度、上下文或批大小。
             </p>
           </>
         ),
       },
       {
         id: 'delta-metrics',
-        heading: 'Delta Metrics',
+        heading: '差值指标',
         content: (
           <>
             <p>
-              Numeric deltas are shown relative to the anchor config (first column):
+              数值差值相对于基准配置（第一列）展示：
             </p>
             <ul className="list-disc list-inside space-y-1 text-sm mt-2">
-              <li><strong className="text-green-600 dark:text-green-400">Green</strong> — Improvement (lower VRAM, lower cost, higher throughput)</li>
-              <li><strong className="text-red-600 dark:text-red-400">Red</strong> — Regression (higher VRAM, higher cost, lower throughput)</li>
+              <li><strong className="text-green-600 dark:text-green-400">绿色</strong> — 改善（显存更低、成本更低、吞吐更高）</li>
+              <li><strong className="text-red-600 dark:text-red-400">红色</strong> — 变差（显存更高、成本更高、吞吐更低）</li>
             </ul>
             <p className="mt-2">
-              Metrics include: VRAM, throughput, cloud cost, cost per 1M tokens, and GPU utilization.
+              涉及指标：显存、吞吐、云成本、每 100 万 token 成本和 GPU 利用率。
             </p>
           </>
         ),
@@ -577,27 +581,27 @@ MLA:          L × B × T × mlaCompressedDim × bytes`}
   },
   {
     id: 'keyboard-shortcuts',
-    title: 'Keyboard Shortcuts',
+    title: '键盘快捷键',
     sections: [
       {
         id: 'shortcuts-list',
-        heading: 'All Shortcuts',
+        heading: '全部快捷键',
         content: (
           <>
-            <p>Press <kbd className="px-1.5 py-0.5 text-xs font-mono bg-bg-muted border border-border-subtle rounded">?</kbd> to see all shortcuts.</p>
+            <p>按 <kbd className="px-1.5 py-0.5 text-xs font-mono bg-bg-muted border border-border-subtle rounded">?</kbd> 可查看全部快捷键。</p>
             <dl className="space-y-2 mt-3">
               {[
-                ['⌘K', 'Open model search'],
-                ['⌘\\', 'Toggle dark / light mode'],
-                ['⌘↵', 'Copy share URL'],
-                ['?', 'Show keyboard shortcuts'],
-                ['Esc', 'Close dialog / drawer'],
-                ['i', 'Switch to Inference mode'],
-                ['t', 'Switch to Train mode'],
-                ['r', 'Go to Reverse page'],
-                ['c', 'Add config to compare'],
-                ['g → m', 'Go to Models catalog'],
-                ['g → h', 'Go to Hardware catalog'],
+                ['⌘K', '打开模型搜索'],
+                ['⌘\\', '切换深色 / 浅色模式'],
+                ['⌘↵', '复制分享链接'],
+                ['?', '显示键盘快捷键'],
+                ['Esc', '关闭弹窗 / 抽屉'],
+                ['i', '切换到推理模式'],
+                ['t', '切换到训练模式'],
+                ['r', '跳转到反查页'],
+                ['c', '把当前配置加入对比'],
+                ['g → m', '跳转到模型库'],
+                ['g → h', '跳转到硬件库'],
               ].map(([keys, desc]) => (
                 <div key={keys as string} className="flex items-start gap-3">
                   <dt className="text-xs font-mono bg-bg-muted px-1.5 py-0.5 rounded border border-border-subtle flex-shrink-0">{keys}</dt>
@@ -612,32 +616,32 @@ MLA:          L × B × T × mlaCompressedDim × bytes`}
   },
   {
     id: 'glossary',
-    title: 'Glossary',
+    title: '术语表',
     sections: [
       {
         id: 'terms',
-        heading: 'Terms',
+        heading: '术语',
         content: (
           <dl className="space-y-3">
             {[
-              ['VRAM', 'Video RAM — the GPU memory used to store model weights, KV cache, and activations.'],
-              ['GQA', 'Grouped Query Attention — uses fewer KV heads than attention heads, reducing KV cache size.'],
-              ['MQA', 'Multi-Query Attention — extreme GQA with a single KV head shared across all attention heads.'],
-              ['MLA', 'Multi-head Latent Attention — DeepSeek\'s compressed KV cache using a low-rank latent space.'],
-              ['MoE', 'Mixture of Experts — architecture where only a subset of parameters are active per token.'],
-              ['LoRA', 'Low-Rank Adaptation — fine-tuning method that trains small adapter matrices instead of full weights.'],
-              ['QLoRA', 'Quantized LoRA — LoRA with base weights quantized to NF4, enabling fine-tuning on consumer GPUs.'],
-              ['Roofline Model', 'Performance model where throughput is bounded by memory bandwidth / active weight size.'],
-              ['Tensor Parallelism', 'Splits individual weight matrices across GPUs, requiring fast NVLink interconnect.'],
-              ['Pipeline Parallelism', 'Splits model layers across GPUs, suitable for slower interconnects.'],
-              ['ZeRO', 'Zero Redundancy Optimizer — shards optimizer states, gradients, and weights across GPUs.'],
-              ['TTFT', 'Time to First Token — prefill latency, the time to generate the first output token.'],
-              ['TPOT', 'Time Per Output Token — decode latency, the time to generate each subsequent token.'],
-              ['SLO', 'Service Level Objective — target latency or throughput for production deployments.'],
-              ['Speculative Decoding', 'Uses a draft model to predict multiple tokens, then verifies in parallel.'],
-              ['Gradient Checkpointing', 'Trades compute for memory by recomputing activations during backprop.'],
-              ['NVLink', 'NVIDIA\'s high-bandwidth GPU interconnect (up to 900 GB/s per GPU).'],
-              ['InfiniBand', 'High-speed network fabric for distributed training (400-800 Gbps).'],
+              ['VRAM', '显存 — GPU 上用于存放模型权重、KV Cache 和激活值的内存。'],
+              ['GQA', '分组查询注意力 — KV Head 数量少于注意力 Head 数量，可减小 KV Cache 体积。'],
+              ['MQA', '多查询注意力 — GQA 的极端形式，所有注意力 Head 共享单个 KV Head。'],
+              ['MLA', '多头潜在注意力 — DeepSeek 提出的压缩 KV Cache 方案，用低秩潜在空间存储。'],
+              ['MoE', '混合专家 — 每个 token 只激活部分参数的架构。'],
+              ['LoRA', '低秩适配 — 只训练小型适配器矩阵而非全量权重的微调方法。'],
+              ['QLoRA', '量化 LoRA — 基座权重量化到 NF4 的 LoRA，让消费级 GPU 也能微调。'],
+              ['Roofline Model', '屋顶线模型 — 吞吐受显存带宽 / 活跃权重体积限制的性能模型。'],
+              ['Tensor Parallelism', '张量并行 — 把单个权重矩阵切分到多张 GPU，需要高速 NVLink 互联。'],
+              ['Pipeline Parallelism', '流水线并行 — 把模型层切分到多张 GPU，适合较慢的互联。'],
+              ['ZeRO', '零冗余优化器 — 把优化器状态、梯度和权重分片到多张 GPU。'],
+              ['TTFT', '首字延迟 — prefill 延迟，即生成第一个输出 token 所需的时间。'],
+              ['TPOT', '每输出 token 延迟 — decode 延迟，即生成后续每个 token 所需的时间。'],
+              ['SLO', '服务等级目标 — 生产部署的延迟或吞吐目标。'],
+              ['Speculative Decoding', '投机解码 — 用草稿模型预测多个 token，再并行验证。'],
+              ['Gradient Checkpointing', '梯度检查点 — 反向传播时重算激活值，用计算换内存。'],
+              ['NVLink', 'NVIDIA 的高带宽 GPU 互联（单卡最高 900 GB/s）。'],
+              ['InfiniBand', '分布式训练使用的高速网络（400–800 Gbps）。'],
             ].map(([term, def]) => (
               <div key={term as string}>
                 <dt className="text-sm font-semibold text-fg-primary">{term}</dt>
@@ -649,9 +653,12 @@ MLA:          L × B × T × mlaCompressedDim × bytes`}
       },
     ],
   },
-];
+  ];
+}
 
 export function Guides() {
+  const { t } = useLanguage();
+  const ARTICLES = React.useMemo(() => buildArticles(t), [t]);
   const [activeArticle, setActiveArticle] = React.useState(ARTICLES[0].id);
   const [activeSection, setActiveSection] = React.useState(ARTICLES[0].sections[0].id);
 
@@ -678,8 +685,8 @@ export function Guides() {
       <div className="flex gap-8">
 
         {/* TOC sidebar — 240px sticky */}
-        <nav className="hidden lg:flex flex-col gap-1 w-60 flex-shrink-0 sticky top-24 self-start h-fit" aria-label="Guide navigation">
-          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-2 px-2">Guides</h2>
+        <nav className="hidden lg:flex flex-col gap-1 w-60 flex-shrink-0 sticky top-24 self-start h-fit" aria-label={t('Guide navigation', '指南导航')}>
+          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-2 px-2">{t('Guides', '指南')}</h2>
           {ARTICLES.map(a => (
             <button
               key={a.id}
@@ -710,8 +717,8 @@ export function Guides() {
         </article>
 
         {/* Section anchors sidebar — 180px sticky */}
-        <nav className="hidden xl:flex flex-col gap-1 w-44 flex-shrink-0 sticky top-24 self-start h-fit" aria-label="Section navigation">
-          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-2 px-2">On this page</h2>
+        <nav className="hidden xl:flex flex-col gap-1 w-44 flex-shrink-0 sticky top-24 self-start h-fit" aria-label={t('Section navigation', '章节导航')}>
+          <h2 className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-2 px-2">{t('On this page', '本页内容')}</h2>
           {article.sections.map(s => (
             <a
               key={s.id}

@@ -179,7 +179,7 @@ function AdvancedTabs({
                     <input type="range" min={1} max={512} step={1} value={numGPUs}
                       onChange={e => setNumGPUs(parseInt(e.target.value))}
                       className="flex-1 cursor-pointer appearance-none bg-transparent [&::-webkit-slider-runnable-track]:h-1.5 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-bg-emphasis [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent [&::-webkit-slider-thumb]:-mt-[7px]"
-                      aria-label="Number of GPUs" />
+                      aria-label={t('Number of GPUs', 'GPU 数量')} />
                     <span className="text-sm font-mono text-fg-primary w-12 text-right">{numGPUs}</span>
                   </div>
                 </div>
@@ -310,7 +310,7 @@ export function Home() {
   const { t } = useLanguage();
   const [inputsExpanded, setInputsExpanded] = React.useState(true);
 
-  // ── Toggle the "Cloud Deployment Options" section on/off ──
+  // ── Toggle the t('Cloud Deployment Options', '云部署选项') section on/off ──
   const [showCloudDeployment, setShowCloudDeployment] = React.useState(true);
 
   // ── Model family filter (kv-cache-calculator-style family → model flow) ──
@@ -641,8 +641,8 @@ export function Home() {
           <MetricsRow tokensPerSecond={topGPU?.tokensPerSecond} costMetrics={costMetrics} gpuName={topGPU?.gpu.name} contextLength={contextLength} />
           <div className="flex flex-col gap-2">
             <FormulaReveal title={t('Weight Memory', '权重内存')} formula={`W = \\frac{N_{params} \\times B_{precision}}{10^9}`}
-              inputs={[{ label: 'Parameters', value: (selectedModel?.paramsTotal ?? 0).toLocaleString() }, { label: 'Bytes/param', value: precision.toUpperCase() }]}
-              result={`${breakdown.weightsGB.toFixed(1)} GB`} source="Hugging Face — Model Memory Calculator"
+              inputs={[{ label: 'Parameters', value: (selectedModel?.paramsTotal ?? 0).toLocaleString() }, { label: t('Bytes/param', '字节/参数'), value: precision.toUpperCase() }]}
+              result={`${breakdown.weightsGB.toFixed(1)} GB`} source={t('Hugging Face — Model Memory Calculator', 'Hugging Face — 模型显存计算器')}
               sourceUrl="https://huggingface.co/docs/accelerate/usage_guides/model_size_estimator" />
             {breakdown.kvCacheGB > 0 && (advancedKvPlan ? (
               <FormulaReveal
@@ -658,12 +658,12 @@ export function Home() {
               />
             ) : (
               <FormulaReveal title={t('KV Cache', 'KV 缓存')} formula={`KV = \\frac{2 \\cdot L \\cdot B \\cdot S \\cdot H_{kv} \\cdot D_{head} \\cdot B_{kv}}{10^9}`}
-                inputs={[{ label: 'Layers', value: selectedModel?.architecture.numLayers ?? 0 }, { label: 'Seq length', value: contextLength.toLocaleString() }, { label: 'KV heads', value: selectedModel?.architecture.numKeyValueHeads ?? 0 }]}
+                inputs={[{ label: 'Layers', value: selectedModel?.architecture.numLayers ?? 0 }, { label: t('Seq length', '序列长度'), value: contextLength.toLocaleString() }, { label: t('KV heads', 'KV Head 数量'), value: selectedModel?.architecture.numKeyValueHeads ?? 0 }]}
                 result={`${breakdown.kvCacheGB.toFixed(2)} GB`} source="Efficient Transformers: A Survey (Tay et al., 2022)" />
             ))}
             {breakdown.activationsGB > 0 && (
               <FormulaReveal title={t('Activation Memory', '激活内存')} formula={`A = L \\cdot S \\cdot B \\cdot H \\cdot \\left(34 + \\frac{5 \\cdot S \\cdot N_h}{H}\\right) \\cdot 2`}
-                inputs={[{ label: 'Layers', value: selectedModel?.architecture.numLayers ?? 0 }, { label: 'Hidden size', value: selectedModel?.architecture.hiddenSize ?? 0 }]}
+                inputs={[{ label: 'Layers', value: selectedModel?.architecture.numLayers ?? 0 }, { label: t('Hidden size', '隐藏层维度'), value: selectedModel?.architecture.hiddenSize ?? 0 }]}
                 result={`${breakdown.activationsGB.toFixed(2)} GB`} source="Reducing Activation Recomputation (Korthikanti et al., 2022)"
                 sourceUrl="https://arxiv.org/abs/2205.05198" />
             )}

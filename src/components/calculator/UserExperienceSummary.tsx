@@ -1,4 +1,6 @@
 import { cn } from '@/lib/utils';
+import { t } from '@/lib/i18n';
+import { useLanguage } from '@/lib/language';
 
 interface UserExperienceSummaryProps {
   modelName: string;
@@ -46,19 +48,19 @@ function SLOStatus({ actual, slo }: { actual: number; slo: number }) {
 
 const BOTTLENECK_TIPS: Record<string, string[]> = {
   memory: [
-    'Use FP8 KV cache to increase capacity ~2×',
-    'Enable PagedAttention to reduce fragmentation',
-    'Reduce context length to free KV cache memory',
+    t('Use FP8 KV cache to increase capacity ~2×', '用 FP8 KV Cache 把容量提升约 2 倍'),
+    t('Enable PagedAttention to reduce fragmentation', '开启 PagedAttention 以减少显存碎片'),
+    t('Reduce context length to free KV cache memory', '缩短上下文长度以释放 KV Cache 显存'),
   ],
   throughput: [
-    'Use a GPU with higher memory bandwidth',
-    'Reduce model size with quantization (Q4/Q8)',
-    'Add more GPU replicas to scale throughput',
+    t('Use a GPU with higher memory bandwidth', '换用显存带宽更高的 GPU'),
+    t('Reduce model size with quantization (Q4/Q8)', '用量化（Q4/Q8）缩小模型体积'),
+    t('Add more GPU replicas to scale throughput', '增加 GPU 副本来提升吞吐'),
   ],
   prefill: [
-    'Use chunked prefill to reduce head-of-line blocking',
-    'Upgrade to a higher-FLOPS GPU',
-    'Use speculative decoding to reduce prefill load',
+    t('Use chunked prefill to reduce head-of-line blocking', '用分块 prefill 减少队头阻塞'),
+    t('Upgrade to a higher-FLOPS GPU', '升级到 FLOPS 更高的 GPU'),
+    t('Use speculative decoding to reduce prefill load', '用投机解码降低 prefill 负载'),
   ],
 };
 
@@ -82,6 +84,7 @@ export function UserExperienceSummary({
   doubleGPUMaxUsers,
   doubleGPUCostPerHour,
 }: UserExperienceSummaryProps) {
+  const { t } = useLanguage();
   const e2eMs = ttftMs + avgOutputTokens * tpotMs;
   const vramPct = totalVRAMGB > 0 ? Math.round((usedVRAMGB / totalVRAMGB) * 100) : 0;
   const capacityPct = maxConcurrentUsers > 0 ? Math.round((concurrentUsers / maxConcurrentUsers) * 100) : 0;
@@ -92,7 +95,7 @@ export function UserExperienceSummary({
     <div className="rounded-lg border border-border-subtle bg-bg-subtle p-4 flex flex-col gap-3">
       {/* Header */}
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">User Experience Summary</p>
+        <p className="text-xs font-semibold uppercase tracking-wider text-fg-muted">{t('User Experience Summary', '用户体验摘要')}</p>
         <p className="text-xs text-fg-muted mt-0.5">
           For {concurrentUsers.toLocaleString()} concurrent users on {gpuName}
         </p>
@@ -168,7 +171,7 @@ export function UserExperienceSummary({
       {/* Bottleneck */}
       <div className="border-t border-border-subtle pt-2">
         <p className="text-xs font-medium text-fg-default">
-          ⚡ Bottleneck: <span className="text-amber-500 capitalize">{bottleneck === 'throughput' ? 'Memory bandwidth (decode)' : bottleneck === 'memory' ? 'KV cache memory' : 'Prefill compute'}</span>
+          ⚡ Bottleneck: <span className="text-amber-500 capitalize">{bottleneck === 'throughput' ? t('Memory bandwidth (decode)', '显存带宽（decode）') : bottleneck === 'memory' ? t('KV cache memory', 'KV Cache 显存') : t('Prefill compute', 'Prefill 算力')}</span>
         </p>
         <ul className="mt-1 flex flex-col gap-0.5">
           {tips.slice(0, 2).map(tip => (

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { InfoTooltip } from '@/components/primitives/InfoTooltip';
+import { useLanguage } from '@/lib/language';
 import {
   QUANTIZATION_TYPES, DEFAULT_QUANT_KEYS, FAMILY_LABELS,
   type QuantType,
@@ -25,6 +26,7 @@ const FAMILY_ORDER: QuantType['family'][] = [
 ];
 
 export function PrecisionPicker({ value, onChange, className }: PrecisionPickerProps) {
+  const { t } = useLanguage();
   const [showAll, setShowAll] = React.useState(false);
 
   const defaultQuants = QUANTIZATION_TYPES.filter(q => DEFAULT_QUANT_KEYS.includes(q.key));
@@ -67,13 +69,13 @@ export function PrecisionPicker({ value, onChange, className }: PrecisionPickerP
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       <label className="text-xs font-medium text-fg-default flex items-center gap-1.5">
-        Weight Precision
+        {t('Weight Precision', '权重精度')}
         <InfoTooltip paramKey="weightPrecision" />
       </label>
 
       <div
         role="radiogroup"
-        aria-label="Weight precision"
+        aria-label={t('Weight precision', '权重精度')}
         className="flex flex-col gap-1"
         onKeyDown={handleKeyDown}
       >
@@ -106,7 +108,7 @@ export function PrecisionPicker({ value, onChange, className }: PrecisionPickerP
         onClick={() => setShowAll(v => !v)}
         className="text-[11px] text-accent hover:underline self-start mt-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
       >
-        {showAll ? '▲ Show less' : '▼ Show all quantizations'}
+        {showAll ? t('▲ Show less', '▲ 收起') : t('▼ Show all quantizations', '▼ 显示全部量化格式')}
       </button>
     </div>
   );

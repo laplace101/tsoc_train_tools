@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Brain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/lib/language';
+import { t } from '@/lib/i18n';
 import {
   computeGradAccumulation,
   computeSequencePacking,
@@ -62,9 +63,9 @@ function Toggle({ id, checked, onChange }: { id: string; checked: boolean; onCha
 }
 
 const CHECKPOINT_MODES: { value: CheckpointMode; label: string }[] = [
-  { value: 'none',      label: 'None' },
-  { value: 'selective', label: 'Selective' },
-  { value: 'full',      label: 'Full' },
+  { value: 'none',      get label() { return t('None', '无'); } },
+  { value: 'selective', get label() { return t('Selective', '选择性'); } },
+  { value: 'full',      get label() { return t('Full', '全量'); } },
 ];
 
 export function AdvancedTrainingPanel({

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Cloud, Star, Zap, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { GPUSpec, CloudInstance } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
 
 interface CloudInstanceSuggestionsProps {
   gpu: GPUSpec;
@@ -104,6 +105,7 @@ const INTERCONNECT_LABEL: Record<string, { label: string; color: string }> = {
 };
 
 export function CloudInstanceSuggestions({ gpu, cloudInstances, className }: CloudInstanceSuggestionsProps) {
+  const { t } = useLanguage();
   // Find all cloud instances that contain this GPU
   const matching = React.useMemo(() => {
     return cloudInstances
@@ -116,7 +118,7 @@ export function CloudInstanceSuggestions({ gpu, cloudInstances, className }: Clo
       <div className={cn('rounded-lg border border-border-subtle p-4 flex flex-col gap-2', className)}>
         <div className="flex items-center gap-2 text-xs font-medium text-fg-muted">
           <Cloud size={13} />
-          Cloud Deployment Options
+          {t('Cloud Deployment Options', '云部署选项')}
         </div>
         <p className="text-xs text-fg-muted">
           No managed cloud instances found for {gpu.name}. Consider on-premise deployment or check bare-metal providers.
@@ -166,7 +168,7 @@ export function CloudInstanceSuggestions({ gpu, cloudInstances, className }: Clo
                   <span className="text-[10px] font-mono text-fg-muted">{inst.instanceType}</span>
                   {isCheapest && (
                     <span className="flex items-center gap-0.5 text-[9px] font-medium px-1 py-0.5 rounded bg-yellow-500/10 text-yellow-500">
-                      <Star size={8} className="fill-yellow-500" /> Cheapest
+                      <Star size={8} className="fill-yellow-500" /> {t('Cheapest', '最便宜')}
                     </span>
                   )}
                 </div>
@@ -200,7 +202,7 @@ export function CloudInstanceSuggestions({ gpu, cloudInstances, className }: Clo
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-fg-muted hover:text-accent transition-colors flex-shrink-0"
-                aria-label={`Open ${provCfg.label}`}
+                aria-label={t(`Open ${provCfg.label}`, `打开 ${provCfg.label}`)}
                 onClick={e => e.stopPropagation()}
               >
                 <ExternalLink size={12} />

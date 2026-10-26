@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 /**
  * Disk throughput and tier recommendation formulas.
  */
@@ -9,11 +10,11 @@ export interface StorageTier {
 }
 
 export const STORAGE_TIERS: StorageTier[] = [
-  { name: 'HDD',         typicalBandwidthMBs: 200,    description: 'Spinning disk, ~200 MB/s' },
-  { name: 'SATA SSD',    typicalBandwidthMBs: 550,    description: 'SATA SSD, ~550 MB/s' },
-  { name: 'NVMe Gen4',   typicalBandwidthMBs: 7000,   description: 'NVMe Gen4, ~7 GB/s' },
-  { name: 'NVMe Gen5',   typicalBandwidthMBs: 14000,  description: 'NVMe Gen5, ~14 GB/s' },
-  { name: 'Parallel FS', typicalBandwidthMBs: 100000, description: 'Lustre/GPFS, 100+ GB/s' },
+  { name: 'HDD',         typicalBandwidthMBs: 200,    get description() { return t('Spinning disk, ~200 MB/s', '机械硬盘，约 200 MB/s'); } },
+  { name: 'SATA SSD',    typicalBandwidthMBs: 550,    get description() { return t('SATA SSD, ~550 MB/s', 'SATA SSD，约 550 MB/s'); } },
+  { name: 'NVMe Gen4',   typicalBandwidthMBs: 7000,   get description() { return t('NVMe Gen4, ~7 GB/s', 'NVMe Gen4，约 7 GB/s'); } },
+  { name: 'NVMe Gen5',   typicalBandwidthMBs: 14000,  get description() { return t('NVMe Gen5, ~14 GB/s', 'NVMe Gen5，约 14 GB/s'); } },
+  { name: t('Parallel FS', '并行文件系统'), typicalBandwidthMBs: 100000, get description() { return t('Lustre/GPFS, 100+ GB/s', 'Lustre/GPFS，100+ GB/s'); } },
 ];
 
 /**
@@ -38,7 +39,7 @@ export function checkCheckpointFeasibility(
   const requiredMBs = computeCheckpointWriteBandwidth(numParams, timeBudgetSec);
   const feasible = requiredMBs <= diskBandwidthMBs;
   const message = feasible
-    ? `Checkpoint write feasible: ${requiredMBs.toFixed(0)} MB/s required, ${diskBandwidthMBs} MB/s available`
-    : `Checkpoint write exceeds disk throughput: ${requiredMBs.toFixed(0)} MB/s required but only ${diskBandwidthMBs} MB/s available`;
+    ? `检查点写入可行：需要 ${requiredMBs.toFixed(0)} MB/s，可用 ${diskBandwidthMBs} MB/s`
+    : `检查点写入超出磁盘吞吐：需要 ${requiredMBs.toFixed(0)} MB/s，但只有 ${diskBandwidthMBs} MB/s 可用`;
   return { feasible, requiredMBs, message };
 }

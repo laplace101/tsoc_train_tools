@@ -1,6 +1,8 @@
+import { t } from '@/lib/i18n';
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { estimateDataset, REFERENCE_DATASETS } from '@/lib/formulas/dataset';
+import { useLanguage } from '@/lib/language';
 
 type InputMode = 'tokens' | 'rows';
 type DataFormat = 'jsonl' | 'parquet' | 'hf';
@@ -19,7 +21,7 @@ function formatGB(gb: number): string {
 
 function formatTime(minutes: number): string {
   if (minutes < 1) return `${(minutes * 60).toFixed(0)}s`;
-  if (minutes < 60) return `${minutes.toFixed(0)} min`;
+  if (minutes < 60) return t(`${minutes.toFixed(0)} min`, `${minutes.toFixed(0)} 分钟`);
   return `${(minutes / 60).toFixed(1)} h`;
 }
 
@@ -30,6 +32,7 @@ const FORMAT_OVERHEAD: Record<DataFormat, number> = {
 };
 
 export function DatasetEstimator({ numParams, trainingMethod, className }: DatasetEstimatorProps) {
+  const { t } = useLanguage();
   const [inputMode, setInputMode] = React.useState<InputMode>('tokens');
   const [numTokens, setNumTokens] = React.useState(1_000_000_000); // 1B tokens
   const [numRows, setNumRows] = React.useState(100_000);
@@ -57,7 +60,7 @@ export function DatasetEstimator({ numParams, trainingMethod, className }: Datas
                 : 'bg-bg-muted border-border-subtle text-fg-default hover:bg-bg-emphasis'
             )}
           >
-            {m === 'tokens' ? 'By tokens' : 'By rows'}
+            {m === 'tokens' ? t('By tokens', '按 token 数') : t('By rows', '按行数')}
           </button>
         ))}
       </div>
@@ -66,7 +69,7 @@ export function DatasetEstimator({ numParams, trainingMethod, className }: Datas
       {inputMode === 'tokens' ? (
         <div className="flex flex-col gap-1.5">
           <label htmlFor="num-tokens" className="text-xs font-medium text-fg-default">
-            Number of tokens
+            {t('Number of tokens', 'Token 数量')}
           </label>
           <input
             id="num-tokens"
@@ -81,7 +84,7 @@ export function DatasetEstimator({ numParams, trainingMethod, className }: Datas
       ) : (
         <div className="flex gap-2">
           <div className="flex flex-col gap-1.5 flex-1">
-            <label htmlFor="num-rows" className="text-xs font-medium text-fg-default">Rows</label>
+            <label htmlFor="num-rows" className="text-xs font-medium text-fg-default">{t('Rows', '行数')}</label>
             <input
               id="num-rows"
               type="number"
@@ -92,7 +95,7 @@ export function DatasetEstimator({ numParams, trainingMethod, className }: Datas
             />
           </div>
           <div className="flex flex-col gap-1.5 flex-1">
-            <label htmlFor="avg-seq-len" className="text-xs font-medium text-fg-default">Avg seq len</label>
+            <label htmlFor="avg-seq-len" className="text-xs font-medium text-fg-default">{t('Avg seq len', '平均序列长度')}</label>
             <input
               id="avg-seq-len"
               type="number"
@@ -108,7 +111,7 @@ export function DatasetEstimator({ numParams, trainingMethod, className }: Datas
       {/* Format + cores */}
       <div className="flex gap-2">
         <div className="flex flex-col gap-1.5 flex-1">
-          <label htmlFor="data-format" className="text-xs font-medium text-fg-default">Format</label>
+          <label htmlFor="data-format" className="text-xs font-medium text-fg-default">{t('Format', '格式')}</label>
           <select
             id="data-format"
             value={format}
@@ -117,11 +120,11 @@ export function DatasetEstimator({ numParams, trainingMethod, className }: Datas
           >
             <option value="jsonl">JSONL</option>
             <option value="parquet">Parquet</option>
-            <option value="hf">HF Datasets</option>
+            <option value="hf">{t('HF Datasets', 'HF 数据集')}</option>
           </select>
         </div>
         <div className="flex flex-col gap-1.5 w-20">
-          <label htmlFor="num-cores" className="text-xs font-medium text-fg-default">CPU cores</label>
+          <label htmlFor="num-cores" className="text-xs font-medium text-fg-default">{t('CPU cores', 'CPU 核数')}</label>
           <input
             id="num-cores"
             type="number"
@@ -137,7 +140,7 @@ export function DatasetEstimator({ numParams, trainingMethod, className }: Datas
       {/* Results */}
       <div className="rounded-md border border-border-subtle bg-bg-subtle p-2.5 space-y-1.5">
         <div className="flex justify-between text-xs">
-          <span className="text-fg-muted">Tokens</span>
+          <span className="text-fg-muted">{t('Tokens', 'Token 数')}</span>
           <span className="font-mono text-fg-default">{(effectiveTokens / 1e9).toFixed(2)}B</span>
         </div>
         <div className="flex justify-between text-xs">
@@ -145,11 +148,11 @@ export function DatasetEstimator({ numParams, trainingMethod, className }: Datas
           <span className="font-mono text-fg-default">{formatGB(estimate.rawSizeGB * formatMultiplier)}</span>
         </div>
         <div className="flex justify-between text-xs">
-          <span className="text-fg-muted">Tokenized (uint16)</span>
+          <span className="text-fg-muted">{t('Tokenized (uint16)', '分词后（uint16）')}</span>
           <span className="font-mono text-fg-default">{formatGB(estimate.tokenizedSizeGB)}</span>
         </div>
         <div className="flex justify-between text-xs">
-          <span className="text-fg-muted">Compressed est.</span>
+          <span className="text-fg-muted">{t('Compressed est.', '压缩后估算')}</span>
           <span className="font-mono text-fg-default">{formatGB(estimate.compressedSizeGB)}</span>
         </div>
         <div className="flex justify-between text-xs">
@@ -165,7 +168,7 @@ export function DatasetEstimator({ numParams, trainingMethod, className }: Datas
       {/* Reference datasets */}
       <details className="text-xs">
         <summary className="cursor-pointer text-fg-muted hover:text-fg-default transition-colors">
-          Reference datasets
+          {t('Reference datasets', '参考数据集')}
         </summary>
         <div className="mt-2 space-y-1">
           {REFERENCE_DATASETS.map((ds) => (

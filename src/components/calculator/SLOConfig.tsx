@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/lib/language';
 
 const TTFT_OPTIONS = [100, 200, 500, 1000, 2000, 5000];
 const TPOT_OPTIONS = [10, 20, 30, 50, 100, 200];
@@ -55,18 +56,19 @@ export function SLOConfig({
   onSloTTFTChange,
   onSloTPOTChange,
 }: SLOConfigProps) {
+  const { t } = useLanguage();
   return (
     <div className="flex flex-col gap-3">
-      <span className="text-xs font-medium text-fg-default">SLO Targets</span>
+      <span className="text-xs font-medium text-fg-default">{t('SLO Targets', 'SLO 目标')}</span>
 
       {/* TTFT SLO */}
       <div className="flex items-center gap-2">
-        <label className="text-xs text-fg-muted w-24 shrink-0">Max TTFT (p95)</label>
+        <label className="text-xs text-fg-muted w-24 shrink-0">{t('Max TTFT (p95)', '最大 TTFT（p95）')}</label>
         <select
           value={sloTTFTMs}
           onChange={e => onSloTTFTChange(Number(e.target.value))}
           className="flex-1 h-7 px-2 rounded border border-border-subtle bg-bg-muted text-xs text-fg-default focus:outline-none focus:ring-1 focus:ring-ring"
-          aria-label="TTFT SLO"
+          aria-label={t('TTFT SLO', 'TTFT SLO（首字延迟）')}
         >
           {TTFT_OPTIONS.map(ms => (
             <option key={ms} value={ms}>{formatMs(ms)}</option>
@@ -76,12 +78,12 @@ export function SLOConfig({
 
       {/* TPOT SLO */}
       <div className="flex items-center gap-2">
-        <label className="text-xs text-fg-muted w-24 shrink-0">Max TPOT (p95)</label>
+        <label className="text-xs text-fg-muted w-24 shrink-0">{t('Max TPOT (p95)', '最大 TPOT（p95）')}</label>
         <select
           value={sloTPOTMs}
           onChange={e => onSloTPOTChange(Number(e.target.value))}
           className="flex-1 h-7 px-2 rounded border border-border-subtle bg-bg-muted text-xs text-fg-default focus:outline-none focus:ring-1 focus:ring-ring"
-          aria-label="TPOT SLO"
+          aria-label={t('TPOT SLO', 'TPOT SLO（逐 token 延迟）')}
         >
           {TPOT_OPTIONS.map(ms => (
             <option key={ms} value={ms}>{formatMs(ms)}</option>

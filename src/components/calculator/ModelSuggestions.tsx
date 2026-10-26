@@ -3,6 +3,8 @@ import { CheckCircle, AlertTriangle, XCircle, ChevronRight, Search } from 'lucid
 import { cn } from '@/lib/utils';
 import type { ModelSpec, GPUSpec } from '@/lib/formulas/types';
 import { getPrecisionConfig, getKVPrecisionConfig, computeTotalVRAM, classifyGPUFit } from '@/lib/formulas';
+import { t } from '@/lib/i18n';
+import { useLanguage } from '@/lib/language';
 
 interface ModelSuggestionsProps {
   gpu: GPUSpec;
@@ -13,12 +15,13 @@ interface ModelSuggestionsProps {
 }
 
 const FIT_ICON = {
-  green:  { Icon: CheckCircle,   color: 'text-green-600 dark:text-green-400',   label: 'Fits' },
-  yellow: { Icon: AlertTriangle, color: 'text-yellow-600 dark:text-yellow-400', label: 'Tight' },
-  red:    { Icon: XCircle,       color: 'text-red-600 dark:text-red-400',       label: 'No fit' },
+  green:  { Icon: CheckCircle,   color: 'text-green-600 dark:text-green-400',   get label() { return t('Fits', '满足'); } },
+  yellow: { Icon: AlertTriangle, color: 'text-yellow-600 dark:text-yellow-400', get label() { return t('Tight', '紧张'); } },
+  red:    { Icon: XCircle,       color: 'text-red-600 dark:text-red-400',       get label() { return t('No fit', '装不下'); } },
 };
 
 export function ModelSuggestions({ gpu, models, onSelectModel, contextLength = 4096, className }: ModelSuggestionsProps) {
+  const { t } = useLanguage();
   const [showAll, setShowAll] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
 
@@ -68,7 +71,7 @@ export function ModelSuggestions({ gpu, models, onSelectModel, contextLength = 4
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-muted pointer-events-none" />
         <input
           type="text"
-          placeholder="Search models..."
+          placeholder={t('Search models...', '搜索模型...')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full pl-9 pr-3 py-2 text-sm bg-bg-default border border-border-subtle rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/50 text-fg-default placeholder:text-fg-muted"
@@ -134,7 +137,7 @@ export function ModelSuggestions({ gpu, models, onSelectModel, contextLength = 4
           onClick={() => setShowAll(false)}
           className="text-xs text-accent hover:text-accent/80 font-medium transition-colors"
         >
-          Show less ↑
+          {t('Show less ↑', '收起 ↑')}
         </button>
       )}
     </div>

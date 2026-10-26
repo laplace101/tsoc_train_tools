@@ -121,7 +121,7 @@ describe('computeModelKVCache — DeepSeek V4 hybrid', () => {
     const names = result.formulaRows?.map((r) => r.name) ?? [];
     expect(names).toContain('compressed_kv_bytes');
     expect(names).toContain('indexer_bytes');
-    expect(result.components?.some(([name, value]) => name === 'Ratio=4 layers' && value === 30)).toBe(true);
+    expect(result.components?.some(([name, value]) => /ratio=4/i.test(name) && value === 30)).toBe(true);
     // Regression anchor: the number the summary panel shows for this setting.
     expect(result.totalGB).toBeCloseTo(37.41, 2);
   });

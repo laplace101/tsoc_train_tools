@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Timer } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { estimateWarmup, type Framework } from '@/lib/formulas/warmup';
+import { useLanguage } from '@/lib/language';
+import { t } from '@/lib/i18n';
 
 interface WarmupPanelProps {
   modelBytes: number;   // total model size in bytes
@@ -26,7 +28,7 @@ interface StorageTier {
 }
 
 const STORAGE_TIERS: StorageTier[] = [
-  { label: 'HDD (0.15 GB/s)',      bandwidthGBs: 0.15 },
+  { get label() { return t('HDD (0.15 GB/s)', '机械硬盘 (0.15 GB/s)'); },      bandwidthGBs: 0.15 },
   { label: 'SATA SSD (0.55 GB/s)', bandwidthGBs: 0.55 },
   { label: 'NVMe Gen4 (7 GB/s)',   bandwidthGBs: 7 },
   { label: 'NVMe Gen5 (14 GB/s)',  bandwidthGBs: 14 },
@@ -42,11 +44,12 @@ const FRAMEWORK_OPTIONS: { value: Framework; label: string }[] = [
 function formatTime(sec: number): string {
   if (sec < 60) return `${sec.toFixed(1)}s`;
   const min = sec / 60;
-  if (min < 60) return `${min.toFixed(1)} min`;
-  return `${(min / 60).toFixed(1)} hr`;
+  if (min < 60) return t(`${min.toFixed(1)} min`, `${min.toFixed(1)} 分钟`);
+  return t(`${(min / 60).toFixed(1)} hr`, `${(min / 60).toFixed(1)} 小时`);
 }
 
 export function WarmupPanel({ modelBytes, numParams, className }: WarmupPanelProps) {
+  const { t } = useLanguage();
   const [storageTierIdx, setStorageTierIdx] = React.useState(2); // NVMe Gen4 default
   const [framework, setFramework] = React.useState<Framework>('vllm');
 
@@ -58,14 +61,14 @@ export function WarmupPanel({ modelBytes, numParams, className }: WarmupPanelPro
       <div className="flex items-center gap-2 mb-3">
         <Timer size={14} className="text-fg-muted" />
         <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-muted">
-          Warmup &amp; Load Time
+          {t('Warmup &amp; Load Time', '预热与加载时间')}
         </h3>
       </div>
 
       <div className="space-y-3 mb-4">
         {/* Storage Bandwidth */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="storage-tier" className="text-xs text-fg-muted">Storage Bandwidth</label>
+          <label htmlFor="storage-tier" className="text-xs text-fg-muted">{t('Storage Bandwidth', '存储带宽')}</label>
           <select
             id="storage-tier"
             value={storageTierIdx}
@@ -80,7 +83,7 @@ export function WarmupPanel({ modelBytes, numParams, className }: WarmupPanelPro
 
         {/* Framework */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="warmup-framework" className="text-xs text-fg-muted">Framework</label>
+          <label htmlFor="warmup-framework" className="text-xs text-fg-muted">{t('Framework', '框架')}</label>
           <select
             id="warmup-framework"
             value={framework}
@@ -96,10 +99,10 @@ export function WarmupPanel({ modelBytes, numParams, className }: WarmupPanelPro
 
       {/* Outputs */}
       <div className="border-t border-border-subtle pt-3 flex flex-col">
-        <KVRow label="Load Time" value={formatTime(result.loadTimeSec)} highlight />
-        <KVRow label="Compile Time" value={formatTime(result.compileTimeSec)} />
-        <KVRow label="Warmup Time" value={formatTime(result.warmupTimeSec)} />
-        <KVRow label="Total Cold-Start" value={formatTime(result.totalColdStartSec)} highlight />
+        <KVRow label={t('Load Time', '加载时间')} value={formatTime(result.loadTimeSec)} highlight />
+        <KVRow label={t('Compile Time', '编译时间')} value={formatTime(result.compileTimeSec)} />
+        <KVRow label={t('Warmup Time', '预热时间')} value={formatTime(result.warmupTimeSec)} />
+        <KVRow label={t('Total Cold-Start', '冷启动总时长')} value={formatTime(result.totalColdStartSec)} highlight />
         <div className="pt-2">
           <p className="text-[10px] text-fg-muted leading-relaxed">{result.notes}</p>
         </div>

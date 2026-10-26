@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/lib/language';
 
 /* ── Context ── */
 interface TabsContextValue {
@@ -10,8 +11,9 @@ interface TabsContextValue {
 const TabsContext = React.createContext<TabsContextValue | null>(null);
 
 function useTabsContext() {
+  const { t } = useLanguage();
   const ctx = React.useContext(TabsContext);
-  if (!ctx) throw new Error('Tabs compound components must be used within <Tabs>');
+  if (!ctx) throw new Error(t('Tabs compound components must be used within <Tabs>', 'Tabs 复合组件必须在 <Tabs> 内部使用'));
   return ctx;
 }
 

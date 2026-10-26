@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import type { CostMetricsResult } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
 
 interface MetricsRowProps {
   tokensPerSecond?: number | null;
@@ -32,6 +33,7 @@ function MetricCard({ label, value, subtitle }: MetricCardProps) {
 }
 
 export function MetricsRow({ tokensPerSecond, costMetrics, gpuName, contextLength, className }: MetricsRowProps) {
+  const { t } = useLanguage();
   const tokPerSecValue = tokensPerSecond != null
     ? tokensPerSecond.toLocaleString()
     : 'N/A';
@@ -53,19 +55,19 @@ export function MetricsRow({ tokensPerSecond, costMetrics, gpuName, contextLengt
   return (
     <div className={cn('grid grid-cols-3 gap-3', className)}>
       <MetricCard
-        label="Throughput"
+        label={t('Throughput', '吞吐')}
         value={tokPerSecValue}
         subtitle={gpuName ? `tok/s · ${gpuName}` : 'tok/s'}
       />
       <MetricCard
-        label="Cost / 1M tokens"
+        label={t('Cost / 1M tokens', '每 100 万 token 成本')}
         value={costValue}
-        subtitle={gpuName ? `batched · ${gpuName}` : 'on-demand'}
+        subtitle={gpuName ? t(`batched · ${gpuName}`, `批处理 · ${gpuName}`) : t('on-demand', '按需')}
       />
       <MetricCard
-        label="Time to First Token"
+        label={t('Time to First Token', '首字延迟')}
         value={ttftValue}
-        subtitle={ctxLabel ? `prefill ${ctxLabel}` : 'prefill'}
+        subtitle={ctxLabel ? t(`prefill ${ctxLabel}`, `预填充 ${ctxLabel}`) : t('prefill', '预填充')}
       />
     </div>
   );

@@ -61,7 +61,7 @@ describe('recommendStack — unit tests', () => {
     const appleGPU = makeGPU({ vendor: 'apple', name: 'M2 Ultra', category: 'apple-silicon' });
     const result = recommendStack(appleGPU, 'inference');
     expect(result.os).toContain('macOS');
-    expect(result.cuda).toContain('N/A');
+    expect(result.cuda).toMatch(/N\/A|不适用/);
   });
 });
 

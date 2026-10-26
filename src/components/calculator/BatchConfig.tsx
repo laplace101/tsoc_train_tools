@@ -2,6 +2,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/primitives/input';
 import { InfoTooltip } from '@/components/primitives/InfoTooltip';
+import { useLanguage } from '@/lib/language';
 
 interface BatchConfigProps {
   value: number;
@@ -14,6 +15,7 @@ interface BatchConfigProps {
 }
 
 export function BatchConfig({ value, onChange, freeVRAMGB, kvPerSeqGB, className }: BatchConfigProps) {
+  const { t } = useLanguage();
   const [continuous, setContinuous] = React.useState(false);
   const [inputValue, setInputValue] = React.useState(value.toString());
   const [maxConcurrent, setMaxConcurrent] = React.useState(64);
@@ -62,11 +64,11 @@ export function BatchConfig({ value, onChange, freeVRAMGB, kvPerSeqGB, className
       {/* Header with continuous batching toggle */}
       <div className="flex items-center justify-between">
         <label htmlFor="batch-slider" className="text-xs font-medium text-fg-default flex items-center gap-1.5">
-          Batch Size
+          {t('Batch Size', '批大小')}
           <InfoTooltip paramKey="batchSize" />
         </label>
         <label className="flex items-center gap-1.5 cursor-pointer select-none">
-          <span className="text-[10px] text-fg-muted">Continuous batching</span>
+          <span className="text-[10px] text-fg-muted">{t('Continuous batching', '连续批处理')}</span>
           <button
             role="switch"
             aria-checked={continuous}
@@ -109,7 +111,7 @@ export function BatchConfig({ value, onChange, freeVRAMGB, kvPerSeqGB, className
               aria-valuemin={1}
               aria-valuemax={256}
               aria-valuenow={value}
-              aria-valuetext={`Batch size ${value}`}
+              aria-valuetext={t(`Batch size ${value}`, `批大小 ${value}`)}
             />
             <Input
               type="text"
@@ -118,7 +120,7 @@ export function BatchConfig({ value, onChange, freeVRAMGB, kvPerSeqGB, className
               onBlur={handleInputBlur}
               onKeyDown={handleInputKeyDown}
               className="w-16 font-mono text-sm text-center"
-              aria-label="Batch size numeric input"
+              aria-label={t('Batch size numeric input', '批大小数值输入')}
             />
           </div>
           <div className="flex justify-between text-[9px] font-mono text-fg-muted px-0.5">
@@ -139,7 +141,7 @@ export function BatchConfig({ value, onChange, freeVRAMGB, kvPerSeqGB, className
                 value={maxConcurrent}
                 onChange={e => setMaxConcurrent(Math.max(1, Math.min(1024, parseInt(e.target.value, 10) || 1)))}
                 className="font-mono text-sm"
-                aria-label="Max concurrent sequences"
+                aria-label={t('Max concurrent sequences', '最大并发序列数')}
               />
               <span className="text-[9px] text-fg-muted">1 – 1024</span>
             </div>
@@ -152,7 +154,7 @@ export function BatchConfig({ value, onChange, freeVRAMGB, kvPerSeqGB, className
                 value={avgOutputTokens}
                 onChange={e => setAvgOutputTokens(Math.max(16, Math.min(4096, parseInt(e.target.value, 10) || 16)))}
                 className="font-mono text-sm"
-                aria-label="Average output tokens"
+                aria-label={t('Average output tokens', '平均输出 token 数')}
               />
               <span className="text-[9px] text-fg-muted">16 – 4096</span>
             </div>
@@ -175,8 +177,8 @@ export function BatchConfig({ value, onChange, freeVRAMGB, kvPerSeqGB, className
         <div className="flex flex-col gap-2 mt-1">
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-0.5">
-              <span className="text-[10px] font-medium text-fg-default">Chunked Prefill</span>
-              <span className="text-[9px] text-fg-muted">Splits long prefills into chunks to reduce latency spikes</span>
+              <span className="text-[10px] font-medium text-fg-default">{t('Chunked Prefill', '分块 Prefill')}</span>
+              <span className="text-[9px] text-fg-muted">{t('Splits long prefills into chunks to reduce latency spikes', '把长 prefill 拆成多块，减小延迟毛刺')}</span>
             </div>
             <button
               role="switch"
@@ -209,7 +211,7 @@ export function BatchConfig({ value, onChange, freeVRAMGB, kvPerSeqGB, className
                 value={maxBatchedTokens}
                 onChange={e => setMaxBatchedTokens(Math.max(2048, Math.min(65536, parseInt(e.target.value, 10) || 8192)))}
                 className="flex-1 font-mono text-xs"
-                aria-label="Max number of batched tokens"
+                aria-label={t('Max number of batched tokens', '最大批处理 token 数')}
               />
             </div>
           )}

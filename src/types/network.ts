@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 /**
  * Interconnect specifications database.
  */
@@ -14,7 +15,7 @@ export interface InterconnectSpec {
 export const INTERCONNECT_DB: InterconnectSpec[] = [
   {
     id: 'pcie-gen4',
-    name: 'PCIe Gen4 x16',
+    get name() { return t('PCIe Gen4 x16', 'PCIe Gen4 x16'); },
     bandwidthGBs: 32,
     latencyUs: 2,
     topology: 'intra-node',
@@ -22,7 +23,7 @@ export const INTERCONNECT_DB: InterconnectSpec[] = [
   },
   {
     id: 'pcie-gen5',
-    name: 'PCIe Gen5 x16',
+    get name() { return t('PCIe Gen5 x16', 'PCIe Gen5 x16'); },
     bandwidthGBs: 64,
     latencyUs: 1.5,
     topology: 'intra-node',
@@ -30,7 +31,7 @@ export const INTERCONNECT_DB: InterconnectSpec[] = [
   },
   {
     id: 'nvlink3',
-    name: 'NVLink 3 (A100)',
+    get name() { return t('NVLink 3 (A100)', 'NVLink 3（A100）'); },
     bandwidthGBs: 600,
     latencyUs: 0.5,
     topology: 'intra-node',
@@ -38,7 +39,7 @@ export const INTERCONNECT_DB: InterconnectSpec[] = [
   },
   {
     id: 'nvlink4',
-    name: 'NVLink 4 (H100/H200)',
+    get name() { return t('NVLink 4 (H100/H200)', 'NVLink 4（H100/H200）'); },
     bandwidthGBs: 900,
     latencyUs: 0.5,
     topology: 'intra-node',
@@ -46,7 +47,7 @@ export const INTERCONNECT_DB: InterconnectSpec[] = [
   },
   {
     id: 'nvlink5',
-    name: 'NVLink 5 (B200/GB200)',
+    get name() { return t('NVLink 5 (B200/GB200)', 'NVLink 5（B200/GB200）'); },
     bandwidthGBs: 1800,
     latencyUs: 0.3,
     topology: 'intra-node',

@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 /**
  * System RAM requirements for LLM inference, training, and ZeRO-Infinity offload.
  */
@@ -57,7 +58,7 @@ export function computeRAMRequirement(
     case 'training': {
       minimumGB = aggregateVRAMGB * 1.5;
       recommendedGB = aggregateVRAMGB * 2;
-      notes = `1.5–2× aggregate VRAM (${aggregateVRAMGB.toFixed(0)} GB) for gradient buffers and dataloaders`;
+      notes = t(`1.5–2× aggregate VRAM (${aggregateVRAMGB.toFixed(0)} GB) for gradient buffers and dataloaders`, `为梯度缓冲区和数据加载器预留聚合显存的 1.5–2 倍（${aggregateVRAMGB.toFixed(0)} GB）`);
       break;
     }
     case 'zero_infinity': {
@@ -75,8 +76,8 @@ export function computeRAMRequirement(
 
   // NUMA layout guidance
   const numaLayout = numGPUsPerNode <= 4
-    ? `Single NUMA node; pin all ${numGPUsPerNode} GPU(s) to NUMA 0`
-    : `2-socket: pin GPUs 0-${Math.floor(numGPUsPerNode / 2) - 1} to NUMA 0, GPUs ${Math.floor(numGPUsPerNode / 2)}-${numGPUsPerNode - 1} to NUMA 1`;
+    ? t(`Single NUMA node; pin all ${numGPUsPerNode} GPU(s) to NUMA 0`, `单 NUMA 节点；把全部 ${numGPUsPerNode} 张 GPU 绑定到 NUMA 0`)
+    : t(`2-socket: pin GPUs 0-${Math.floor(numGPUsPerNode / 2) - 1} to NUMA 0, GPUs ${Math.floor(numGPUsPerNode / 2)}-${numGPUsPerNode - 1} to NUMA 1`, `双路：GPU 0-${Math.floor(numGPUsPerNode / 2) - 1} 绑定到 NUMA 0，GPU ${Math.floor(numGPUsPerNode / 2)}-${numGPUsPerNode - 1} 绑定到 NUMA 1`);
 
   // CPU core recommendation: 1 physical core/GPU for dataloaders + 4-8 for tokenization
   const cpuCores = numGPUsPerNode * 1 + 6;

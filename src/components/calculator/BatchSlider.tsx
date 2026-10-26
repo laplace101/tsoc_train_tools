@@ -2,6 +2,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/primitives/input';
 import { InfoTooltip } from '@/components/primitives/InfoTooltip';
+import { useLanguage } from '@/lib/language';
 
 interface BatchSliderProps {
   value: number;
@@ -10,6 +11,7 @@ interface BatchSliderProps {
 }
 
 export function BatchSlider({ value, onChange, className }: BatchSliderProps) {
+  const { t } = useLanguage();
   const [inputValue, setInputValue] = React.useState(value.toString());
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +53,7 @@ export function BatchSlider({ value, onChange, className }: BatchSliderProps) {
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       <label htmlFor="batch-slider" className="text-xs font-medium text-fg-default flex items-center gap-1.5">
-        Batch Size
+        {t('Batch Size', '批大小')}
         <InfoTooltip paramKey="batchSize" />
       </label>
 
@@ -79,7 +81,7 @@ export function BatchSlider({ value, onChange, className }: BatchSliderProps) {
           aria-valuemin={1}
           aria-valuemax={32}
           aria-valuenow={value}
-          aria-valuetext={`Batch size ${value}`}
+          aria-valuetext={t(`Batch size ${value}`, `批大小 ${value}`)}
         />
 
         {/* Numeric input */}
@@ -90,7 +92,7 @@ export function BatchSlider({ value, onChange, className }: BatchSliderProps) {
           onBlur={handleInputBlur}
           onKeyDown={handleInputKeyDown}
           className="w-16 font-mono text-sm text-center"
-          aria-label="Batch size numeric input"
+          aria-label={t('Batch size numeric input', '批大小数值输入')}
         />
       </div>
 

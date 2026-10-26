@@ -1,6 +1,8 @@
 import { Cpu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { GPUSpec } from '@/lib/formulas/types';
+import { t } from '@/lib/i18n';
+import { useLanguage } from '@/lib/language';
 
 interface SelectedHardwarePanelProps {
   gpu: GPUSpec;
@@ -11,7 +13,7 @@ const FORM_FACTOR_LABELS: Record<string, string> = {
   pcie: 'PCIe',
   sxm: 'SXM',
   oam: 'OAM',
-  integrated: 'Integrated',
+  get integrated() { return t('Integrated', '集成显卡'); },
   mxm: 'MXM',
 };
 
@@ -19,7 +21,7 @@ const FORM_FACTOR_LABELS: Record<string, string> = {
 function buildSpecs(gpu: GPUSpec): { label: string; value: string }[] {
   const specs: { label: string; value: string }[] = [
     { label: 'VRAM', value: `${gpu.memoryGB} GB` },
-    { label: 'Bandwidth', value: `${gpu.memoryBandwidthGBs} GB/s` },
+    { label: t('Bandwidth', '带宽'), value: `${gpu.memoryBandwidthGBs} GB/s` },
   ];
   // Float FLOPS — most LLM-relevant first, only show what the spec defines.
   if (gpu.flops.fp16 != null) specs.push({ label: 'FP16', value: `${gpu.flops.fp16} TF` });
@@ -28,11 +30,12 @@ function buildSpecs(gpu: GPUSpec): { label: string; value: string }[] {
   if (gpu.flops.fp32 != null) specs.push({ label: 'FP32', value: `${gpu.flops.fp32} TF` });
   if (gpu.flops.int8 != null) specs.push({ label: 'INT8', value: `${gpu.flops.int8} TOPS` });
   specs.push({ label: 'TDP', value: `${gpu.tdpWatts} W` });
-  specs.push({ label: 'Form', value: FORM_FACTOR_LABELS[gpu.formFactor] ?? gpu.formFactor });
+  specs.push({ label: t('Form', '形态'), value: FORM_FACTOR_LABELS[gpu.formFactor] ?? gpu.formFactor });
   return specs;
 }
 
 export function SelectedHardwarePanel({ gpu, className }: SelectedHardwarePanelProps) {
+  const { t } = useLanguage();
   const specs = buildSpecs(gpu);
 
   return (
@@ -40,7 +43,7 @@ export function SelectedHardwarePanel({ gpu, className }: SelectedHardwarePanelP
       <div className="flex items-center gap-2 mb-2.5">
         <Cpu size={14} className="text-fg-muted" />
         <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-muted">
-          Selected Hardware
+          {t('Selected Hardware', '已选硬件')}
         </h3>
       </div>
 

@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 /**
  * Network bandwidth formulas for distributed training and serving.
  * All byte values are in bytes unless otherwise noted.
@@ -89,12 +90,12 @@ export function computeCommOverheadPercent(
  * Recommend interconnect based on required bandwidth (GB/s).
  */
 export function recommendInterconnect(requiredBandwidthGBs: number): string {
-  if (requiredBandwidthGBs <= 4)   return 'PCIe Gen4 (32 GB/s)';
-  if (requiredBandwidthGBs <= 8)   return 'PCIe Gen5 (64 GB/s)';
-  if (requiredBandwidthGBs <= 25)  return 'InfiniBand HDR (200 Gb/s ~25 GB/s)';
-  if (requiredBandwidthGBs <= 50)  return 'InfiniBand NDR (400 Gb/s ~50 GB/s)';
-  if (requiredBandwidthGBs <= 100) return 'InfiniBand XDR / RoCEv2 (800 Gb/s ~100 GB/s)';
-  if (requiredBandwidthGBs <= 112) return 'NVLink 3 (A100, 600 GB/s)';
-  if (requiredBandwidthGBs <= 225) return 'NVLink 4 (H100/H200, 900 GB/s)';
-  return 'NVLink 5 (B200/GB200, 1800 GB/s)';
+  if (requiredBandwidthGBs <= 4)   return t('PCIe Gen4 (32 GB/s)', 'PCIe Gen4（32 GB/s）');
+  if (requiredBandwidthGBs <= 8)   return t('PCIe Gen5 (64 GB/s)', 'PCIe Gen5（64 GB/s）');
+  if (requiredBandwidthGBs <= 25)  return t('InfiniBand HDR (200 Gb/s ~25 GB/s)', 'InfiniBand HDR（200 Gb/s，约 25 GB/s）');
+  if (requiredBandwidthGBs <= 50)  return t('InfiniBand NDR (400 Gb/s ~50 GB/s)', 'InfiniBand NDR（400 Gb/s，约 50 GB/s）');
+  if (requiredBandwidthGBs <= 100) return t('InfiniBand XDR / RoCEv2 (800 Gb/s ~100 GB/s)', 'InfiniBand XDR / RoCEv2（800 Gb/s，约 100 GB/s）');
+  if (requiredBandwidthGBs <= 112) return t('NVLink 3 (A100, 600 GB/s)', 'NVLink 3（A100，600 GB/s）');
+  if (requiredBandwidthGBs <= 225) return t('NVLink 4 (H100/H200, 900 GB/s)', 'NVLink 4（H100/H200，900 GB/s）');
+  return t('NVLink 5 (B200/GB200, 1800 GB/s)', 'NVLink 5（B200/GB200，1800 GB/s）');
 }

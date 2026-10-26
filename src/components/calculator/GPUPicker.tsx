@@ -5,6 +5,8 @@ import Fuse from 'fuse.js';
 import { cn } from '@/lib/utils';
 import { InfoTooltip } from '@/components/primitives/InfoTooltip';
 import type { GPUSpec } from '@/lib/formulas/types';
+import { t } from '@/lib/i18n';
+import { useLanguage } from '@/lib/language';
 
 interface GPUPickerProps {
   gpus: GPUSpec[];
@@ -14,16 +16,17 @@ interface GPUPickerProps {
 }
 
 const CATEGORY_CONFIG: Record<string, { label: string; color: string }> = {
-  datacenter: { label: 'Datacenter', color: 'bg-blue-500/10 text-blue-400' },
-  consumer:   { label: 'Consumer',   color: 'bg-green-500/10 text-green-400' },
+  datacenter: { get label() { return t('Datacenter', '数据中心'); }, color: 'bg-blue-500/10 text-blue-400' },
+  consumer:   { get label() { return t('Consumer', '消费级'); },   color: 'bg-green-500/10 text-green-400' },
   'apple-silicon': { label: 'Apple Silicon', color: 'bg-gray-500/10 text-gray-400' },
-  'wafer-scale': { label: 'Wafer Scale', color: 'bg-purple-500/10 text-purple-400' },
+  'wafer-scale': { get label() { return t('Wafer Scale', '晶圆级'); }, color: 'bg-purple-500/10 text-purple-400' },
   tpu:        { label: 'TPU',        color: 'bg-orange-500/10 text-orange-400' },
-  edge:       { label: 'Edge',       color: 'bg-cyan-500/10 text-cyan-400' },
-  workstation: { label: 'Workstation', color: 'bg-rose-500/10 text-rose-400' },
+  edge:       { get label() { return t('Edge', '边缘计算'); },       color: 'bg-cyan-500/10 text-cyan-400' },
+  workstation: { get label() { return t('Workstation', '工作站'); }, color: 'bg-rose-500/10 text-rose-400' },
 };
 
 export function GPUPicker({ gpus, value, onSelect, className }: GPUPickerProps) {
+  const { t } = useLanguage();
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState('');
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -96,13 +99,13 @@ export function GPUPicker({ gpus, value, onSelect, className }: GPUPickerProps) 
     <div className={cn('flex flex-col gap-1.5', className)}>
       <div className="flex items-center gap-1.5">
         <label htmlFor="gpu-picker" className="text-xs font-medium text-fg-default">
-          GPU / Hardware
+          {t('GPU / Hardware', 'GPU / 硬件')}
         </label>
         <InfoTooltip content={{
-          title: "Hardware-First Selection",
-          definition: "Select a GPU to see which models fit on that hardware",
-          impact: "Helps you choose models that will run efficiently on your available hardware",
-          recommended: "Start with your GPU if you already have hardware available"
+          title: t('Hardware-First Selection', '硬件优先选择'),
+          definition: t('Select a GPU to see which models fit on that hardware', '选择 GPU，查看哪些模型能在该硬件上跑'),
+          impact: t('Helps you choose models that will run efficiently on your available hardware', '帮你在现有硬件上挑到能高效运行的模型'),
+          recommended: t('Start with your GPU if you already have hardware available', '如果已经有硬件，就从选 GPU 开始')
         }} />
       </div>
 
@@ -131,7 +134,7 @@ export function GPUPicker({ gpus, value, onSelect, className }: GPUPickerProps) 
               </span>
             </div>
           ) : (
-            <span className="text-fg-muted">Select GPU...</span>
+            <span className="text-fg-muted">{t('Select GPU...', '选择 GPU...')}</span>
           )}
         </div>
         <ChevronsUpDown size={14} className="text-fg-muted flex-shrink-0" />
@@ -150,7 +153,7 @@ export function GPUPicker({ gpus, value, onSelect, className }: GPUPickerProps) 
               <input
                 ref={searchRef}
                 type="text"
-                placeholder="Search GPUs..."
+                placeholder={t('Search GPUs...', '搜索 GPU...')}
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="w-full h-8 pl-9 pr-3 rounded-md border border-border-subtle bg-bg-muted text-sm text-fg-default placeholder:text-fg-muted focus:outline-none focus:ring-2 focus:ring-ring"
@@ -161,7 +164,7 @@ export function GPUPicker({ gpus, value, onSelect, className }: GPUPickerProps) 
           {/* Results */}
           <div className="max-h-[400px] overflow-y-auto">
             {grouped.length === 0 ? (
-              <div className="p-4 text-center text-sm text-fg-muted">No GPUs found</div>
+              <div className="p-4 text-center text-sm text-fg-muted">{t('No GPUs found', '没有找到 GPU')}</div>
             ) : (
               grouped.map(([category, categoryGPUs]) => (
                 <div key={category}>

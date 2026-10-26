@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 /**
  * Cluster topology recommendation based on GPU count and workload.
  */
@@ -23,21 +24,21 @@ export function recommendTopology(
 ): TopologyRecommendation {
   if (numGPUs <= 8) {
     return {
-      description: 'Single node',
+      description: t('Single node', '单机'),
       interconnect: 'NVLink',
       notes: workload === 'training'
-        ? 'All GPUs connected via NVLink switch; use TP=8 for full bandwidth'
-        : 'Tensor parallelism across all GPUs; NVLink provides ~900 GB/s',
+        ? t('All GPUs connected via NVLink switch; use TP=8 for full bandwidth', '所有 GPU 通过 NVLink 交换机互联；用 TP=8 跑满带宽')
+        : t('Tensor parallelism across all GPUs; NVLink provides ~900 GB/s', '跨全部 GPU 做张量并行；NVLink 可提供约 900 GB/s 带宽'),
     };
   }
 
   if (numGPUs <= 64) {
     return {
-      description: 'Fat-tree single-tier',
+      description: t('Fat-tree single-tier', '单层胖树'),
       interconnect: 'InfiniBand NDR (400 Gb/s)',
       notes: workload === 'training'
-        ? 'Single-tier fat-tree; use DP + TP within nodes; PP across nodes'
-        : 'Low-latency single-tier fabric; suitable for disaggregated prefill/decode',
+        ? t('Single-tier fat-tree; use DP + TP within nodes; PP across nodes', '单层胖树；节点内用 DP + TP，跨节点用 PP')
+        : t('Low-latency single-tier fabric; suitable for disaggregated prefill/decode', '低时延单层组网；适合 Prefill / Decode 分离部署'),
     };
   }
 
@@ -46,8 +47,8 @@ export function recommendTopology(
       description: '2-tier fat-tree or rail-optimized',
       interconnect: 'InfiniBand NDR/XDR (400-800 Gb/s)',
       notes: workload === 'training'
-        ? '2-tier fat-tree with rail-optimized routing; use ZeRO-3 or 3D parallelism'
-        : 'Rail-optimized for all-to-all traffic patterns in MoE inference',
+        ? t('2-tier fat-tree with rail-optimized routing; use ZeRO-3 or 3D parallelism', '双层胖树 + rail 优化路由；建议使用 ZeRO-3 或 3D 并行')
+        : t('Rail-optimized for all-to-all traffic patterns in MoE inference', '针对 MoE 推理中的 all-to-all 通信做 rail 优化'),
     };
   }
 
@@ -56,6 +57,6 @@ export function recommendTopology(
     interconnect: 'InfiniBand XDR (800 Gb/s) + NVLink intra-node',
     notes: workload === 'training'
       ? '3-tier spine-leaf with 1:1 oversubscription; pipeline parallelism across pods'
-      : 'Hierarchical fabric; route inference requests to GPU pods by model shard',
+      : t('Hierarchical fabric; route inference requests to GPU pods by model shard', '分层组网；按模型分片把推理请求路由到对应 GPU Pod'),
   };
 }

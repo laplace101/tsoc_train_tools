@@ -36,7 +36,7 @@ export function CloudInstanceSchema(data: unknown): ValidationResult {
   const d = data as Record<string, unknown>;
 
   if (!d || typeof d !== "object") {
-    return { valid: false, errors: ["data must be an object"] };
+    return { valid: false, errors: ["数据必须是对象"] };
   }
 
   if (!isString(d.id)) errors.push("id: required string");
@@ -94,7 +94,7 @@ export function GPUSpecSchema(data: unknown): ValidationResult {
   const d = data as Record<string, unknown>;
 
   if (!d || typeof d !== "object") {
-    return { valid: false, errors: ["data must be an object"] };
+    return { valid: false, errors: ["数据必须是对象"] };
   }
 
   const VALID_VENDORS = [

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/lib/language';
 
 interface PopoverContextValue {
   open: boolean;
@@ -11,8 +12,9 @@ interface PopoverContextValue {
 const PopoverContext = React.createContext<PopoverContextValue | null>(null);
 
 function usePopoverContext() {
+  const { t } = useLanguage();
   const ctx = React.useContext(PopoverContext);
-  if (!ctx) throw new Error('Must be inside <Popover>');
+  if (!ctx) throw new Error(t('Must be inside <Popover>', '必须在 <Popover> 内部使用'));
   return ctx;
 }
 

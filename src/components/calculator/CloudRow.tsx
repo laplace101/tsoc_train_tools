@@ -1,6 +1,7 @@
 import { Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { CloudRecommendation } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
 
 interface CloudRowProps {
   rec: CloudRecommendation;
@@ -30,6 +31,7 @@ function ProviderLogo({ provider }: { provider: string }) {
 }
 
 export function CloudRow({ rec }: CloudRowProps) {
+  const { t } = useLanguage();
   const { instance, onDemandPerHour, spotPerHour, costPerMillionTokens, isBestPrice } = rec;
   const gpuSummary = instance.gpus.map(g => `${g.count}× ${g.id}`).join(', ');
 
@@ -69,7 +71,7 @@ export function CloudRow({ rec }: CloudRowProps) {
             <Star
               size={12}
               className="text-yellow-500 fill-yellow-500 flex-shrink-0"
-              aria-label="Best price"
+              aria-label={t('Best price', '最优价格')}
             />
           )}
           <span className="text-xs font-mono font-semibold text-fg-primary tabular-nums">

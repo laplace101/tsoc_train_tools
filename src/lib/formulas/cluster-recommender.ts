@@ -1,4 +1,5 @@
 import type { GPUSpec, ClusterRecommendation, WorkloadMode } from './types';
+import { t } from '@/lib/i18n';
 
 /**
  * Recommend GPU topology, parallelism strategy, and serving framework.
@@ -29,7 +30,7 @@ export function recommendCluster(
   } else if (mode === 'finetune') {
     framework = 'HuggingFace TRL + PEFT + accelerate';
     frameworkArgs = '--gradient_checkpointing --bf16';
-    alternativeRuntime = 'Unsloth (faster LoRA training)';
+    alternativeRuntime = t('Unsloth (faster LoRA training)', 'Unsloth（LoRA 训练更快）');
   } else if (mode === 'train') {
     framework = 'DeepSpeed ZeRO-3';
     frameworkArgs = '--deepspeed ds_config.json --bf16';
@@ -43,7 +44,7 @@ export function recommendCluster(
   if (totalVRAMGB <= largestMemory) {
     // Single GPU fits
     return {
-      topology: `1× ${largestGPU?.name ?? 'GPU'} · no parallelism needed`,
+      topology: `1× ${largestGPU?.name ?? 'GPU'} · 无需并行`,
       framework,
       frameworkArgs,
       alternativeRuntime,
@@ -58,7 +59,7 @@ export function recommendCluster(
     const tpSize = Math.min(gpusNeeded, 8);
     const updatedArgs = frameworkArgs.replace('--tensor-parallel-size 1', `--tensor-parallel-size ${tpSize}`);
     return {
-      topology: `${tpSize}× ${largestGPU?.name ?? 'GPU'} · Tensor Parallelism (TP=${tpSize})`,
+      topology: `${tpSize}× ${largestGPU?.name ?? 'GPU'} · 张量并行（TP=${tpSize}）`,
       alternativeTopology: totalVRAMGB <= largestMemory * 2
         ? `2× ${largestGPU?.name ?? 'GPU'} · TP=2`
         : undefined,
@@ -71,11 +72,11 @@ export function recommendCluster(
   // Multi-node cluster
   const nodesNeeded = Math.ceil(gpusNeeded / 8);
   return {
-    topology: `${nodesNeeded} nodes × 8× ${largestGPU?.name ?? 'GPU'} · TP=8 intra-node + FSDP/ZeRO across nodes`,
-    framework: mode === 'train' ? 'Megatron-LM or DeepSpeed' : 'vLLM with pipeline parallelism',
+    topology: `${nodesNeeded} 个节点 × 8× ${largestGPU?.name ?? 'GPU'} · 节点内 TP=8 + 跨节点 FSDP/ZeRO`,
+    framework: mode === 'train' ? t('Megatron-LM or DeepSpeed', 'Megatron-LM 或 DeepSpeed') : t('vLLM with pipeline parallelism', 'vLLM + 流水线并行'),
     frameworkArgs: mode === 'train'
       ? '--tensor-model-parallel-size 8 --pipeline-model-parallel-size ' + nodesNeeded
       : `--tensor-parallel-size 8 --pipeline-parallel-size ${nodesNeeded}`,
-    alternativeRuntime: 'NVIDIA NeMo (hyperscale training)',
+    alternativeRuntime: t('NVIDIA NeMo (hyperscale training)', 'NVIDIA NeMo（超大规模训练）'),
   };
 }

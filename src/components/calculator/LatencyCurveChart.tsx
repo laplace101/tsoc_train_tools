@@ -4,6 +4,7 @@ import {
   ResponsiveContainer, CartesianGrid, Legend,
 } from 'recharts';
 import type { LatencyCurvePoint } from '@/lib/formulas/latency-curve';
+import { useLanguage } from '@/lib/language';
 
 interface LatencyCurveChartProps {
   points: LatencyCurvePoint[];
@@ -30,6 +31,7 @@ export function LatencyCurveChart({
   sweetSpotUsers,
   maxCapacityUsers,
 }: LatencyCurveChartProps) {
+  const { t } = useLanguage();
   // Limit to reasonable number of points for rendering
   const chartData = React.useMemo(() => {
     if (points.length <= 60) return points;
@@ -43,7 +45,7 @@ export function LatencyCurveChart({
 
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-xs font-medium text-fg-default">Latency vs Concurrent Users</span>
+      <span className="text-xs font-medium text-fg-default">{t('Latency vs Concurrent Users', '延迟与并发用户数的关系')}</span>
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={chartData} margin={{ top: 8, right: 40, bottom: 4, left: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-subtle, #333)" opacity={0.4} />
@@ -81,9 +83,9 @@ export function LatencyCurveChart({
             contentStyle={{ fontSize: 10, padding: '4px 8px', background: 'var(--color-bg-muted)', border: '1px solid var(--color-border-subtle)' }}
             formatter={(value: number, name: string) => {
               if (name === 'TPOT') return [`${value.toFixed(1)}ms`, 'TPOT'];
-              return [`${formatThroughput(value)} tok/s`, 'Throughput'];
+              return [`${formatThroughput(value)} tok/s`, t('Throughput', '吞吐')];
             }}
-            labelFormatter={l => `${l} users`}
+            labelFormatter={l => t(`${l} users`, `${l} 个用户`)}
           />
           <Legend
             wrapperStyle={{ fontSize: 9, paddingTop: 4 }}
@@ -147,7 +149,7 @@ export function LatencyCurveChart({
             yAxisId="throughput"
             type="monotone"
             dataKey="aggregateThroughput"
-            name="Throughput"
+            name={t('Throughput', '吞吐')}
             stroke="#3b82f6"
             strokeWidth={2}
             dot={false}
@@ -156,9 +158,9 @@ export function LatencyCurveChart({
         </LineChart>
       </ResponsiveContainer>
       <div className="flex items-center gap-4 text-[9px] text-fg-muted">
-        <span className="flex items-center gap-1"><span className="inline-block w-3 h-0.5 bg-green-500" /> Sweet spot</span>
-        <span className="flex items-center gap-1"><span className="inline-block w-3 h-0.5 bg-amber-500" /> Max capacity</span>
-        <span className="flex items-center gap-1"><span className="inline-block w-3 h-0.5 bg-red-500 opacity-60" style={{ borderTop: '1px dashed' }} /> SLO target</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-0.5 bg-green-500" /> {t('Sweet spot', '最佳区间')}</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-0.5 bg-amber-500" /> {t('Max capacity', '最大容量')}</span>
+        <span className="flex items-center gap-1"><span className="inline-block w-3 h-0.5 bg-red-500 opacity-60" style={{ borderTop: '1px dashed' }} /> {t('SLO target', 'SLO 目标')}</span>
       </div>
     </div>
   );

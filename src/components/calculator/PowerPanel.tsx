@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { computePower, PUE_PRESETS, type PUEPreset } from '@/lib/formulas/power';
+import { t } from '@/lib/i18n';
+import { useLanguage } from '@/lib/language';
 
 interface PowerPanelProps {
   gpuCount: number;
@@ -21,14 +23,15 @@ function KVRow({ label, value, highlight }: { label: string; value: string; high
 }
 
 const PUE_LABELS: Record<PUEPreset, string> = {
-  hyperscale: 'Hyperscale (1.1)',
-  colo:       'Colo (1.4)',
-  enterprise: 'Enterprise (1.8)',
-  office:     'Office (2.2)',
-  custom:     'Custom',
+  get hyperscale() { return t('Hyperscale (1.1)', '超大规模 (1.1)'); },
+  get colo() { return t('Colo (1.4)', '托管机房 (1.4)'); },
+  get enterprise() { return t('Enterprise (1.8)', '企业自建 (1.8)'); },
+  get office() { return t('Office (2.2)', '办公场景 (2.2)'); },
+  get custom() { return t('Custom', '自定义'); },
 };
 
 export function PowerPanel({ gpuCount, gpuTDPWatts, className }: PowerPanelProps) {
+  const { t } = useLanguage();
   const [puePreset, setPuePreset] = React.useState<PUEPreset>('colo');
   const [customPUE, setCustomPUE] = React.useState(1.5);
   const [dutyCycle, setDutyCycle] = React.useState(0.7);
@@ -42,7 +45,7 @@ export function PowerPanel({ gpuCount, gpuTDPWatts, className }: PowerPanelProps
       <div className="flex items-center gap-2 mb-3">
         <Zap size={14} className="text-fg-muted" />
         <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-muted">
-          Power &amp; Cooling
+          {t('Power &amp; Cooling', '供电与散热')}
         </h3>
       </div>
 
@@ -57,7 +60,7 @@ export function PowerPanel({ gpuCount, gpuTDPWatts, className }: PowerPanelProps
         {/* Duty Cycle */}
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-between">
-            <label htmlFor="duty-cycle" className="text-xs text-fg-muted">Duty Cycle</label>
+            <label htmlFor="duty-cycle" className="text-xs text-fg-muted">{t('Duty Cycle', '利用率')}</label>
             <span className="text-xs font-mono text-fg-default">{(dutyCycle * 100).toFixed(0)}%</span>
           </div>
           <input
@@ -77,7 +80,7 @@ export function PowerPanel({ gpuCount, gpuTDPWatts, className }: PowerPanelProps
 
         {/* PUE Selector */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="pue-select" className="text-xs text-fg-muted">PUE (Power Usage Effectiveness)</label>
+          <label htmlFor="pue-select" className="text-xs text-fg-muted">{t('PUE (Power Usage Effectiveness)', 'PUE（电能使用效率）')}</label>
           <select
             id="pue-select"
             value={puePreset}
@@ -97,14 +100,14 @@ export function PowerPanel({ gpuCount, gpuTDPWatts, className }: PowerPanelProps
               value={customPUE}
               onChange={(e) => setCustomPUE(parseFloat(e.target.value) || 1.0)}
               className="h-8 px-2 rounded-md border border-border-subtle bg-bg-muted text-xs font-mono text-fg-default focus:outline-none focus:ring-2 focus:ring-ring"
-              placeholder="Custom PUE"
+              placeholder={t('Custom PUE', '自定义 PUE')}
             />
           )}
         </div>
 
         {/* Electricity Cost */}
         <div className="flex items-center gap-2">
-          <label htmlFor="elec-cost" className="text-xs text-fg-muted w-40 flex-shrink-0">Electricity $/kWh</label>
+          <label htmlFor="elec-cost" className="text-xs text-fg-muted w-40 flex-shrink-0">{t('Electricity $/kWh', '电价 $/kWh')}</label>
           <div className="flex items-center gap-1 flex-1">
             <span className="text-xs text-fg-muted">$</span>
             <input
@@ -124,11 +127,11 @@ export function PowerPanel({ gpuCount, gpuTDPWatts, className }: PowerPanelProps
 
       {/* Outputs */}
       <div className="border-t border-border-subtle pt-3 flex flex-col">
-        <KVRow label="Facility Power" value={`${result.facilityPowerKW.toFixed(2)} kW`} highlight />
-        <KVRow label="Annual Energy" value={`${(result.annualKWh / 1000).toFixed(1)} MWh`} />
-        <KVRow label="Annual Cost" value={`$${result.annualCostUSD.toLocaleString('en-US', { maximumFractionDigits: 0 })}`} highlight />
-        <KVRow label="Per-GPU Hourly" value={`$${result.perGPUHourlyCostUSD.toFixed(4)}/hr`} />
-        <KVRow label="PSU Recommended" value={`${result.psuRecommendedWatts.toFixed(0)} W`} />
+        <KVRow label={t('Facility Power', '设施供电功率')} value={`${result.facilityPowerKW.toFixed(2)} kW`} highlight />
+        <KVRow label={t('Annual Energy', '年耗电量')} value={`${(result.annualKWh / 1000).toFixed(1)} MWh`} />
+        <KVRow label={t('Annual Cost', '年成本')} value={`$${result.annualCostUSD.toLocaleString('en-US', { maximumFractionDigits: 0 })}`} highlight />
+        <KVRow label={t('Per-GPU Hourly', '单卡每小时')} value={`$${result.perGPUHourlyCostUSD.toFixed(4)}/hr`} />
+        <KVRow label={t('PSU Recommended', '建议电源功率')} value={`${result.psuRecommendedWatts.toFixed(0)} W`} />
       </div>
     </div>
   );

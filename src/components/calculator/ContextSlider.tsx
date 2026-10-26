@@ -2,14 +2,16 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/primitives/input';
 import { InfoTooltip } from '@/components/primitives/InfoTooltip';
+import { t } from '@/lib/i18n';
+import { useLanguage } from '@/lib/language';
 
 const CONTEXT_EXTENSION_METHODS = [
-  { value: 'none',          label: 'None' },
+  { value: 'none',          get label() { return t('None', '无'); } },
   { value: 'yarn',          label: 'YaRN' },
-  { value: 'dynamic_ntk',   label: 'Dynamic NTK' },
-  { value: 'ntk_aware',     label: 'NTK-aware' },
-  { value: 'linear_pi',     label: 'Linear PI' },
-  { value: 'continued_pt',  label: 'Continued Pretraining' },
+  { value: 'dynamic_ntk',   get label() { return t('Dynamic NTK', '动态 NTK'); } },
+  { value: 'ntk_aware',     get label() { return t('NTK-aware', 'NTK 感知'); } },
+  { value: 'linear_pi',     get label() { return t('Linear PI', '线性 PI'); } },
+  { value: 'continued_pt',  get label() { return t('Continued Pretraining', '继续预训练'); } },
 ];
 
 const RING_ATTENTION_THRESHOLD = 1_048_576; // 1M tokens
@@ -46,6 +48,7 @@ function formatContextLabel(n: number): string {
 }
 
 export function ContextSlider({ value, max, onChange, className }: ContextSliderProps) {
+  const { t } = useLanguage();
   const [inputValue, setInputValue] = React.useState(value.toString());
   const [contextExtension, setContextExtension] = React.useState('none');
   const [ringAttention, setRingAttention] = React.useState(false);
@@ -126,7 +129,7 @@ export function ContextSlider({ value, max, onChange, className }: ContextSlider
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       <label htmlFor="context-slider" className="text-xs font-medium text-fg-default flex items-center gap-1.5">
-        Context Length
+        {t('Context Length', '上下文长度')}
         <InfoTooltip paramKey="contextLength" />
       </label>
 
@@ -196,7 +199,7 @@ export function ContextSlider({ value, max, onChange, className }: ContextSlider
             onBlur={handleInputBlur}
             onKeyDown={handleKeyDown}
             className="w-28 font-mono text-sm"
-            aria-label="Context length numeric input"
+            aria-label={t('Context length numeric input', '上下文长度数值输入')}
             placeholder="e.g. 4096"
           />
           <span className="text-xs text-fg-muted">tokens</span>
@@ -211,7 +214,7 @@ export function ContextSlider({ value, max, onChange, className }: ContextSlider
             </p>
             <div className="flex items-center gap-2">
               <label htmlFor="ctx-extension" className="text-[10px] text-fg-muted whitespace-nowrap">
-                Extension method:
+                {t('Extension method:', '扩展方式：')}
               </label>
               <select
                 id="ctx-extension"
@@ -231,8 +234,8 @@ export function ContextSlider({ value, max, onChange, className }: ContextSlider
         {showRingAttention && (
           <div className="mt-2 flex items-center justify-between">
             <div className="flex flex-col gap-0.5">
-              <span className="text-[10px] font-medium text-fg-default">Ring Attention</span>
-              <span className="text-[9px] text-fg-muted">Distributes KV across GPUs via sequence parallelism</span>
+              <span className="text-[10px] font-medium text-fg-default">{t('Ring Attention', 'Ring Attention')}</span>
+              <span className="text-[9px] text-fg-muted">{t('Distributes KV across GPUs via sequence parallelism', '通过序列并行把 KV 分散到多张 GPU')}</span>
             </div>
             <button
               role="switch"

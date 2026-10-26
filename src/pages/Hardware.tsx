@@ -4,6 +4,10 @@ import { cn } from '@/lib/utils';
 import { useCalculatorStore } from '@/store/calculator-store';
 import { useLanguage } from '@/lib/language';
 import type { GPUSpec } from '@/lib/formulas/types';
+import { t } from '@/lib/i18n';
+
+// “全部”筛选项的内部哨兵值：与界面文案解耦，切换语言不会影响筛选状态
+const ALL_FILTER = '__all__';
 
 type SortKey = 'name' | 'memoryGB' | 'memoryBandwidthGBs' | 'flops.fp16' | 'tdpWatts' | 'streetUSD';
 type SortDir = 'asc' | 'desc';
@@ -31,9 +35,9 @@ const VENDOR_COLORS: Record<string, string> = {
 };
 
 const CATEGORY_LABELS: Record<string, string> = {
-  consumer:      'Consumer',
-  workstation:   'Workstation',
-  datacenter:    'Datacenter',
+  get consumer() { return t('Consumer', '消费级'); },
+  get workstation() { return t('Workstation', '工作站'); },
+  get datacenter() { return t('Datacenter', '数据中心'); },
   'apple-silicon': 'Apple Silicon',
   tpu:           'TPU',
 };
@@ -43,12 +47,12 @@ export function Hardware() {
   const { t } = useLanguage();
   const [sortKey, setSortKey] = React.useState<SortKey>('memoryGB');
   const [sortDir, setSortDir] = React.useState<SortDir>('desc');
-  const [vendorFilter, setVendorFilter] = React.useState('All');
+  const [vendorFilter, setVendorFilter] = React.useState(ALL_FILTER);
   const [memMin, setMemMin] = React.useState('');
   const [memMax, setMemMax] = React.useState('');
   const [priceMax, setPriceMax] = React.useState('');
 
-  const vendors = ['All', ...Array.from(new Set(gpuDb.map(g => g.vendor))).sort()];
+  const vendors = [ALL_FILTER, ...Array.from(new Set(gpuDb.map(g => g.vendor))).sort()];
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
@@ -56,7 +60,7 @@ export function Hardware() {
   };
 
   const filtered = gpuDb.filter(g => {
-    if (vendorFilter !== 'All' && g.vendor !== vendorFilter) return false;
+    if (vendorFilter !== ALL_FILTER && g.vendor !== vendorFilter) return false;
     if (memMin && g.memoryGB < parseFloat(memMin)) return false;
     if (memMax && g.memoryGB > parseFloat(memMax)) return false;
     const price = g.streetUSD ?? g.msrpUSD;
@@ -96,7 +100,7 @@ export function Hardware() {
               className={cn('px-2.5 py-1 rounded-md border transition-colors capitalize',
                 vendorFilter === v ? 'bg-accent text-white border-accent' : 'border-border-subtle text-fg-muted hover:text-fg-default hover:border-border-default'
               )}>
-              {v === 'All' ? t('All', '全部') : v}
+              {v === ALL_FILTER ? t('All', '全部') : v}
             </button>
           ))}
         </div>
@@ -120,7 +124,7 @@ export function Hardware() {
       </div>
 
       <div className="overflow-x-auto rounded-lg border border-border-subtle">
-        <table className="w-full text-sm" aria-label="Hardware catalog">
+        <table className="w-full text-sm" aria-label={t('Hardware catalog', '硬件库')}>
           <thead>
             <tr className="border-b border-border-subtle bg-bg-subtle">
               {cols.map(col => (

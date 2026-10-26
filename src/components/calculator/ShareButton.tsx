@@ -3,12 +3,14 @@ import { Share2, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCalculatorStore } from '@/store/calculator-store';
 import { useToast } from '@/components/feedback/Toast';
+import { useLanguage } from '@/lib/language';
 
 interface ShareButtonProps {
   className?: string;
 }
 
 export function ShareButton({ className }: ShareButtonProps) {
+  const { t } = useLanguage();
   const [copied, setCopied] = React.useState(false);
   const { getShareURL } = useCalculatorStore();
   const { showToast } = useToast();
@@ -29,7 +31,7 @@ export function ShareButton({ className }: ShareButtonProps) {
       document.body.removeChild(input);
     }
     setCopied(true);
-    showToast('Link copied to clipboard', 'success');
+    showToast(t('Link copied to clipboard', '链接已复制到剪贴板'), 'success');
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -43,11 +45,11 @@ export function ShareButton({ className }: ShareButtonProps) {
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         className
       )}
-      aria-label="Copy share link (⌘Enter)"
-      title="Share (⌘Enter)"
+      aria-label={t('Copy share link (⌘Enter)', '复制分享链接（⌘Enter）')}
+      title={t('Share (⌘Enter)', '分享（⌘Enter）')}
     >
       {copied ? <Check size={14} className="text-green-500" /> : <Share2 size={14} />}
-      {copied ? 'Copied!' : 'Share'}
+      {copied ? t('Copied!', '已复制！') : t('Share', '分享')}
     </button>
   );
 }

@@ -4,6 +4,7 @@ import { computeKVCache } from '@/lib/formulas/kvcache';
 import { computeModelKVCache, modelHasAdvancedKV } from '@/lib/formulas/kv-formulas';
 import type { ModelSpec } from '@/lib/formulas/types';
 import { getKVPrecisionConfig } from '@/lib/formulas/precision';
+import { useLanguage } from '@/lib/language';
 
 interface KVCurveChartProps {
   model: ModelSpec;
@@ -27,6 +28,7 @@ function formatCtxLabel(n: number): string {
 }
 
 export function KVCurveChart({ model, kvPrecision, indexerPrecision, currentContext, batchSize }: KVCurveChartProps) {
+  const { t } = useLanguage();
   const kvConfig = getKVPrecisionConfig(kvPrecision);
   const indexerConfig = getKVPrecisionConfig(indexerPrecision ?? kvPrecision);
   const arch = model.architecture;
@@ -72,7 +74,7 @@ export function KVCurveChart({ model, kvPrecision, indexerPrecision, currentCont
 
   return (
     <div className="flex flex-col gap-1">
-      <span className="text-[10px] font-medium text-fg-muted">KV Cache vs Context</span>
+      <span className="text-[10px] font-medium text-fg-muted">{t('KV Cache vs Context', 'KV Cache 与上下文长度的关系')}</span>
       <ResponsiveContainer width="100%" height={80}>
         <LineChart data={data} margin={{ top: 4, right: 4, bottom: 0, left: 0 }}>
           <XAxis

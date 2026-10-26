@@ -2,6 +2,8 @@ import * as React from 'react';
 import { MemoryStick } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { computeRAMRequirement } from '@/lib/formulas/system-ram';
+import { useLanguage } from '@/lib/language';
+import { t } from '@/lib/i18n';
 
 interface RAMPanelProps {
   mode: 'inference' | 'training' | 'zero_infinity';
@@ -23,8 +25,8 @@ function KVRow({ label, value, highlight }: { label: string; value: string; high
 }
 
 const MODE_LABELS: Record<RAMPanelProps['mode'], string> = {
-  inference: 'Inference',
-  training: 'Training',
+  get inference() { return t('Inference', '推理'); },
+  get training() { return t('Training', '训练'); },
   zero_infinity: 'ZeRO-Infinity',
 };
 
@@ -35,6 +37,7 @@ export function RAMPanel({
   vramPerGPUGB,
   className,
 }: RAMPanelProps) {
+  const { t } = useLanguage();
   const req = React.useMemo(
     () => computeRAMRequirement(mode, modelBytes, numGPUsPerNode, vramPerGPUGB),
     [mode, modelBytes, numGPUsPerNode, vramPerGPUGB],
@@ -50,10 +53,10 @@ export function RAMPanel({
       </div>
 
       <div className="flex flex-col">
-        <KVRow label="Minimum RAM" value={`${req.minimumGB} GB`} highlight />
-        <KVRow label="Recommended RAM" value={`${req.recommendedGB} GB`} highlight />
-        <KVRow label="CPU cores" value={`≥ ${req.cpuCores} physical cores`} />
-        <KVRow label="NUMA layout" value={req.numaLayout} />
+        <KVRow label={t('Minimum RAM', '最小内存')} value={`${req.minimumGB} GB`} highlight />
+        <KVRow label={t('Recommended RAM', '建议内存')} value={`${req.recommendedGB} GB`} highlight />
+        <KVRow label={t('CPU cores', 'CPU 核数')} value={t(`≥ ${req.cpuCores} physical cores`, `≥ ${req.cpuCores} 个物理核心`)} />
+        <KVRow label={t('NUMA layout', 'NUMA 布局')} value={req.numaLayout} />
       </div>
 
       <p className="mt-3 text-[11px] text-fg-muted leading-relaxed">{req.notes}</p>

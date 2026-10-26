@@ -10,6 +10,7 @@ import {
   computeTotalVRAM, computeThroughput, recommendGPUs, recommendCloudInstances,
 } from '@/lib/formulas';
 import type { CalculatorState, ModelSpec, GPUSpec, CloudInstance, GPUFitResult } from '@/lib/formulas/types';
+import { t } from '@/lib/i18n';
 
 const DEFAULT_EFFICIENCY = 0.8;
 
@@ -30,7 +31,7 @@ function computeConfig(state: CalculatorState, modelDb: ModelSpec[], gpuDb: GPUS
 
   const gpuRecs = recommendGPUs(breakdown.totalGB, gpuDb, { activeWeightsGB, efficiencyFactor: DEFAULT_EFFICIENCY });
   const topGPU = gpuRecs.allFits.find((f: GPUFitResult) => f.fitStatus !== 'red');
-  const fitLabel = topGPU ? `${topGPU.gpu.name} (${topGPU.utilizationPercent}% used)` : 'No GPU fits';
+  const fitLabel = topGPU ? `${topGPU.gpu.name} (${topGPU.utilizationPercent}% used)` : t('No GPU fits', '没有 GPU 能装下');
   const fitStatus = topGPU?.fitStatus ?? 'red';
 
   const tokensPerSecond = topGPU

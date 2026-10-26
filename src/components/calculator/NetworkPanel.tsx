@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Wifi } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/lib/language';
 import {
   computeAllReduceBytes,
   computeTPCommBytes,
@@ -52,6 +53,7 @@ export function NetworkPanel({
   numMoELayers = 0,
   className,
 }: NetworkPanelProps) {
+  const { t } = useLanguage();
   const modelBytes = numParams * bytesPerParam;
   const stepTimeSec = stepTimeBudgetMs / 1000;
 
@@ -85,17 +87,17 @@ export function NetworkPanel({
       <div className="flex items-center gap-2 mb-3">
         <Wifi size={14} className="text-fg-muted" />
         <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-muted">
-          Network / Bandwidth
+          {t('Network / Bandwidth', '网络 / 带宽')}
         </h3>
       </div>
 
       <div className="flex flex-col">
-        <KVRow label="Parallelism" value={parallelismType.toUpperCase()} />
-        <KVRow label="Comm / step" value={`${commGB.toFixed(2)} GB`} />
-        <KVRow label="Step budget" value={`${stepTimeBudgetMs} ms`} />
-        <KVRow label="Required BW" value={`${requiredBandwidthGBs.toFixed(1)} GB/s`} highlight />
-        <KVRow label="Recommended" value={recommended} highlight />
-        <KVRow label="Comm overhead" value={`${overheadPct.toFixed(1)}%`} />
+        <KVRow label={t('Parallelism', '并行方式')} value={parallelismType.toUpperCase()} />
+        <KVRow label={t('Comm / step', '每步通信量')} value={`${commGB.toFixed(2)} GB`} />
+        <KVRow label={t('Step budget', '步数预算')} value={`${stepTimeBudgetMs} ms`} />
+        <KVRow label={t('Required BW', '所需带宽')} value={`${requiredBandwidthGBs.toFixed(1)} GB/s`} highlight />
+        <KVRow label={t('Recommended', '推荐')} value={recommended} highlight />
+        <KVRow label={t('Comm overhead', '通信开销')} value={`${overheadPct.toFixed(1)}%`} />
       </div>
     </div>
   );

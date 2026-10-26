@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import type { ScalingRow } from '@/lib/formulas/auto-scale';
+import { useLanguage } from '@/lib/language';
 
 interface ReplicaScalingTableProps {
   rows: ScalingRow[];
@@ -23,12 +24,13 @@ export function ReplicaScalingTable({
   gpusPerReplica,
   gpuName,
 }: ReplicaScalingTableProps) {
+  const { t } = useLanguage();
   const needsTP = gpusPerReplica > 1;
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-fg-default">Replica Scaling</span>
+        <span className="text-xs font-medium text-fg-default">{t('Replica Scaling', '副本扩缩')}</span>
         {needsTP && (
           <span className="text-[10px] text-fg-muted bg-bg-muted px-2 py-0.5 rounded">
             TP={gpusPerReplica} — model requires {gpusPerReplica}× {gpuName} per replica
@@ -39,9 +41,9 @@ export function ReplicaScalingTable({
         <table className="w-full text-xs border-collapse">
           <thead>
             <tr className="border-b border-border-subtle">
-              <th className="text-left py-1.5 px-2 text-fg-muted font-medium">Replicas</th>
-              <th className="text-left py-1.5 px-2 text-fg-muted font-medium">GPUs</th>
-              <th className="text-right py-1.5 px-2 text-fg-muted font-medium">Users</th>
+              <th className="text-left py-1.5 px-2 text-fg-muted font-medium">{t('Replicas', '副本数')}</th>
+              <th className="text-left py-1.5 px-2 text-fg-muted font-medium">{t('GPUs', 'GPU 数')}</th>
+              <th className="text-right py-1.5 px-2 text-fg-muted font-medium">{t('Users', '用户数')}</th>
               <th className="text-right py-1.5 px-2 text-fg-muted font-medium">TPOT</th>
               <th className="text-right py-1.5 px-2 text-fg-muted font-medium">$/hour</th>
               <th className="text-right py-1.5 px-2 text-fg-muted font-medium">$/M tok</th>

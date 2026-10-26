@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 export interface WarmupEstimate {
   loadTimeSec: number;       // model_bytes / storage_bandwidth
   compileTimeSec: number;    // framework-specific
@@ -26,14 +27,14 @@ const FRAMEWORK_TIMES: Record<Framework, {
     compilePerBillionParams: 1.5,
     warmupBase: 10,
     warmupPerBillionParams: 0.1,
-    notes: 'vLLM: CUDA graph capture ~10s for 70B; compile 30s–3min',
+    get notes() { return t('vLLM: CUDA graph capture ~10s for 70B; compile 30s–3min', 'vLLM：70B 模型的 CUDA graph 捕获约 10 秒；编译 30 秒–3 分钟'); },
   },
   sglang: {
     compileBase: 30,
     compilePerBillionParams: 1.5,
     warmupBase: 8,
     warmupPerBillionParams: 0.08,
-    notes: 'SGLang: similar to vLLM; RadixAttention adds ~5s overhead',
+    get notes() { return t('SGLang: similar to vLLM; RadixAttention adds ~5s overhead', 'SGLang：与 vLLM 类似；RadixAttention 额外增加约 5 秒开销'); },
   },
   'llama.cpp': {
     compileBase: 2,
@@ -47,7 +48,7 @@ const FRAMEWORK_TIMES: Record<Framework, {
     compilePerBillionParams: 0.1,
     warmupBase: 2,
     warmupPerBillionParams: 0.05,
-    notes: 'Ollama: wraps llama.cpp; adds ~1s overhead for model management',
+    get notes() { return t('Ollama: wraps llama.cpp; adds ~1s overhead for model management', 'Ollama：封装 llama.cpp；模型管理额外增加约 1 秒开销'); },
   },
 };
 

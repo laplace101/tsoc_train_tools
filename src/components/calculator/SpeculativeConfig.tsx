@@ -2,6 +2,8 @@ import * as React from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { computeSpeculativeOverhead, estimateSpeedup, type SpeculativeMethod } from '@/lib/formulas/speculative';
+import { t } from '@/lib/i18n';
+import { useLanguage } from '@/lib/language';
 
 interface SpeculativeConfigProps {
   batchSize?: number;
@@ -10,12 +12,12 @@ interface SpeculativeConfigProps {
 }
 
 const DRAFT_METHODS: { key: SpeculativeMethod; label: string; description: string }[] = [
-  { key: 'draft_model',   label: 'Draft Model 1B', description: 'Small draft model (e.g. Llama 3.2 1B)' },
-  { key: 'medusa',        label: 'Medusa',          description: 'Multi-head decoding, no draft model' },
-  { key: 'eagle2',        label: 'EAGLE-2',         description: 'Feature-level draft, high speedup' },
-  { key: 'eagle3',        label: 'EAGLE-3',         description: 'Latest EAGLE variant, best speedup' },
-  { key: 'lookahead',     label: 'Lookahead',       description: 'Jacobi decoding, no extra model' },
-  { key: 'prompt_lookup', label: 'Prompt Lookup',   description: 'Copy from prompt, RAG-friendly' },
+  { key: 'draft_model',   label: 'Draft Model 1B', get description() { return t('Small draft model (e.g. Llama 3.2 1B)', '小型草稿模型（如 Llama 3.2 1B）'); } },
+  { key: 'medusa',        label: 'Medusa',          get description() { return t('Multi-head decoding, no draft model', '多头解码，无需草稿模型'); } },
+  { key: 'eagle2',        label: 'EAGLE-2',         get description() { return t('Feature-level draft, high speedup', '特征级草稿，加速比高'); } },
+  { key: 'eagle3',        label: 'EAGLE-3',         get description() { return t('Latest EAGLE variant, best speedup', '最新的 EAGLE 变体，加速比最高'); } },
+  { key: 'lookahead',     label: 'Lookahead',       get description() { return t('Jacobi decoding, no extra model', 'Jacobi 解码，无需额外模型'); } },
+  { key: 'prompt_lookup', label: 'Prompt Lookup',   get description() { return t('Copy from prompt, RAG-friendly', '从提示词复制，对 RAG 友好'); } },
 ];
 
 // Approximate overhead for a 1B draft model
@@ -23,6 +25,7 @@ const DRAFT_1B_PARAMS = 1_240_000_000;
 const DRAFT_1B_LAYERS = 16;
 
 export function SpeculativeConfig({ batchSize = 1, contextLength = 4096, className }: SpeculativeConfigProps) {
+  const { t } = useLanguage();
   const [enabled, setEnabled] = React.useState(false);
   const [method, setMethod] = React.useState<SpeculativeMethod>('eagle3');
 
@@ -45,7 +48,7 @@ export function SpeculativeConfig({ batchSize = 1, contextLength = 4096, classNa
     <div className={cn('flex flex-col gap-3', className)}>
       {/* Toggle */}
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-fg-default">Speculative Decoding</span>
+        <span className="text-xs font-medium text-fg-default">{t('Speculative Decoding', '投机解码')}</span>
         <button
           role="switch"
           aria-checked={enabled}
@@ -69,7 +72,7 @@ export function SpeculativeConfig({ batchSize = 1, contextLength = 4096, classNa
         <>
           {/* Method selector */}
           <div className="flex flex-col gap-1.5">
-            <span className="text-[10px] text-fg-muted">Draft method</span>
+            <span className="text-[10px] text-fg-muted">{t('Draft method', '草稿方法')}</span>
             <div className="flex flex-col gap-1">
               {DRAFT_METHODS.map(m => {
                 const isSelected = method === m.key;
@@ -96,7 +99,7 @@ export function SpeculativeConfig({ batchSize = 1, contextLength = 4096, classNa
           {/* Stats */}
           <div className="rounded-md bg-bg-muted border border-border-subtle px-3 py-2 flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-fg-muted">Estimated speedup</span>
+              <span className="text-[10px] text-fg-muted">{t('Estimated speedup', '预计加速比')}</span>
               <span className="text-sm font-mono font-semibold text-green-500">
                 {speedup.min}–{speedup.max}×
               </span>
@@ -104,21 +107,21 @@ export function SpeculativeConfig({ batchSize = 1, contextLength = 4096, classNa
             {method === 'draft_model' && overhead.totalOverheadGB > 0 && (
               <>
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-fg-muted">Draft model VRAM</span>
+                  <span className="text-[10px] text-fg-muted">{t('Draft model VRAM', '草稿模型显存')}</span>
                   <span className="text-xs font-mono text-fg-default">{overhead.draftModelGB.toFixed(2)} GB</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-fg-muted">Draft KV cache</span>
+                  <span className="text-[10px] text-fg-muted">{t('Draft KV cache', '草稿 KV Cache')}</span>
                   <span className="text-xs font-mono text-fg-default">{overhead.draftKVGB.toFixed(3)} GB</span>
                 </div>
                 <div className="flex items-center justify-between border-t border-border-subtle pt-1 mt-0.5">
-                  <span className="text-[10px] text-fg-muted font-medium">Total overhead</span>
+                  <span className="text-[10px] text-fg-muted font-medium">{t('Total overhead', '总开销')}</span>
                   <span className="text-xs font-mono font-semibold text-fg-primary">{overhead.totalOverheadGB.toFixed(2)} GB</span>
                 </div>
               </>
             )}
             {method !== 'draft_model' && (
-              <p className="text-[10px] text-fg-muted">No extra VRAM required for this method.</p>
+              <p className="text-[10px] text-fg-muted">{t('No extra VRAM required for this method.', '该方法不需要额外显存。')}</p>
             )}
           </div>
 
@@ -133,7 +136,7 @@ export function SpeculativeConfig({ batchSize = 1, contextLength = 4096, classNa
           )}
           {!showBatchWarning && (
             <p className="text-[10px] text-fg-muted italic">
-              Only effective at batch ≤ 8; diminishes at large batch
+              {t('Only effective at batch ≤ 8; diminishes at large batch', '仅在 batch ≤ 8 时有效；批量增大后效果衰减')}
             </p>
           )}
         </>

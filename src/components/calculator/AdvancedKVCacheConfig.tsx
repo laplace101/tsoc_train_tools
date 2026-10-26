@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import type { ModelSpec } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
 import {
   modelHasIndexerCache,
   modelHasDraftKvCache,
@@ -74,6 +75,7 @@ export function AdvancedKVCacheConfig({
   includeLinearAttentionState,
   onLinearAttentionStateChange,
 }: AdvancedKVCacheConfigProps) {
+  const { t } = useLanguage();
   const hasIndexer = modelHasIndexerCache(model);
   const hasDraft = modelHasDraftKvCache(model);
   const hasLinear = modelHasLinearAttentionState(model);
@@ -85,9 +87,9 @@ export function AdvancedKVCacheConfig({
       {hasIndexer && (
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-fg-default">
-            Indexer Cache Precision
+            {t('Indexer Cache Precision', '索引器 Cache 精度')}
           </label>
-          <div role="radiogroup" aria-label="Indexer cache precision" className="flex flex-wrap gap-1">
+          <div role="radiogroup" aria-label={t('Indexer cache precision', 'Indexer 缓存精度')} className="flex flex-wrap gap-1">
             {INDEXER_PRECISION_OPTIONS.map(option => {
               const isSelected = indexerPrecision === option.key;
               return (
@@ -110,15 +112,15 @@ export function AdvancedKVCacheConfig({
             })}
           </div>
           <p className="text-[10px] text-fg-muted italic">
-            Precision of the DSA/MiniMax/DeepSeek-V4 indexer side-cache.
+            {t('Precision of the DSA/MiniMax/DeepSeek-V4 indexer side-cache.', 'DSA/MiniMax/DeepSeek-V4 索引器旁路缓存的精度。')}
           </p>
         </div>
       )}
 
       {hasDraft && (
         <ToggleRow
-          label="Include draft KV cache"
-          hint="Account for the MTP/draft layers' KV in sizing."
+          label={t('Include draft KV cache', '计入草稿层 KV Cache')}
+          hint={t('Account for the MTP/draft layers\' KV in sizing.', '估算时计入 MTP / 草稿层的 KV 占用。')}
           checked={includeDraftKvCache}
           onChange={onDraftKvCacheChange}
         />
@@ -126,8 +128,8 @@ export function AdvancedKVCacheConfig({
 
       {hasLinear && (
         <ToggleRow
-          label="Include linear-attention state"
-          hint="Qwen hybrid linear-attention recurrent/conv state (fixed, not seq-scaled)."
+          label={t('Include linear-attention state', '计入线性注意力状态')}
+          hint={t('Qwen hybrid linear-attention recurrent/conv state (fixed, not seq-scaled).', 'Qwen 混合线性注意力的循环 / 卷积状态（固定大小，不随序列长度变化）。')}
           checked={includeLinearAttentionState}
           onChange={onLinearAttentionStateChange}
         />

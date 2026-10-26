@@ -8,6 +8,10 @@ import {
   computeTotalVRAM, computeThroughput, classifyGPUFit,
 } from '@/lib/formulas';
 import type { ModelSpec, FitStatus } from '@/lib/formulas/types';
+import { t } from '@/lib/i18n';
+
+// “全部”筛选项的内部哨兵值：与界面文案解耦，切换语言不会影响筛选状态
+const ALL_FILTER = '__all__';
 
 const DEFAULT_EFFICIENCY = 0.8;
 const DEFAULT_KV = 'fp16';
@@ -22,9 +26,9 @@ interface ModelFitResult {
 }
 
 const FIT_ICON = {
-  green:  { Icon: CheckCircle,  color: 'text-green-600 dark:text-green-400',  label: 'Fits' },
-  yellow: { Icon: AlertTriangle, color: 'text-yellow-600 dark:text-yellow-400', label: 'Tight' },
-  red:    { Icon: XCircle,      color: 'text-red-600 dark:text-red-400',      label: 'Overflow' },
+  green:  { Icon: CheckCircle,  color: 'text-green-600 dark:text-green-400',  get label() { return t('Fits', '满足'); } },
+  yellow: { Icon: AlertTriangle, color: 'text-yellow-600 dark:text-yellow-400', get label() { return t('Tight', '紧张'); } },
+  red:    { Icon: XCircle,      color: 'text-red-600 dark:text-red-400',      get label() { return t('Overflow', '超限'); } },
 };
 
 // Find the lowest precision that makes a model fit
@@ -51,9 +55,9 @@ export function Reverse() {
   const [workloadMode, setWorkloadMode] = React.useState<'inference' | 'finetune'>('inference');
 
   // Filters
-  const [familyFilter, setFamilyFilter] = React.useState('All');
-  const [sizeFilter, setSizeFilter] = React.useState('All');
-  const [licenseFilter, setLicenseFilter] = React.useState('All');
+  const [familyFilter, setFamilyFilter] = React.useState(ALL_FILTER);
+  const [sizeFilter, setSizeFilter] = React.useState(ALL_FILTER);
+  const [licenseFilter, setLicenseFilter] = React.useState(ALL_FILTER);
 
   const selectedGPU = gpuDb.find(g => g.id === selectedGPUId) ?? null;
   const effectiveVRAM = customVRAM ?? selectedGPU?.memoryGB ?? 24;
@@ -81,12 +85,12 @@ export function Reverse() {
   }, [modelDb, effectiveVRAM, contextLength, workloadMode, selectedGPU]);
 
   // Unique families, sizes, licenses for filters
-  const families = ['All', ...Array.from(new Set(modelDb.map(m => m.family)))];
-  const licenses = ['All', ...Array.from(new Set(modelDb.map(m => m.license)))];
-  const SIZE_BUCKETS = ['All', '< 7B', '7B–13B', '13B–70B', '70B+'];
+  const families = [ALL_FILTER, ...Array.from(new Set(modelDb.map(m => m.family)))];
+  const licenses = [ALL_FILTER, ...Array.from(new Set(modelDb.map(m => m.license)))];
+  const SIZE_BUCKETS = [ALL_FILTER, '< 7B', '7B–13B', '13B–70B', '70B+'];
 
   function matchesSize(model: ModelSpec): boolean {
-    if (sizeFilter === 'All') return true;
+    if (sizeFilter === ALL_FILTER) return true;
     const b = model.paramsTotal / 1e9;
     if (sizeFilter === '< 7B') return b < 7;
     if (sizeFilter === '7B–13B') return b >= 7 && b <= 13;
@@ -96,9 +100,9 @@ export function Reverse() {
   }
 
   const filtered = results.filter(r =>
-    (familyFilter === 'All' || r.model.family === familyFilter) &&
+    (familyFilter === ALL_FILTER || r.model.family === familyFilter) &&
     matchesSize(r.model) &&
-    (licenseFilter === 'All' || r.model.license === licenseFilter)
+    (licenseFilter === ALL_FILTER || r.model.license === licenseFilter)
   );
 
   // Sort: green first, then yellow, then red
@@ -190,7 +194,7 @@ export function Reverse() {
 
       {/* ── Results grid ───────────────────────────────────────────── */}
       <div className="overflow-x-auto rounded-lg border border-border-subtle">
-        <table className="w-full text-sm" aria-label="Model fit results">
+        <table className="w-full text-sm" aria-label={t('Model fit results', '模型适配结果')}>
           <thead>
             <tr className="border-b border-border-subtle bg-bg-subtle">
               <th className="px-4 py-2.5 text-left text-[11px] font-medium uppercase tracking-wider text-fg-muted">{t('Fit', '适配')}</th>
@@ -208,7 +212,7 @@ export function Reverse() {
                   <td className="px-4 py-3">
                     <div className={cn('flex items-center gap-1.5 text-xs font-medium', color)}>
                       <Icon size={14} aria-hidden="true" />
-                      {fitStatus === 'green' ? t('Fits', '适配') : fitStatus === 'yellow' ? t('Tight', '紧张') : t('Overflow', '超限')}
+                      {fitStatus === 'green' ? t('Fits', '满足') : fitStatus === 'yellow' ? t('Tight', '紧张') : t('Overflow', '超限')}
                     </div>
                   </td>
                   <td className="px-4 py-3">
@@ -266,7 +270,7 @@ function FilterGroup({ label, options, value, onChange }: { label: string; optio
                 : 'border-border-subtle text-fg-muted hover:text-fg-default hover:border-border-default'
             )}
           >
-            {opt === 'All' ? t('All', '全部') : opt}
+            {opt === ALL_FILTER ? t('All', '全部') : opt}
           </button>
         ))}
       </div>

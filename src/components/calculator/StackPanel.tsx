@@ -1,6 +1,7 @@
 import { Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { StackRecommendation } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
 
 interface StackPanelProps {
   stack: StackRecommendation;
@@ -17,22 +18,23 @@ function KVRow({ label, value }: { label: string; value: string }) {
 }
 
 export function StackPanel({ stack, className }: StackPanelProps) {
+  const { t } = useLanguage();
   return (
     <div className={cn('rounded-lg border border-border-subtle bg-bg-muted p-4', className)}>
       <div className="flex items-center gap-2 mb-3">
         <Layers size={14} className="text-fg-muted" />
         <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-muted">
-          Software Stack
+          {t('Software Stack', '软件栈')}
         </h3>
       </div>
 
       <div className="flex flex-col">
         <KVRow label="OS" value={stack.os} />
-        <KVRow label="Driver" value={stack.driver} />
+        <KVRow label={t('Driver', '驱动')} value={stack.driver} />
         <KVRow label="CUDA" value={stack.cuda} />
         <KVRow label="PyTorch" value={stack.pytorch} />
-        <KVRow label="Container" value={stack.container} />
-        <KVRow label="Monitoring" value={stack.monitoring} />
+        <KVRow label={t('Container', '容器')} value={stack.container} />
+        <KVRow label={t('Monitoring', '监控')} value={stack.monitoring} />
       </div>
     </div>
   );

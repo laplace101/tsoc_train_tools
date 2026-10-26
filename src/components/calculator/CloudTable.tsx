@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ArrowUpDown, ArrowUp, ArrowDown, Star, Cpu, MemoryStick, HardDrive, Network, MapPin, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { CloudRecommendation } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
 
 interface CloudTableProps {
   recommendations: CloudRecommendation[];
@@ -153,6 +154,7 @@ function SortBtn({ label, col, sortKey, sortDir, onSort, ariaLabel }: {
 }
 
 export function CloudTable({ recommendations, className }: CloudTableProps) {
+  const { t } = useLanguage();
   const [sortKey, setSortKey] = React.useState<SortKey | null>(null);
   const [sortDir, setSortDir] = React.useState<SortDir>('asc');
   const [providerFilter, setProviderFilter] = React.useState('All');
@@ -179,7 +181,7 @@ export function CloudTable({ recommendations, className }: CloudTableProps) {
   if (recommendations.length === 0) {
     return (
       <div className="text-sm text-fg-muted text-center py-8">
-        No cloud instances match your VRAM requirements.
+        {t('No cloud instances match your VRAM requirements.', '没有符合显存要求的云实例。')}
       </div>
     );
   }
@@ -189,7 +191,7 @@ export function CloudTable({ recommendations, className }: CloudTableProps) {
       {/* Provider filter */}
       <div className="overflow-x-auto pb-1 -mx-1 px-1">
         <div className="flex items-center gap-1.5 w-max">
-          <span className="text-xs text-fg-muted flex-shrink-0">Filter:</span>
+          <span className="text-xs text-fg-muted flex-shrink-0">{t('Filter:', '筛选：')}</span>
           {PROVIDERS.map(p => (
             <button
               key={p}
@@ -201,7 +203,7 @@ export function CloudTable({ recommendations, className }: CloudTableProps) {
                   : 'border-border-subtle text-fg-muted hover:text-fg-default hover:border-border-default'
               )}
             >
-              {p}
+              {p === 'All' ? t('All', '全部') : p}
             </button>
           ))}
         </div>
@@ -209,10 +211,10 @@ export function CloudTable({ recommendations, className }: CloudTableProps) {
 
       {/* Sort controls */}
       <div className="flex items-center gap-4 px-1">
-        <span className="text-xs text-fg-muted">Sort by:</span>
-        <SortBtn label="$/hr" col="onDemandPerHour" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} ariaLabel="Sort by on-demand price" />
-        <SortBtn label="Spot" col="spotPerHour" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} ariaLabel="Sort by spot price" />
-        <SortBtn label="$/M tokens" col="costPerMillionTokens" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} ariaLabel="Sort by cost per million tokens" />
+        <span className="text-xs text-fg-muted">{t('Sort by:', '排序方式：')}</span>
+        <SortBtn label="$/hr" col="onDemandPerHour" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} ariaLabel={t('Sort by on-demand price', '按按需价格排序')} />
+        <SortBtn label={t('Spot', '竞价')} col="spotPerHour" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} ariaLabel={t('Sort by spot price', '按竞价价格排序')} />
+        <SortBtn label="$/M tokens" col="costPerMillionTokens" sortKey={sortKey} sortDir={sortDir} onSort={handleSort} ariaLabel={t('Sort by cost per million tokens', '按每百万 token 成本排序')} />
       </div>
 
       {/* Cards — 2-column grid, scrollable */}
@@ -230,6 +232,7 @@ export function CloudTable({ recommendations, className }: CloudTableProps) {
 }
 
 function CloudCard({ rec }: { rec: CloudRecommendation }) {
+  const { t } = useLanguage();
   const { instance, onDemandPerHour, spotPerHour, costPerMillionTokens, isBestPrice, fitStatus, totalGPUMemoryGB } = rec;
   const gpuSummary = instance.gpus.map(g => `${g.count}× ${g.id}`).join(', ');
   const interconnect = instance.interconnect ? INTERCONNECT_LABEL[instance.interconnect] : null;
@@ -249,11 +252,11 @@ function CloudCard({ rec }: { rec: CloudRecommendation }) {
               <span className="text-xs font-mono font-semibold text-fg-primary truncate">{instance.instanceType}</span>
               {isBestPrice && (
                 <span className="flex items-center gap-0.5 text-[9px] font-medium px-1 py-0.5 rounded bg-yellow-500/10 text-yellow-500 flex-shrink-0">
-                  <Star size={8} className="fill-yellow-500" /> Best
+                  <Star size={8} className="fill-yellow-500" /> {t('Best', '最优')}
                 </span>
               )}
               {fitStatus === 'yellow' && (
-                <span className="text-[9px] font-medium px-1 py-0.5 rounded bg-yellow-500/10 text-yellow-500 flex-shrink-0">Tight</span>
+                <span className="text-[9px] font-medium px-1 py-0.5 rounded bg-yellow-500/10 text-yellow-500 flex-shrink-0">{t('Tight', '紧张')}</span>
               )}
             </div>
             <span className="text-[10px] text-fg-muted">{gpuSummary} · {totalGPUMemoryGB} GB</span>
@@ -263,12 +266,12 @@ function CloudCard({ rec }: { rec: CloudRecommendation }) {
         {/* Pricing */}
         <div className="flex items-center gap-3 flex-shrink-0">
           <div className="flex flex-col items-end">
-            <span className="text-[9px] text-fg-muted">On-demand</span>
+            <span className="text-[9px] text-fg-muted">{t('On-demand', '按需')}</span>
             <span className="text-xs font-mono font-bold text-fg-primary tabular-nums">${onDemandPerHour.toFixed(2)}<span className="text-[9px] font-normal text-fg-muted">/hr</span></span>
           </div>
           {spotPerHour != null && (
             <div className="flex flex-col items-end">
-              <span className="text-[9px] text-fg-muted">Spot</span>
+              <span className="text-[9px] text-fg-muted">{t('Spot', '竞价')}</span>
               <span className="text-xs font-mono font-semibold text-green-400 tabular-nums">${spotPerHour.toFixed(2)}<span className="text-[9px] font-normal text-fg-muted">/hr</span></span>
             </div>
           )}

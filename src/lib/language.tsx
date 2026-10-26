@@ -1,18 +1,7 @@
 import * as React from 'react';
+import { getLang, setCurrentLang, type Lang } from '@/lib/i18n';
 
-export type Lang = 'en' | 'cn';
-
-const STORAGE_KEY = 'llmcalc-lang';
-
-function getInitialLang(): Lang {
-  try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored === 'en' || stored === 'cn') return stored;
-  } catch {
-    // localStorage unavailable (e.g. private mode); fall through to default
-  }
-  return 'en';
-}
+export type { Lang };
 
 interface LanguageContextValue {
   lang: Lang;
@@ -21,22 +10,20 @@ interface LanguageContextValue {
 }
 
 const LanguageContext = React.createContext<LanguageContextValue>({
-  lang: 'en',
+  lang: getLang(),
   setLang: () => {},
   t: (en) => en,
 });
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = React.useState<Lang>(getInitialLang);
+  const [lang, setLangState] = React.useState<Lang>(getLang);
 
-  // Persist the choice so it survives a refresh.
-  React.useEffect(() => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, lang);
-    } catch {
-      // ignore write failures
-    }
-  }, [lang]);
+  // Persist the choice so it survives a refresh, and keep the non-React
+  // translation helper (src/lib/i18n.ts) in sync with it.
+  const setLang = React.useCallback((next: Lang) => {
+    setLangState(next);
+    setCurrentLang(next);
+  }, []);
 
   const value = React.useMemo<LanguageContextValue>(
     () => ({
@@ -44,7 +31,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       setLang,
       t: (en: string, cn: string) => (lang === 'en' ? en : cn),
     }),
-    [lang]
+    [lang, setLang]
   );
 
   return (

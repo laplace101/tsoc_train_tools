@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/primitives/popover';
 import { PARAMETER_TOOLTIPS } from '@/data/parameter-tooltips';
 import type { TooltipContent } from '@/types/tooltip';
+import { useLanguage } from '@/lib/language';
 
 export interface InfoTooltipProps {
   /** Look up content by key from the parameter-tooltips database */
@@ -14,6 +15,7 @@ export interface InfoTooltipProps {
 }
 
 export function InfoTooltip({ paramKey, content, className }: InfoTooltipProps) {
+  const { t } = useLanguage();
   const [open, setOpen] = React.useState(false);
   const [isHover, setIsHover] = React.useState(false);
   const hoverTimerRef = React.useRef<ReturnType<typeof setTimeout>>();
@@ -63,7 +65,7 @@ export function InfoTooltip({ paramKey, content, className }: InfoTooltipProps) 
     >
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
-          aria-label={`Info: ${resolved.title}`}
+          aria-label={`${t('Info', '说明')}: ${resolved.title}`}
           aria-describedby={open ? tooltipId : undefined}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -99,6 +101,7 @@ export function InfoTooltip({ paramKey, content, className }: InfoTooltipProps) 
 }
 
 function TooltipBody({ content }: { content: TooltipContent }) {
+  const { t } = useLanguage();
   return (
     <>
       <p className="font-semibold text-fg-default text-[13px]">{content.title}</p>
@@ -107,11 +110,11 @@ function TooltipBody({ content }: { content: TooltipContent }) {
 
       <div className="space-y-1">
         <p className="text-fg-muted">
-          <span className="font-medium text-fg-default">Impact: </span>
+          <span className="font-medium text-fg-default">{t('Impact: ', '影响：')}</span>
           {content.impact}
         </p>
         <p className="text-fg-muted">
-          <span className="font-medium text-fg-default">Recommended: </span>
+          <span className="font-medium text-fg-default">{t('Recommended: ', '建议：')}</span>
           {content.recommended}
         </p>
       </div>
@@ -119,7 +122,7 @@ function TooltipBody({ content }: { content: TooltipContent }) {
       {content.pitfall && (
         <div className="rounded-md bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 px-2.5 py-2">
           <p className="text-amber-800 dark:text-amber-300 leading-relaxed">
-            <span className="font-semibold">⚠ Pitfall: </span>
+            <span className="font-semibold">{t('⚠ Pitfall: ', '⚠ 注意：')}</span>
             {content.pitfall}
           </p>
         </div>
@@ -130,7 +133,7 @@ function TooltipBody({ content }: { content: TooltipContent }) {
           href={content.learnMoreUrl}
           className="inline-flex items-center gap-1 text-accent hover:underline font-medium"
         >
-          Learn more →
+          {t('Learn more →', '了解更多 →')}
         </a>
       )}
     </>

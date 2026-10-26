@@ -2,22 +2,30 @@ import type { WorkloadMode } from '@/lib/formulas/types';
 
 export interface ShortcutDef {
   keys: string;          // display string e.g. "⌘K"
-  description: string;
+  description: { en: string; cn: string };
   category: string;
 }
 
+/** 快捷键分组的显示名称。key 与 ShortcutDef.category 对应。 */
+export const SHORTCUT_CATEGORIES: Record<string, { en: string; cn: string }> = {
+  Navigation: { en: 'Navigation', cn: '导航' },
+  Modes: { en: 'Modes', cn: '模式' },
+  'Go to': { en: 'Go to', cn: '跳转' },
+  Actions: { en: 'Actions', cn: '操作' },
+};
+
 export const SHORTCUT_DEFS: ShortcutDef[] = [
-  { keys: '⌘K',      description: 'Open model search',       category: 'Navigation' },
-  { keys: '⌘\\',     description: 'Toggle theme',            category: 'Navigation' },
-  { keys: '⌘↵',      description: 'Copy share URL',          category: 'Navigation' },
-  { keys: '?',        description: 'Show keyboard shortcuts', category: 'Navigation' },
-  { keys: 'Esc',      description: 'Close dialog / drawer',   category: 'Navigation' },
-  { keys: 'i',        description: 'Inference mode',          category: 'Modes' },
-  { keys: 't',        description: 'Train mode',              category: 'Modes' },
-  { keys: 'r',        description: 'Go to Reverse page',      category: 'Go to' },
-  { keys: 'c',        description: 'Add config to compare',   category: 'Actions' },
-  { keys: 'g m',      description: 'Go to Models page',       category: 'Go to' },
-  { keys: 'g h',      description: 'Go to Hardware page',     category: 'Go to' },
+  { keys: '⌘K',      description: { en: 'Open model search',       cn: '打开模型搜索' },       category: 'Navigation' },
+  { keys: '⌘\\',     description: { en: 'Toggle theme',            cn: '切换主题' },           category: 'Navigation' },
+  { keys: '⌘↵',      description: { en: 'Copy share URL',          cn: '复制分享链接' },       category: 'Navigation' },
+  { keys: '?',        description: { en: 'Show keyboard shortcuts', cn: '显示键盘快捷键' },     category: 'Navigation' },
+  { keys: 'Esc',      description: { en: 'Close dialog / drawer',   cn: '关闭弹窗 / 抽屉' },    category: 'Navigation' },
+  { keys: 'i',        description: { en: 'Inference mode',          cn: '推理模式' },           category: 'Modes' },
+  { keys: 't',        description: { en: 'Train mode',              cn: '训练模式' },           category: 'Modes' },
+  { keys: 'r',        description: { en: 'Go to Reverse page',      cn: '跳转到反查页' },       category: 'Go to' },
+  { keys: 'c',        description: { en: 'Add config to compare',   cn: '把当前配置加入对比' }, category: 'Actions' },
+  { keys: 'g m',      description: { en: 'Go to Models page',       cn: '跳转到模型库页' },     category: 'Go to' },
+  { keys: 'g h',      description: { en: 'Go to Hardware page',     cn: '跳转到硬件页' },       category: 'Go to' },
 ];
 
 const MODE_KEY_MAP: Record<string, WorkloadMode> = {

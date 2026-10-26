@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 export interface QuantType {
   key: string;
   label: string;
@@ -11,80 +12,80 @@ export interface QuantType {
 
 export const QUANTIZATION_TYPES: QuantType[] = [
   // ── Native ──────────────────────────────────────────────────────────────────
-  { key: 'fp32',        label: 'FP32',        family: 'native', bytesPerParam: 4.0,    qualityStars: 5, hardwareNote: 'All hardware' },
-  { key: 'tf32',        label: 'TF32',        family: 'native', bytesPerParam: 4.0,    qualityStars: 5, hardwareNote: 'NVIDIA Ampere+' },
-  { key: 'fp16',        label: 'FP16',        family: 'native', bytesPerParam: 2.0,    qualityStars: 5, hardwareNote: 'All hardware' },
-  { key: 'bf16',        label: 'BF16',        family: 'native', bytesPerParam: 2.0,    qualityStars: 5, hardwareNote: 'NVIDIA Ampere+, AMD MI200+' },
-  { key: 'fp8',         label: 'FP8',         family: 'native', bytesPerParam: 1.0,    qualityStars: 4, hardwareNote: 'NVIDIA H100+, AMD MI300X' },
-  { key: 'fp8_e4m3',   label: 'FP8 E4M3',   family: 'native', bytesPerParam: 1.0,    qualityStars: 4, hardwareNote: 'NVIDIA H100+, AMD MI300X' },
-  { key: 'fp8_e5m2',   label: 'FP8 E5M2',   family: 'native', bytesPerParam: 1.0,    qualityStars: 4, hardwareNote: 'NVIDIA H100+, AMD MI300X' },
-  { key: 'fp6',         label: 'FP6',         family: 'native', bytesPerParam: 0.75,   qualityStars: 4, hardwareNote: 'NVIDIA H100+ (experimental)' },
-  { key: 'mxfp4',      label: 'MXFP4',      family: 'native', bytesPerParam: 0.53,   qualityStars: 3, hardwareNote: 'NVIDIA Blackwell (B100/B200)' },
-  { key: 'nvfp4',      label: 'NVFP4',      family: 'native', bytesPerParam: 0.56,   qualityStars: 3, hardwareNote: 'NVIDIA Blackwell (B100/B200)' },
-  { key: 'int8',        label: 'INT8',        family: 'native', bytesPerParam: 1.0,    qualityStars: 4, hardwareNote: 'All hardware' },
-  { key: 'int4',        label: 'INT4',        family: 'native', bytesPerParam: 0.5,    qualityStars: 3, hardwareNote: 'All hardware' },
+  { key: 'fp32',        label: 'FP32',        family: 'native', bytesPerParam: 4.0,    qualityStars: 5, get hardwareNote() { return t('All hardware', '全硬件支持'); } },
+  { key: 'tf32',        label: 'TF32',        family: 'native', bytesPerParam: 4.0,    qualityStars: 5, get hardwareNote() { return t('NVIDIA Ampere+', 'NVIDIA Ampere 及以上'); } },
+  { key: 'fp16',        label: 'FP16',        family: 'native', bytesPerParam: 2.0,    qualityStars: 5, get hardwareNote() { return t('All hardware', '全硬件支持'); } },
+  { key: 'bf16',        label: 'BF16',        family: 'native', bytesPerParam: 2.0,    qualityStars: 5, get hardwareNote() { return t('NVIDIA Ampere+, AMD MI200+', 'NVIDIA Ampere 及以上、AMD MI200 及以上'); } },
+  { key: 'fp8',         label: 'FP8',         family: 'native', bytesPerParam: 1.0,    qualityStars: 4, get hardwareNote() { return t('NVIDIA H100+, AMD MI300X', 'NVIDIA H100 及以上、AMD MI300X'); } },
+  { key: 'fp8_e4m3',   label: 'FP8 E4M3',   family: 'native', bytesPerParam: 1.0,    qualityStars: 4, get hardwareNote() { return t('NVIDIA H100+, AMD MI300X', 'NVIDIA H100 及以上、AMD MI300X'); } },
+  { key: 'fp8_e5m2',   label: 'FP8 E5M2',   family: 'native', bytesPerParam: 1.0,    qualityStars: 4, get hardwareNote() { return t('NVIDIA H100+, AMD MI300X', 'NVIDIA H100 及以上、AMD MI300X'); } },
+  { key: 'fp6',         label: 'FP6',         family: 'native', bytesPerParam: 0.75,   qualityStars: 4, get hardwareNote() { return t('NVIDIA H100+ (experimental)', 'NVIDIA H100 及以上（实验性）'); } },
+  { key: 'mxfp4',      label: 'MXFP4',      family: 'native', bytesPerParam: 0.53,   qualityStars: 3, get hardwareNote() { return t('NVIDIA Blackwell (B100/B200)', 'NVIDIA Blackwell（B100/B200）'); } },
+  { key: 'nvfp4',      label: 'NVFP4',      family: 'native', bytesPerParam: 0.56,   qualityStars: 3, get hardwareNote() { return t('NVIDIA Blackwell (B100/B200)', 'NVIDIA Blackwell（B100/B200）'); } },
+  { key: 'int8',        label: 'INT8',        family: 'native', bytesPerParam: 1.0,    qualityStars: 4, get hardwareNote() { return t('All hardware', '全硬件支持'); } },
+  { key: 'int4',        label: 'INT4',        family: 'native', bytesPerParam: 0.5,    qualityStars: 3, get hardwareNote() { return t('All hardware', '全硬件支持'); } },
 
   // ── GPTQ ────────────────────────────────────────────────────────────────────
-  { key: 'gptq_2bit',  label: 'GPTQ 2-bit', family: 'gptq',   bytesPerParam: 0.25,   qualityStars: 1, hardwareNote: 'NVIDIA GPU (AutoGPTQ)' },
-  { key: 'gptq_3bit',  label: 'GPTQ 3-bit', family: 'gptq',   bytesPerParam: 0.375,  qualityStars: 2, hardwareNote: 'NVIDIA GPU (AutoGPTQ)' },
-  { key: 'gptq_4bit',  label: 'GPTQ 4-bit', family: 'gptq',   bytesPerParam: 0.5,    qualityStars: 3, hardwareNote: 'NVIDIA GPU (AutoGPTQ)' },
-  { key: 'gptq_8bit',  label: 'GPTQ 8-bit', family: 'gptq',   bytesPerParam: 1.0,    qualityStars: 4, hardwareNote: 'NVIDIA GPU (AutoGPTQ)' },
+  { key: 'gptq_2bit',  label: 'GPTQ 2-bit', family: 'gptq',   bytesPerParam: 0.25,   qualityStars: 1, get hardwareNote() { return t('NVIDIA GPU (AutoGPTQ)', 'NVIDIA GPU（AutoGPTQ）'); } },
+  { key: 'gptq_3bit',  label: 'GPTQ 3-bit', family: 'gptq',   bytesPerParam: 0.375,  qualityStars: 2, get hardwareNote() { return t('NVIDIA GPU (AutoGPTQ)', 'NVIDIA GPU（AutoGPTQ）'); } },
+  { key: 'gptq_4bit',  label: 'GPTQ 4-bit', family: 'gptq',   bytesPerParam: 0.5,    qualityStars: 3, get hardwareNote() { return t('NVIDIA GPU (AutoGPTQ)', 'NVIDIA GPU（AutoGPTQ）'); } },
+  { key: 'gptq_8bit',  label: 'GPTQ 8-bit', family: 'gptq',   bytesPerParam: 1.0,    qualityStars: 4, get hardwareNote() { return t('NVIDIA GPU (AutoGPTQ)', 'NVIDIA GPU（AutoGPTQ）'); } },
 
   // ── AWQ ─────────────────────────────────────────────────────────────────────
-  { key: 'awq_4bit',   label: 'AWQ 4-bit',  family: 'awq',    bytesPerParam: 0.5,    qualityStars: 3, hardwareNote: 'NVIDIA GPU (AutoAWQ)' },
+  { key: 'awq_4bit',   label: 'AWQ 4-bit',  family: 'awq',    bytesPerParam: 0.5,    qualityStars: 3, get hardwareNote() { return t('NVIDIA GPU (AutoAWQ)', 'NVIDIA GPU（AutoAWQ）'); } },
 
   // ── GGUF K-quants ────────────────────────────────────────────────────────────
-  { key: 'q2_k',       label: 'Q2_K',       family: 'gguf-k', bytesPerParam: 0.32,   qualityStars: 1, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q3_k_s',     label: 'Q3_K_S',     family: 'gguf-k', bytesPerParam: 0.43,   qualityStars: 2, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q3_k_m',     label: 'Q3_K_M',     family: 'gguf-k', bytesPerParam: 0.49,   qualityStars: 2, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q3_k_l',     label: 'Q3_K_L',     family: 'gguf-k', bytesPerParam: 0.50,   qualityStars: 2, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q4_0',       label: 'Q4_0',       family: 'gguf-k', bytesPerParam: 0.56,   qualityStars: 3, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q4_1',       label: 'Q4_1',       family: 'gguf-k', bytesPerParam: 0.63,   qualityStars: 3, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q4_k_s',     label: 'Q4_K_S',     family: 'gguf-k', bytesPerParam: 0.57,   qualityStars: 3, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q4_k_m',     label: 'Q4_K_M',     family: 'gguf-k', bytesPerParam: 0.606,  qualityStars: 3, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q5_0',       label: 'Q5_0',       family: 'gguf-k', bytesPerParam: 0.69,   qualityStars: 4, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q5_1',       label: 'Q5_1',       family: 'gguf-k', bytesPerParam: 0.75,   qualityStars: 4, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q5_k_s',     label: 'Q5_K_S',     family: 'gguf-k', bytesPerParam: 0.69,   qualityStars: 4, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q5_k_m',     label: 'Q5_K_M',     family: 'gguf-k', bytesPerParam: 0.711,  qualityStars: 4, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q6_k',       label: 'Q6_K',       family: 'gguf-k', bytesPerParam: 0.82,   qualityStars: 4, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'q8_0',       label: 'Q8_0',       family: 'gguf-k', bytesPerParam: 1.0625, qualityStars: 5, hardwareNote: 'CPU/GPU via llama.cpp' },
+  { key: 'q2_k',       label: 'Q2_K',       family: 'gguf-k', bytesPerParam: 0.32,   qualityStars: 1, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q3_k_s',     label: 'Q3_K_S',     family: 'gguf-k', bytesPerParam: 0.43,   qualityStars: 2, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q3_k_m',     label: 'Q3_K_M',     family: 'gguf-k', bytesPerParam: 0.49,   qualityStars: 2, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q3_k_l',     label: 'Q3_K_L',     family: 'gguf-k', bytesPerParam: 0.50,   qualityStars: 2, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q4_0',       label: 'Q4_0',       family: 'gguf-k', bytesPerParam: 0.56,   qualityStars: 3, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q4_1',       label: 'Q4_1',       family: 'gguf-k', bytesPerParam: 0.63,   qualityStars: 3, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q4_k_s',     label: 'Q4_K_S',     family: 'gguf-k', bytesPerParam: 0.57,   qualityStars: 3, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q4_k_m',     label: 'Q4_K_M',     family: 'gguf-k', bytesPerParam: 0.606,  qualityStars: 3, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q5_0',       label: 'Q5_0',       family: 'gguf-k', bytesPerParam: 0.69,   qualityStars: 4, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q5_1',       label: 'Q5_1',       family: 'gguf-k', bytesPerParam: 0.75,   qualityStars: 4, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q5_k_s',     label: 'Q5_K_S',     family: 'gguf-k', bytesPerParam: 0.69,   qualityStars: 4, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q5_k_m',     label: 'Q5_K_M',     family: 'gguf-k', bytesPerParam: 0.711,  qualityStars: 4, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q6_k',       label: 'Q6_K',       family: 'gguf-k', bytesPerParam: 0.82,   qualityStars: 4, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'q8_0',       label: 'Q8_0',       family: 'gguf-k', bytesPerParam: 1.0625, qualityStars: 5, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
 
   // ── GGUF I-quants ────────────────────────────────────────────────────────────
-  { key: 'iq1_s',      label: 'IQ1_S',      family: 'gguf-i', bytesPerParam: 0.20,   qualityStars: 1, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'iq1_m',      label: 'IQ1_M',      family: 'gguf-i', bytesPerParam: 0.22,   qualityStars: 1, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'iq2_xxs',    label: 'IQ2_XXS',    family: 'gguf-i', bytesPerParam: 0.26,   qualityStars: 1, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'iq2_xs',     label: 'IQ2_XS',     family: 'gguf-i', bytesPerParam: 0.29,   qualityStars: 1, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'iq2_s',      label: 'IQ2_S',      family: 'gguf-i', bytesPerParam: 0.31,   qualityStars: 2, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'iq2_m',      label: 'IQ2_M',      family: 'gguf-i', bytesPerParam: 0.34,   qualityStars: 2, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'iq3_xxs',    label: 'IQ3_XXS',    family: 'gguf-i', bytesPerParam: 0.38,   qualityStars: 2, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'iq3_xs',     label: 'IQ3_XS',     family: 'gguf-i', bytesPerParam: 0.41,   qualityStars: 2, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'iq3_s',      label: 'IQ3_S',      family: 'gguf-i', bytesPerParam: 0.43,   qualityStars: 2, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'iq3_m',      label: 'IQ3_M',      family: 'gguf-i', bytesPerParam: 0.46,   qualityStars: 2, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'iq4_xs',     label: 'IQ4_XS',     family: 'gguf-i', bytesPerParam: 0.53,   qualityStars: 3, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'iq4_nl',     label: 'IQ4_NL',     family: 'gguf-i', bytesPerParam: 0.56,   qualityStars: 3, hardwareNote: 'CPU/GPU via llama.cpp' },
+  { key: 'iq1_s',      label: 'IQ1_S',      family: 'gguf-i', bytesPerParam: 0.20,   qualityStars: 1, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'iq1_m',      label: 'IQ1_M',      family: 'gguf-i', bytesPerParam: 0.22,   qualityStars: 1, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'iq2_xxs',    label: 'IQ2_XXS',    family: 'gguf-i', bytesPerParam: 0.26,   qualityStars: 1, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'iq2_xs',     label: 'IQ2_XS',     family: 'gguf-i', bytesPerParam: 0.29,   qualityStars: 1, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'iq2_s',      label: 'IQ2_S',      family: 'gguf-i', bytesPerParam: 0.31,   qualityStars: 2, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'iq2_m',      label: 'IQ2_M',      family: 'gguf-i', bytesPerParam: 0.34,   qualityStars: 2, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'iq3_xxs',    label: 'IQ3_XXS',    family: 'gguf-i', bytesPerParam: 0.38,   qualityStars: 2, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'iq3_xs',     label: 'IQ3_XS',     family: 'gguf-i', bytesPerParam: 0.41,   qualityStars: 2, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'iq3_s',      label: 'IQ3_S',      family: 'gguf-i', bytesPerParam: 0.43,   qualityStars: 2, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'iq3_m',      label: 'IQ3_M',      family: 'gguf-i', bytesPerParam: 0.46,   qualityStars: 2, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'iq4_xs',     label: 'IQ4_XS',     family: 'gguf-i', bytesPerParam: 0.53,   qualityStars: 3, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'iq4_nl',     label: 'IQ4_NL',     family: 'gguf-i', bytesPerParam: 0.56,   qualityStars: 3, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
 
   // ── GGUF T-quants ────────────────────────────────────────────────────────────
-  { key: 'tq1_0',      label: 'TQ1_0',      family: 'gguf-t', bytesPerParam: 0.21,   qualityStars: 1, hardwareNote: 'CPU/GPU via llama.cpp' },
-  { key: 'tq2_0',      label: 'TQ2_0',      family: 'gguf-t', bytesPerParam: 0.26,   qualityStars: 1, hardwareNote: 'CPU/GPU via llama.cpp' },
+  { key: 'tq1_0',      label: 'TQ1_0',      family: 'gguf-t', bytesPerParam: 0.21,   qualityStars: 1, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
+  { key: 'tq2_0',      label: 'TQ2_0',      family: 'gguf-t', bytesPerParam: 0.26,   qualityStars: 1, get hardwareNote() { return t('CPU/GPU via llama.cpp', '通过 llama.cpp 运行于 CPU/GPU'); } },
 
   // ── bitsandbytes ─────────────────────────────────────────────────────────────
-  { key: 'nf4',             label: 'NF4',             family: 'bnb',   bytesPerParam: 0.5,   qualityStars: 3, hardwareNote: 'NVIDIA GPU (bitsandbytes)' },
-  { key: 'int8_llm',        label: 'INT8-LLM',        family: 'bnb',   bytesPerParam: 1.0,   qualityStars: 4, hardwareNote: 'NVIDIA GPU (bitsandbytes)' },
+  { key: 'nf4',             label: 'NF4',             family: 'bnb',   bytesPerParam: 0.5,   qualityStars: 3, get hardwareNote() { return t('NVIDIA GPU (bitsandbytes)', 'NVIDIA GPU（bitsandbytes）'); } },
+  { key: 'int8_llm',        label: 'INT8-LLM',        family: 'bnb',   bytesPerParam: 1.0,   qualityStars: 4, get hardwareNote() { return t('NVIDIA GPU (bitsandbytes)', 'NVIDIA GPU（bitsandbytes）'); } },
 
   // ── EXL2 (variable BPW) ──────────────────────────────────────────────────────
   // Representative fixed points; actual BPW is set via slider (2.0–8.0, step 0.25)
-  { key: 'exl2_2bpw',      label: 'EXL2 2.0bpw',    family: 'exl2',  bytesPerParam: 0.25,  qualityStars: 1, hardwareNote: 'NVIDIA GPU (ExLlamaV2)', isVariable: true },
-  { key: 'exl2_3bpw',      label: 'EXL2 3.0bpw',    family: 'exl2',  bytesPerParam: 0.375, qualityStars: 2, hardwareNote: 'NVIDIA GPU (ExLlamaV2)', isVariable: true },
-  { key: 'exl2_4bpw',      label: 'EXL2 4.0bpw',    family: 'exl2',  bytesPerParam: 0.5,   qualityStars: 3, hardwareNote: 'NVIDIA GPU (ExLlamaV2)', isVariable: true },
-  { key: 'exl2_4.65bpw',   label: 'EXL2 4.65bpw',   family: 'exl2',  bytesPerParam: 0.581, qualityStars: 3, hardwareNote: 'NVIDIA GPU (ExLlamaV2)', isVariable: true },
-  { key: 'exl2_5bpw',      label: 'EXL2 5.0bpw',    family: 'exl2',  bytesPerParam: 0.625, qualityStars: 4, hardwareNote: 'NVIDIA GPU (ExLlamaV2)', isVariable: true },
-  { key: 'exl2_6bpw',      label: 'EXL2 6.0bpw',    family: 'exl2',  bytesPerParam: 0.75,  qualityStars: 4, hardwareNote: 'NVIDIA GPU (ExLlamaV2)', isVariable: true },
-  { key: 'exl2_8bpw',      label: 'EXL2 8.0bpw',    family: 'exl2',  bytesPerParam: 1.0,   qualityStars: 5, hardwareNote: 'NVIDIA GPU (ExLlamaV2)', isVariable: true },
+  { key: 'exl2_2bpw',      label: 'EXL2 2.0bpw',    family: 'exl2',  bytesPerParam: 0.25,  qualityStars: 1, get hardwareNote() { return t('NVIDIA GPU (ExLlamaV2)', 'NVIDIA GPU（ExLlamaV2）'); }, isVariable: true },
+  { key: 'exl2_3bpw',      label: 'EXL2 3.0bpw',    family: 'exl2',  bytesPerParam: 0.375, qualityStars: 2, get hardwareNote() { return t('NVIDIA GPU (ExLlamaV2)', 'NVIDIA GPU（ExLlamaV2）'); }, isVariable: true },
+  { key: 'exl2_4bpw',      label: 'EXL2 4.0bpw',    family: 'exl2',  bytesPerParam: 0.5,   qualityStars: 3, get hardwareNote() { return t('NVIDIA GPU (ExLlamaV2)', 'NVIDIA GPU（ExLlamaV2）'); }, isVariable: true },
+  { key: 'exl2_4.65bpw',   label: 'EXL2 4.65bpw',   family: 'exl2',  bytesPerParam: 0.581, qualityStars: 3, get hardwareNote() { return t('NVIDIA GPU (ExLlamaV2)', 'NVIDIA GPU（ExLlamaV2）'); }, isVariable: true },
+  { key: 'exl2_5bpw',      label: 'EXL2 5.0bpw',    family: 'exl2',  bytesPerParam: 0.625, qualityStars: 4, get hardwareNote() { return t('NVIDIA GPU (ExLlamaV2)', 'NVIDIA GPU（ExLlamaV2）'); }, isVariable: true },
+  { key: 'exl2_6bpw',      label: 'EXL2 6.0bpw',    family: 'exl2',  bytesPerParam: 0.75,  qualityStars: 4, get hardwareNote() { return t('NVIDIA GPU (ExLlamaV2)', 'NVIDIA GPU（ExLlamaV2）'); }, isVariable: true },
+  { key: 'exl2_8bpw',      label: 'EXL2 8.0bpw',    family: 'exl2',  bytesPerParam: 1.0,   qualityStars: 5, get hardwareNote() { return t('NVIDIA GPU (ExLlamaV2)', 'NVIDIA GPU（ExLlamaV2）'); }, isVariable: true },
 
   // ── Other ────────────────────────────────────────────────────────────────────
-  { key: 'smoothquant_w8a8', label: 'SmoothQuant W8A8', family: 'other', bytesPerParam: 1.0, qualityStars: 4, hardwareNote: 'NVIDIA GPU (TRT-LLM, vLLM)' },
-  { key: 'hqq_4bit',         label: 'HQQ 4-bit',        family: 'other', bytesPerParam: 0.5, qualityStars: 3, hardwareNote: 'NVIDIA/AMD GPU (HQQ)' },
-  { key: 'hqq_2bit',         label: 'HQQ 2-bit',        family: 'other', bytesPerParam: 0.25, qualityStars: 2, hardwareNote: 'NVIDIA/AMD GPU (HQQ)' },
+  { key: 'smoothquant_w8a8', label: 'SmoothQuant W8A8', family: 'other', bytesPerParam: 1.0, qualityStars: 4, get hardwareNote() { return t('NVIDIA GPU (TRT-LLM, vLLM)', 'NVIDIA GPU（TRT-LLM、vLLM）'); } },
+  { key: 'hqq_4bit',         label: 'HQQ 4-bit',        family: 'other', bytesPerParam: 0.5, qualityStars: 3, get hardwareNote() { return t('NVIDIA/AMD GPU (HQQ)', 'NVIDIA/AMD GPU（HQQ）'); } },
+  { key: 'hqq_2bit',         label: 'HQQ 2-bit',        family: 'other', bytesPerParam: 0.25, qualityStars: 2, get hardwareNote() { return t('NVIDIA/AMD GPU (HQQ)', 'NVIDIA/AMD GPU（HQQ）'); } },
 ];
 
 /** Lookup a quant type by key, returns undefined if not found */
@@ -102,13 +103,13 @@ export const DEFAULT_QUANT_KEYS = ['fp16', 'bf16', 'fp8', 'int8', 'int4', 'q4_k_
 
 /** Family display labels */
 export const FAMILY_LABELS: Record<QuantType['family'], string> = {
-  'native':  'Native',
-  'gguf-k':  'GGUF K-quants',
-  'gguf-i':  'GGUF I-quants',
-  'gguf-t':  'GGUF T-quants',
+  get 'native'() { return t('Native', '原生格式'); },
+  get 'gguf-k'() { return t('GGUF K-quants', 'GGUF K 系列量化'); },
+  get 'gguf-i'() { return t('GGUF I-quants', 'GGUF I 系列量化'); },
+  get 'gguf-t'() { return t('GGUF T-quants', 'GGUF T 系列量化'); },
   'gptq':    'GPTQ',
   'awq':     'AWQ',
   'bnb':     'bitsandbytes',
   'exl2':    'EXL2',
-  'other':   'Other',
+  get 'other'() { return t('Other', '其他'); },
 };

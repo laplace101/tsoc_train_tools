@@ -1,6 +1,8 @@
 import { CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { GPUFitResult } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
+import { t } from '@/lib/i18n';
 
 interface GPUCardProps {
   fit: GPUFitResult;
@@ -11,21 +13,21 @@ interface GPUCardProps {
 const FIT_CONFIG = {
   green: {
     icon: CheckCircle,
-    label: 'Fits',
+    get label() { return t('Fits', '满足'); },
     iconColor: 'text-green-600 dark:text-green-400',
     barColor: 'bg-green-500',
     badgeBg: 'bg-green-500/10 text-green-700 dark:text-green-400',
   },
   yellow: {
     icon: AlertTriangle,
-    label: 'Tight',
+    get label() { return t('Tight', '紧张'); },
     iconColor: 'text-yellow-600 dark:text-yellow-400',
     barColor: 'bg-yellow-500',
     badgeBg: 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400',
   },
   red: {
     icon: XCircle,
-    label: 'Overflow',
+    get label() { return t('Overflow', '超限'); },
     iconColor: 'text-red-600 dark:text-red-400',
     barColor: 'bg-red-500',
     badgeBg: 'bg-red-500/10 text-red-700 dark:text-red-400',
@@ -33,6 +35,7 @@ const FIT_CONFIG = {
 };
 
 export function GPUCard({ fit, isRecommended, className }: GPUCardProps) {
+  const { t } = useLanguage();
   const { gpu, fitStatus, utilizationPercent, freeVRAMGB, tokensPerSecond } = fit;
   const config = FIT_CONFIG[fitStatus];
   const FitIcon = config.icon;
@@ -97,7 +100,7 @@ export function GPUCard({ fit, isRecommended, className }: GPUCardProps) {
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-1 text-center">
         <div className="flex flex-col gap-0.5">
-          <span className="text-[9px] text-fg-muted uppercase tracking-wide">BW</span>
+          <span className="text-[9px] text-fg-muted uppercase tracking-wide">{t('BW', '带宽')}</span>
           <span className="text-[10px] font-mono font-medium text-fg-default">{gpu.memoryBandwidthGBs} GB/s</span>
         </div>
         <div className="flex flex-col gap-0.5">
@@ -113,7 +116,7 @@ export function GPUCard({ fit, isRecommended, className }: GPUCardProps) {
       {/* Throughput estimate */}
       {tokensPerSecond != null && (
         <div className="flex items-center justify-between text-[10px] border-t border-border-subtle pt-1.5">
-          <span className="text-fg-muted">Est. throughput</span>
+          <span className="text-fg-muted">{t('Est. throughput', '估算吞吐')}</span>
           <span className="font-mono font-semibold text-fg-primary">~{tokensPerSecond.toLocaleString()} tok/s</span>
         </div>
       )}

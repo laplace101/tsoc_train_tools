@@ -2,6 +2,7 @@ import * as React from 'react';
 import { DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { computeTCO } from '@/lib/formulas/tco';
+import { useLanguage } from '@/lib/language';
 
 interface TCOPanelProps {
   gpuCount: number;
@@ -24,6 +25,7 @@ function KVRow({ label, value, highlight }: { label: string; value: string; high
 const DEP_YEARS_OPTIONS = [3, 5, 7];
 
 export function TCOPanel({ gpuCount, gpuTDPWatts, cloudHourlyCostUSD, className }: TCOPanelProps) {
+  const { t } = useLanguage();
   const [capex, setCapex] = React.useState(30000);
   const [depYears, setDepYears] = React.useState(3);
   const [pue, setPue] = React.useState(1.4);
@@ -49,8 +51,8 @@ export function TCOPanel({ gpuCount, gpuTDPWatts, cloudHourlyCostUSD, className 
   );
 
   const breakevenLabel = result.breakevenMonths === -1
-    ? 'Never (>36 mo)'
-    : `Month ${result.breakevenMonths}`;
+    ? t('Never (>36 mo)', '永不过期（> 36 个月）')
+    : t(`Month ${result.breakevenMonths}`, `第 ${result.breakevenMonths} 个月`);
 
   const savings = result.cloudHourlyCostUSD > result.onPremHourlyCostUSD
     ? `On-prem saves $${(result.cloudHourlyCostUSD - result.onPremHourlyCostUSD).toFixed(4)}/hr/GPU`
@@ -61,7 +63,7 @@ export function TCOPanel({ gpuCount, gpuTDPWatts, cloudHourlyCostUSD, className 
       <div className="flex items-center gap-2 mb-3">
         <DollarSign size={14} className="text-fg-muted" />
         <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-muted">
-          Total Cost of Ownership
+          {t('Total Cost of Ownership', '总拥有成本')}
         </h3>
       </div>
 
@@ -69,7 +71,7 @@ export function TCOPanel({ gpuCount, gpuTDPWatts, cloudHourlyCostUSD, className 
       <div className="space-y-3 mb-4">
         {/* Hardware Capex */}
         <div className="flex items-center gap-2">
-          <label htmlFor="tco-capex" className="text-xs text-fg-muted w-44 flex-shrink-0">Hardware Capex ($)</label>
+          <label htmlFor="tco-capex" className="text-xs text-fg-muted w-44 flex-shrink-0">{t('Hardware Capex ($)', '硬件资本支出（$）')}</label>
           <input
             id="tco-capex"
             type="number"
@@ -83,7 +85,7 @@ export function TCOPanel({ gpuCount, gpuTDPWatts, cloudHourlyCostUSD, className 
 
         {/* Depreciation Years */}
         <div className="flex items-center gap-2">
-          <label className="text-xs text-fg-muted w-44 flex-shrink-0">Depreciation Years</label>
+          <label className="text-xs text-fg-muted w-44 flex-shrink-0">{t('Depreciation Years', '折旧年限')}</label>
           <div className="flex gap-1">
             {DEP_YEARS_OPTIONS.map((y) => (
               <button
@@ -119,7 +121,7 @@ export function TCOPanel({ gpuCount, gpuTDPWatts, cloudHourlyCostUSD, className 
 
         {/* Electricity Cost */}
         <div className="flex items-center gap-2">
-          <label htmlFor="tco-elec" className="text-xs text-fg-muted w-44 flex-shrink-0">Electricity $/kWh</label>
+          <label htmlFor="tco-elec" className="text-xs text-fg-muted w-44 flex-shrink-0">{t('Electricity $/kWh', '电价 $/kWh')}</label>
           <input
             id="tco-elec"
             type="number"
@@ -134,7 +136,7 @@ export function TCOPanel({ gpuCount, gpuTDPWatts, cloudHourlyCostUSD, className 
 
         {/* Colo per Rack */}
         <div className="flex items-center gap-2">
-          <label htmlFor="tco-colo" className="text-xs text-fg-muted w-44 flex-shrink-0">Colo $/rack/month</label>
+          <label htmlFor="tco-colo" className="text-xs text-fg-muted w-44 flex-shrink-0">{t('Colo $/rack/month', '托管 $/机架/月')}</label>
           <input
             id="tco-colo"
             type="number"
@@ -148,7 +150,7 @@ export function TCOPanel({ gpuCount, gpuTDPWatts, cloudHourlyCostUSD, className 
 
         {/* Maintenance % */}
         <div className="flex items-center gap-2">
-          <label htmlFor="tco-maint" className="text-xs text-fg-muted w-44 flex-shrink-0">Maintenance %/yr</label>
+          <label htmlFor="tco-maint" className="text-xs text-fg-muted w-44 flex-shrink-0">{t('Maintenance %/yr', '年维护占比 %')}</label>
           <input
             id="tco-maint"
             type="number"
@@ -163,7 +165,7 @@ export function TCOPanel({ gpuCount, gpuTDPWatts, cloudHourlyCostUSD, className 
 
         {/* Staff Cost */}
         <div className="flex items-center gap-2">
-          <label htmlFor="tco-staff" className="text-xs text-fg-muted w-44 flex-shrink-0">Staff Cost $/yr</label>
+          <label htmlFor="tco-staff" className="text-xs text-fg-muted w-44 flex-shrink-0">{t('Staff Cost $/yr', '人力成本 $/年')}</label>
           <input
             id="tco-staff"
             type="number"
@@ -178,7 +180,7 @@ export function TCOPanel({ gpuCount, gpuTDPWatts, cloudHourlyCostUSD, className 
         {/* Utilization */}
         <div className="flex flex-col gap-1">
           <div className="flex items-center justify-between">
-            <label htmlFor="tco-util" className="text-xs text-fg-muted">GPU Utilization</label>
+            <label htmlFor="tco-util" className="text-xs text-fg-muted">{t('GPU Utilization', 'GPU 利用率')}</label>
             <span className="text-xs font-mono text-fg-default">{(utilization * 100).toFixed(0)}%</span>
           </div>
           <input
@@ -199,10 +201,10 @@ export function TCOPanel({ gpuCount, gpuTDPWatts, cloudHourlyCostUSD, className 
 
       {/* Outputs */}
       <div className="border-t border-border-subtle pt-3 flex flex-col">
-        <KVRow label="On-prem hourly/GPU" value={`$${result.onPremHourlyCostUSD.toFixed(4)}/hr`} highlight />
-        <KVRow label="Cloud hourly" value={`$${result.cloudHourlyCostUSD.toFixed(4)}/hr`} />
-        <KVRow label="Breakeven" value={breakevenLabel} highlight />
-        <KVRow label="Cost comparison" value={savings} />
+        <KVRow label={t('On-prem hourly/GPU', '自建每小时/卡')} value={`$${result.onPremHourlyCostUSD.toFixed(4)}/hr`} highlight />
+        <KVRow label={t('Cloud hourly', '上云每小时')} value={`$${result.cloudHourlyCostUSD.toFixed(4)}/hr`} />
+        <KVRow label={t('Breakeven', '盈亏平衡')} value={breakevenLabel} highlight />
+        <KVRow label={t('Cost comparison', '成本对比')} value={savings} />
       </div>
     </div>
   );

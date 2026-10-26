@@ -13,6 +13,7 @@ import { buildLoraTargetModules } from '@/lib/formulas/lora';
 import type { TrainingMethodId } from '@/lib/formulas/training-methods';
 import type { ModelSpec } from '@/lib/formulas/types';
 import type { LoRAModuleName } from '@/lib/formulas/lora';
+import { t } from '@/lib/i18n';
 
 interface AdvancedPanelProps {
   mode: WorkloadMode;
@@ -39,7 +40,7 @@ const TOKENIZER_OPTIONS = [
 ];
 
 const TRAINING_MODE_OPTIONS = [
-  { value: 'full', label: 'Full Fine-tune' },
+  { value: 'full', get label() { return t('Full Fine-tune', '全量微调'); } },
   { value: 'lora', label: 'LoRA' },
   { value: 'qlora', label: 'QLoRA' },
 ];

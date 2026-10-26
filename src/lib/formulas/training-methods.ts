@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 /**
  * Training method memory formulas.
  * Each method has a different set of models loaded in memory and different
@@ -208,50 +209,50 @@ export function computeTrainingMethodMemory(
 
 /** Human-readable labels for each training method */
 export const TRAINING_METHOD_LABELS: Record<TrainingMethodId, string> = {
-  pretrain: 'Pre-training',
-  continued_pretrain: 'Continued Pre-training',
-  sft_full: 'SFT (Full)',
-  sft_lora: 'SFT (LoRA)',
-  sft_qlora: 'SFT (QLoRA)',
+  get pretrain() { return t('Pre-training', '预训练'); },
+  get continued_pretrain() { return t('Continued Pre-training', '继续预训练'); },
+  get sft_full() { return t('SFT (Full)', 'SFT（全量）'); },
+  get sft_lora() { return t('SFT (LoRA)', 'SFT（LoRA）'); },
+  get sft_qlora() { return t('SFT (QLoRA)', 'SFT（QLoRA）'); },
   dpo: 'DPO',
   grpo: 'GRPO',
   rlhf_ppo: 'RLHF-PPO',
   kto: 'KTO',
-  orpo: 'ORPO / SimPO / CPO',
-  distillation: 'Distillation',
+  get orpo() { return t('ORPO / SimPO / CPO', 'ORPO / SimPO / CPO'); },
+  get distillation() { return t('Distillation', '蒸馏'); },
 };
 
 /** Formula summary for display in picker */
 export const TRAINING_METHOD_FORMULA: Record<TrainingMethodId, string> = {
-  pretrain: '16 B/param — full weights',
-  continued_pretrain: '16 B/param — full weights',
-  sft_full: '16 B/param — full weights',
-  sft_lora: '2N frozen + 14 × N_trainable',
-  sft_qlora: '0.5N NF4 + 10 × N_trainable',
-  dpo: '18N — policy + reference',
-  grpo: '20N — policy + ref + reward',
-  rlhf_ppo: '36N — actor + critic + ref + reward',
-  kto: '16N — reference-free',
-  orpo: '16N — reference-free',
-  distillation: '16N_student + 2N_teacher',
+  get pretrain() { return t('16 B/param — full weights', '16 字节/参数 —— 全量权重'); },
+  get continued_pretrain() { return t('16 B/param — full weights', '16 字节/参数 —— 全量权重'); },
+  get sft_full() { return t('16 B/param — full weights', '16 字节/参数 —— 全量权重'); },
+  get sft_lora() { return t('2N frozen + 14 × N_trainable', '2N 冻结 + 14 × N 可训练'); },
+  get sft_qlora() { return t('0.5N NF4 + 10 × N_trainable', '0.5N NF4 + 10 × N 可训练'); },
+  get dpo() { return t('18N — policy + reference', '18N —— 策略 + 参考模型'); },
+  get grpo() { return t('20N — policy + ref + reward', '20N —— 策略 + 参考 + 奖励模型'); },
+  get rlhf_ppo() { return t('36N — actor + critic + ref + reward', '36N —— actor + critic + 参考 + 奖励模型'); },
+  get kto() { return t('16N — reference-free', '16N —— 无需参考模型'); },
+  get orpo() { return t('16N — reference-free', '16N —— 无需参考模型'); },
+  get distillation() { return t('16N_student + 2N_teacher', '16N_学生 + 2N_教师'); },
 };
 
 /** Group methods by category */
 export const TRAINING_METHOD_GROUPS = [
   {
-    label: 'Pre-training',
+    get label() { return t('Pre-training', '预训练'); },
     methods: ['pretrain', 'continued_pretrain'] as TrainingMethodId[],
   },
   {
-    label: 'Fine-tuning',
+    get label() { return t('Fine-tuning', '微调'); },
     methods: ['sft_full', 'sft_lora', 'sft_qlora'] as TrainingMethodId[],
   },
   {
-    label: 'Alignment',
+    get label() { return t('Alignment', '对齐'); },
     methods: ['dpo', 'grpo', 'rlhf_ppo', 'kto', 'orpo'] as TrainingMethodId[],
   },
   {
-    label: 'Distillation',
+    get label() { return t('Distillation', '蒸馏'); },
     methods: ['distillation'] as TrainingMethodId[],
   },
 ] as const;

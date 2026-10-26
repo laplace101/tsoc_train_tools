@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { LORA_RANK_STEPS, LORA_MODULE_NAMES, computeLoRAParams } from '@/lib/formulas/lora';import type { LoRAModuleName } from '@/lib/formulas/lora';
+import { useLanguage } from '@/lib/language';
 
 interface LoRAConfigProps {
   rank: number;
@@ -37,6 +38,7 @@ export function LoRAConfig({
   onModulesChange,
   className,
 }: LoRAConfigProps) {
+  const { t } = useLanguage();
   // Compute trainable params from selected modules
   const moduleShapes: Record<LoRAModuleName, { dIn: number; dOut: number }> = {
     q_proj:    { dIn: hiddenSize, dOut: hiddenSize },
@@ -80,7 +82,7 @@ export function LoRAConfig({
       {/* Rank slider */}
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center justify-between">
-          <label className="text-xs font-medium text-fg-default">LoRA Rank</label>
+          <label className="text-xs font-medium text-fg-default">{t('LoRA Rank', 'LoRA 秩')}</label>
           <span className="text-xs font-mono font-bold text-accent">{rank}</span>
         </div>
         <input
@@ -91,7 +93,7 @@ export function LoRAConfig({
           value={rankIndex >= 0 ? rankIndex : 1}
           onChange={(e) => onRankChange(LORA_RANK_STEPS[parseInt(e.target.value)])}
           className="w-full accent-accent"
-          aria-label="LoRA rank"
+          aria-label={t('LoRA rank', 'LoRA 秩')}
         />
         <div className="flex justify-between text-[10px] text-fg-muted">
           {LORA_RANK_STEPS.map((r) => (
@@ -103,7 +105,7 @@ export function LoRAConfig({
       {/* Alpha input */}
       <div className="flex flex-col gap-1.5">
         <label htmlFor="lora-alpha" className="text-xs font-medium text-fg-default">
-          Alpha (scaling)
+          {t('Alpha (scaling)', 'Alpha（缩放系数）')}
         </label>
         <input
           id="lora-alpha"
@@ -119,7 +121,7 @@ export function LoRAConfig({
 
       {/* Target modules */}
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium text-fg-default">Target Modules</label>
+        <label className="text-xs font-medium text-fg-default">{t('Target Modules', '目标模块')}</label>
         <div className="grid grid-cols-2 gap-1">
           {LORA_MODULE_NAMES.map((name) => {
             const checked = selectedModules.includes(name);
@@ -149,18 +151,18 @@ export function LoRAConfig({
       {/* Stats */}
       <div className="rounded-md border border-border-subtle bg-bg-subtle p-2.5 space-y-1">
         <div className="flex justify-between text-xs">
-          <span className="text-fg-muted">Trainable params</span>
+          <span className="text-fg-muted">{t('Trainable params', '可训练参数')}</span>
           <span className="font-mono font-bold text-fg-default">
             {formatParams(trainableParams)} ({trainablePercent.toFixed(2)}%)
           </span>
         </div>
         <div className="flex justify-between text-xs">
-          <span className="text-fg-muted">LoRA VRAM est.</span>
+          <span className="text-fg-muted">{t('LoRA VRAM est.', 'LoRA 显存估算')}</span>
           <span className="font-mono text-fg-default">{loraVRAMGB.toFixed(1)} GB</span>
         </div>
         {savingsGB > 0 && (
           <div className="flex justify-between text-xs">
-            <span className="text-fg-muted">Savings vs full FT</span>
+            <span className="text-fg-muted">{t('Savings vs full FT', '相比全量微调节省')}</span>
             <span className="font-mono text-green-500">
               −{savingsGB.toFixed(1)} GB ({savingsPct.toFixed(0)}%)
             </span>

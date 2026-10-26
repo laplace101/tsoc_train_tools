@@ -58,7 +58,7 @@ describe('computeParallelism', () => {
     const result = computeParallelism(128, 8, modelGB, 80);
     // PP will be large, should warn about bubble
     if (result.config.pp > 4) {
-      expect(result.warnings.some(w => w.includes('bubble'))).toBe(true);
+      expect(result.warnings.some(w => w.includes('bubble') || w.includes('气泡'))).toBe(true);
     }
   });
 

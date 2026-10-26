@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/lib/language';
 
 interface BottleneckRowProps {
   label: string;
@@ -9,6 +10,7 @@ interface BottleneckRowProps {
 }
 
 function BottleneckRow({ label, capacity, unit, isBottleneck, status }: BottleneckRowProps) {
+  const { t } = useLanguage();
   const statusColor = {
     green: 'text-green-500',
     yellow: 'text-yellow-500',
@@ -31,7 +33,7 @@ function BottleneckRow({ label, capacity, unit, isBottleneck, status }: Bottlene
         <span className="font-medium text-fg-default">{label}</span>
         {isBottleneck && (
           <span className="text-[9px] bg-amber-500/20 text-amber-600 px-1.5 py-0.5 rounded font-semibold">
-            BOTTLENECK
+            {t('BOTTLENECK', '瓶颈')}
           </span>
         )}
       </div>
@@ -63,28 +65,29 @@ export function BottleneckIndicator({
   bottleneck,
   currentUsers,
 }: BottleneckIndicatorProps) {
+  const { t } = useLanguage();
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-xs font-medium text-fg-default">Capacity Constraints</span>
+      <span className="text-xs font-medium text-fg-default">{t('Capacity Constraints', '容量约束')}</span>
       <div className="flex flex-col gap-1.5">
         <BottleneckRow
-          label="KV Memory"
+          label={t('KV Memory', 'KV 显存')}
           capacity={maxUsersMemory}
-          unit="users"
+          unit={t('users', '用户')}
           isBottleneck={bottleneck === 'memory'}
           status={getStatus(maxUsersMemory, currentUsers)}
         />
         <BottleneckRow
-          label="Decode Bandwidth"
+          label={t('Decode Bandwidth', 'Decode 带宽')}
           capacity={maxUsersThroughput}
-          unit="users"
+          unit={t('users', '用户')}
           isBottleneck={bottleneck === 'throughput'}
           status={getStatus(maxUsersThroughput, currentUsers)}
         />
         <BottleneckRow
-          label="Prefill Compute"
+          label={t('Prefill Compute', 'Prefill 算力')}
           capacity={maxUsersPrefill}
-          unit="users"
+          unit={t('users', '用户')}
           isBottleneck={bottleneck === 'prefill'}
           status={getStatus(maxUsersPrefill, currentUsers)}
         />

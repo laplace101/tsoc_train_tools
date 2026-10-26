@@ -4,6 +4,7 @@ import 'katex/dist/katex.min.css';
 import { ChevronDown, ChevronUp, Sigma } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { KVFormulaRow } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
 
 interface FormulaInput {
   label: string;
@@ -23,6 +24,7 @@ interface FormulaRevealProps {
 }
 
 function KaTeXFormula({ formula }: { formula: string }) {
+  const { t } = useLanguage();
   const html = React.useMemo(() => {
     try {
       return katex.renderToString(formula, {
@@ -31,9 +33,9 @@ function KaTeXFormula({ formula }: { formula: string }) {
         displayMode: true,
       });
     } catch {
-      return `<span class="text-red-500 text-xs">Formula render error</span>`;
+      return `<span class="text-red-500 text-xs">${t('Formula render error', '公式渲染出错')}</span>`;
     }
-  }, [formula]);
+  }, [formula, t]);
 
   return (
     <div
@@ -45,6 +47,7 @@ function KaTeXFormula({ formula }: { formula: string }) {
 }
 
 export function FormulaReveal({ title, formula, formulaRows, inputs, result, source, sourceUrl, className }: FormulaRevealProps) {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
@@ -76,7 +79,7 @@ export function FormulaReveal({ title, formula, formulaRows, inputs, result, sou
           {formulaRows && formulaRows.length > 0 ? (
             <div className="space-y-2">
               <h4 className="text-[11px] font-medium uppercase tracking-wider text-fg-muted mb-2">
-                Formula steps
+                {t('Formula steps', '公式步骤')}
               </h4>
               {formulaRows.map((row) => (
                 <div key={row.name} className="rounded-md bg-bg-muted px-2.5 py-1.5">
@@ -100,7 +103,7 @@ export function FormulaReveal({ title, formula, formulaRows, inputs, result, sou
           {inputs.length > 0 && (
             <div>
               <h4 className="text-[11px] font-medium uppercase tracking-wider text-fg-muted mb-2">
-                Inputs
+                {t('Inputs', '输入项')}
               </h4>
               <div className="space-y-1">
                 {inputs.map((input, i) => (
@@ -117,7 +120,7 @@ export function FormulaReveal({ title, formula, formulaRows, inputs, result, sou
 
           {/* Result */}
           <div className="flex items-center justify-between text-xs border-t border-border-subtle pt-3">
-            <span className="font-medium text-fg-default">Result</span>
+            <span className="font-medium text-fg-default">{t('Result', '结果')}</span>
             <span className="font-mono font-semibold text-fg-primary">{result}</span>
           </div>
 

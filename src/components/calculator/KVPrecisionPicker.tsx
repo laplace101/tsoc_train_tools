@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { InfoTooltip } from '@/components/primitives/InfoTooltip';
+import { t } from '@/lib/i18n';
+import { useLanguage } from '@/lib/language';
 
 interface KVPrecisionPickerProps {
   value: string;
@@ -20,13 +22,14 @@ interface KVOption {
 const KV_PRECISION_OPTIONS: KVOption[] = [
   { key: 'fp32',      label: 'FP32',      bytesPerParam: 4.0 },
   { key: 'fp16',      label: 'FP16/BF16', bytesPerParam: 2.0 },
-  { key: 'fp8_e4m3',  label: 'FP8 E4M3',  bytesPerParam: 1.0, qualityHint: 'FP8 KV: <0.1% ppl increase' },
-  { key: 'fp8_e5m2',  label: 'FP8 E5M2',  bytesPerParam: 1.0, qualityHint: 'FP8 KV: <0.1% ppl increase' },
-  { key: 'int8',      label: 'INT8',       bytesPerParam: 1.0, qualityHint: 'INT8 KV: ~0.1–0.3% ppl increase' },
-  { key: 'int4',      label: 'INT4',       bytesPerParam: 0.5, qualityHint: 'INT4 KV: 0.5–2% ppl, visible degradation >32K' },
+  { key: 'fp8_e4m3',  label: 'FP8 E4M3',  bytesPerParam: 1.0, get qualityHint() { return t('FP8 KV: <0.1% ppl increase', 'FP8 KV：困惑度上升 < 0.1%'); } },
+  { key: 'fp8_e5m2',  label: 'FP8 E5M2',  bytesPerParam: 1.0, get qualityHint() { return t('FP8 KV: <0.1% ppl increase', 'FP8 KV：困惑度上升 < 0.1%'); } },
+  { key: 'int8',      label: 'INT8',       bytesPerParam: 1.0, get qualityHint() { return t('INT8 KV: ~0.1–0.3% ppl increase', 'INT8 KV：困惑度上升约 0.1–0.3%'); } },
+  { key: 'int4',      label: 'INT4',       bytesPerParam: 0.5, get qualityHint() { return t('INT4 KV: 0.5–2% ppl, visible degradation >32K', 'INT4 KV：困惑度上升 0.5–2%，超过 32K 后明显掉点'); } },
 ];
 
 export function KVPrecisionPicker({ value, onChange, fp16KvCacheGB, className }: KVPrecisionPickerProps) {
+  const { t } = useLanguage();
   const selectedOption = KV_PRECISION_OPTIONS.find(o => o.key === value) ?? KV_PRECISION_OPTIONS[1];
   const fp16Option = KV_PRECISION_OPTIONS.find(o => o.key === 'fp16')!;
 
@@ -56,13 +59,13 @@ export function KVPrecisionPicker({ value, onChange, fp16KvCacheGB, className }:
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       <label className="text-xs font-medium text-fg-default flex items-center gap-1.5">
-        KV Cache Precision
+        {t('KV Cache Precision', 'KV Cache 精度')}
         <InfoTooltip paramKey="kvCachePrecision" />
       </label>
 
       <div
         role="radiogroup"
-        aria-label="KV cache precision"
+        aria-label={t('KV cache precision', 'KV Cache 精度')}
         className="flex flex-wrap gap-1"
         onKeyDown={handleKeyDown}
       >

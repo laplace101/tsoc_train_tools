@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/lib/language';
 
 // Log-scale snap points
 const SNAP_POINTS = [1, 5, 10, 25, 50, 100, 250, 500, 1000, 2500, 5000, 10000];
@@ -34,6 +35,7 @@ export function ConcurrentUserSlider({
   totalVRAMGB,
   usedVRAMGB,
 }: ConcurrentUserSliderProps) {
+  const { t } = useLanguage();
   const [inputVal, setInputVal] = React.useState(String(value));
   const sliderIndex = valueToIndex(value);
   const capacityPct = maxCapacity > 0 ? (value / maxCapacity) * 100 : 0;
@@ -84,7 +86,7 @@ export function ConcurrentUserSlider({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-medium text-fg-default">Concurrent Users</label>
+        <label className="text-xs font-medium text-fg-default">{t('Concurrent Users', '并发用户数')}</label>
         <span className={cn('text-xs font-mono font-semibold', zoneText)}>
           {formatUsers(value)} / {formatUsers(maxCapacity)} max
         </span>
@@ -114,7 +116,7 @@ export function ConcurrentUserSlider({
             zone === 'yellow' && '[&::-webkit-slider-thumb]:bg-yellow-500',
             zone === 'red' && '[&::-webkit-slider-thumb]:bg-red-500',
           )}
-          aria-label="Concurrent users"
+          aria-label={t('Concurrent users', '并发用户数')}
           aria-valuemin={1}
           aria-valuemax={10000}
           aria-valuenow={value}
@@ -146,7 +148,7 @@ export function ConcurrentUserSlider({
             'w-24 h-8 px-2 rounded border bg-bg-muted text-sm font-mono text-fg-primary focus:outline-none focus:ring-1 focus:ring-ring',
             zoneBorder,
           )}
-          aria-label="Concurrent users numeric input"
+          aria-label={t('Concurrent users numeric input', '并发用户数数值输入')}
         />
         <span className="text-xs text-fg-muted">users</span>
         {zone === 'red' && (
@@ -159,7 +161,7 @@ export function ConcurrentUserSlider({
       {/* VRAM usage bar */}
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between text-[10px] text-fg-muted">
-          <span>VRAM usage</span>
+          <span>{t('VRAM usage', '显存占用')}</span>
           <span className="font-mono">{usedVRAMGB.toFixed(1)} / {totalVRAMGB} GB ({Math.round(vramPct)}%)</span>
         </div>
         <div className="h-2 rounded-full bg-bg-emphasis overflow-hidden">

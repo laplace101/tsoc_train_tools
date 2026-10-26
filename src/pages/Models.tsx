@@ -5,6 +5,9 @@ import { useCalculatorStore } from '@/store/calculator-store';
 import { useLanguage } from '@/lib/language';
 import type { ModelSpec } from '@/lib/formulas/types';
 
+// “全部”筛选项的内部哨兵值：与界面文案解耦，切换语言不会影响筛选状态
+const ALL_FILTER = '__all__';
+
 type SortKey = 'displayName' | 'paramsTotal' | 'architecture.maxContextLength' | 'releaseDate' | 'license';
 type SortDir = 'asc' | 'desc';
 
@@ -36,16 +39,16 @@ export function Models() {
   const { t } = useLanguage();
   const [sortKey, setSortKey] = React.useState<SortKey>('paramsTotal');
   const [sortDir, setSortDir] = React.useState<SortDir>('asc');
-  const [familyFilter, setFamilyFilter] = React.useState('All');
+  const [familyFilter, setFamilyFilter] = React.useState(ALL_FILTER);
 
-  const families = ['All', ...Array.from(new Set(modelDb.map(m => m.family))).sort()];
+  const families = [ALL_FILTER, ...Array.from(new Set(modelDb.map(m => m.family))).sort()];
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
     else { setSortKey(key); setSortDir('asc'); }
   };
 
-  const filtered = familyFilter === 'All' ? modelDb : modelDb.filter(m => m.family === familyFilter);
+  const filtered = familyFilter === ALL_FILTER ? modelDb : modelDb.filter(m => m.family === familyFilter);
 
   const sorted = [...filtered].sort((a, b) => {
     const av = getVal(a, sortKey);
@@ -76,7 +79,7 @@ export function Models() {
                 className={cn('text-xs px-2.5 py-1 rounded-md border transition-colors capitalize whitespace-nowrap',
                   familyFilter === f ? 'bg-accent text-white border-accent' : 'border-border-subtle text-fg-muted hover:text-fg-default hover:border-border-default'
                 )}>
-                {f === 'All' ? t('All', '全部') : f}
+                {f === ALL_FILTER ? t('All', '全部') : f}
               </button>
             ))}
           </div>
@@ -84,7 +87,7 @@ export function Models() {
       </div>
 
       <div className="w-full overflow-x-auto rounded-lg border border-border-subtle">
-        <table className="w-full min-w-[480px] text-sm" aria-label="Models catalog">
+        <table className="w-full min-w-[480px] text-sm" aria-label={t('Models catalog', '模型库')}>
           <thead>
             <tr className="border-b border-border-subtle bg-bg-subtle">
               {cols.map(col => (

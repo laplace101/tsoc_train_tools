@@ -3,6 +3,7 @@ import { BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { computeReplicas, computeBlendedCost } from '@/lib/formulas/replicas';
 import { Slider } from '@/components/primitives/slider';
+import { useLanguage } from '@/lib/language';
 
 interface ScaleEstimatorProps {
   tokensPerSecond: number;    // per-replica throughput
@@ -34,6 +35,7 @@ export function ScaleEstimator({
   costPerGPUHour,
   className,
 }: ScaleEstimatorProps) {
+  const { t } = useLanguage();
   const [targetQPS, setTargetQPS] = React.useState(100);
   const [avgOutputTokens, setAvgOutputTokens] = React.useState(200);
   const [safetyFactor, setSafetyFactor] = React.useState(1.4);
@@ -54,45 +56,45 @@ export function ScaleEstimator({
       <div className="flex items-center gap-2 mb-4">
         <BarChart3 size={14} className="text-fg-muted" />
         <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-muted">
-          Scale Estimator
+          {t('Scale Estimator', '规模估算')}
         </h3>
       </div>
 
       {/* Inputs */}
       <div className="flex flex-col gap-3 mb-4">
         <label className="flex flex-col gap-1">
-          <span className="text-[11px] text-fg-muted">Target QPS: <span className="font-mono text-fg-default">{targetQPS}</span></span>
+          <span className="text-[11px] text-fg-muted">{t('Target QPS:', '目标 QPS：')} <span className="font-mono text-fg-default">{targetQPS}</span></span>
           <Slider min={1} max={10000} step={1} value={targetQPS} onChange={e => setTargetQPS(Number(e.target.value))} />
         </label>
 
         <label className="flex flex-col gap-1">
-          <span className="text-[11px] text-fg-muted">Avg output tokens: <span className="font-mono text-fg-default">{avgOutputTokens}</span></span>
+          <span className="text-[11px] text-fg-muted">{t('Avg output tokens:', '平均输出 Token 数：')} <span className="font-mono text-fg-default">{avgOutputTokens}</span></span>
           <Slider min={10} max={2000} step={10} value={avgOutputTokens} onChange={e => setAvgOutputTokens(Number(e.target.value))} />
         </label>
 
         <label className="flex flex-col gap-1">
-          <span className="text-[11px] text-fg-muted">Safety factor: <span className="font-mono text-fg-default">{safetyFactor.toFixed(1)}×</span></span>
+          <span className="text-[11px] text-fg-muted">{t('Safety factor:', '安全系数：')} <span className="font-mono text-fg-default">{safetyFactor.toFixed(1)}×</span></span>
           <Slider min={1.2} max={2.0} step={0.1} value={safetyFactor} onChange={e => setSafetyFactor(Number(e.target.value))} />
         </label>
 
         <label className="flex flex-col gap-1">
-          <span className="text-[11px] text-fg-muted">Spot %: <span className="font-mono text-fg-default">{spotPercent}%</span></span>
+          <span className="text-[11px] text-fg-muted">{t('Spot %:', '竞价实例占比：')} <span className="font-mono text-fg-default">{spotPercent}%</span></span>
           <Slider min={0} max={80} step={5} value={spotPercent} onChange={e => setSpotPercent(Number(e.target.value))} />
         </label>
       </div>
 
       {/* Results */}
       <div className="flex flex-col">
-        <KVRow label="Replicas" value={String(config.replicas)} highlight />
-        <KVRow label="Total GPUs" value={String(config.totalGPUs)} highlight />
-        <KVRow label="Cost / hour" value={spotPercent > 0 ? `${formatCost(blended.blendedCostPerHour)} (${blended.savingsPercent.toFixed(0)}% saved)` : formatCost(config.costPerHour)} />
-        <KVRow label="Cost / day" value={formatCost(spotPercent > 0 ? blended.blendedCostPerHour * 24 : config.costPerDay)} />
-        <KVRow label="Cost / month" value={formatCost(spotPercent > 0 ? blended.blendedCostPerHour * 24 * 30 : config.costPerMonth)} />
+        <KVRow label={t('Replicas', '副本数')} value={String(config.replicas)} highlight />
+        <KVRow label={t('Total GPUs', 'GPU 总数')} value={String(config.totalGPUs)} highlight />
+        <KVRow label={t('Cost / hour', '成本 / 小时')} value={spotPercent > 0 ? `${formatCost(blended.blendedCostPerHour)} (${blended.savingsPercent.toFixed(0)}% saved)` : formatCost(config.costPerHour)} />
+        <KVRow label={t('Cost / day', '成本 / 天')} value={formatCost(spotPercent > 0 ? blended.blendedCostPerHour * 24 : config.costPerDay)} />
+        <KVRow label={t('Cost / month', '成本 / 月')} value={formatCost(spotPercent > 0 ? blended.blendedCostPerHour * 24 * 30 : config.costPerMonth)} />
       </div>
 
       {/* Auto-scaling thresholds */}
       <div className="mt-4 border-t border-border-subtle pt-3">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-2">Auto-scale triggers</p>
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-fg-muted mb-2">{t('Auto-scale triggers', '自动扩缩触发条件')}</p>
         <div className="flex flex-col gap-1 text-[11px] text-fg-muted">
           <span>GPU util ≥ {config.autoScaleThresholds.scaleUpGPUUtil}%</span>
           <span>KV cache ≥ {config.autoScaleThresholds.scaleUpCacheUtil}%</span>

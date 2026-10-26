@@ -4,6 +4,8 @@ import type { ModelSpec } from '@/lib/formulas/types';
 import { computeKVVariant, type KVVariant } from '@/lib/formulas/kv-cache';
 import { computeModelKVCache, modelHasAdvancedKV } from '@/lib/formulas/kv-formulas';
 import { getKVPrecisionConfig } from '@/lib/formulas/precision';
+import { t } from '@/lib/i18n';
+import { useLanguage } from '@/lib/language';
 
 interface KVCacheConfigProps {
   model: ModelSpec;
@@ -24,10 +26,10 @@ const KV_BYTES: Record<string, number> = {
 };
 
 const VARIANT_OPTIONS: { key: KVVariant; label: string }[] = [
-  { key: 'standard',      label: 'Standard' },
-  { key: 'sliding_window', label: 'Sliding Window' },
+  { key: 'standard',      get label() { return t('Standard', '标准'); } },
+  { key: 'sliding_window', get label() { return t('Sliding Window', '滑动窗口'); } },
   { key: 'paged',         label: 'PagedAttention' },
-  { key: 'prefix_cache',  label: 'Prefix Cache' },
+  { key: 'prefix_cache',  get label() { return t('Prefix Cache', '前缀缓存'); } },
 ];
 
 function autoDetectVariant(model: ModelSpec): KVVariant {
@@ -40,6 +42,7 @@ export function KVCacheConfig({
   model, kvPrecision, indexerPrecision, includeDraftKvCache, includeLinearAttentionState,
   contextLength, batchSize, className,
 }: KVCacheConfigProps) {
+  const { t } = useLanguage();
   const arch = model.architecture;
 
   // Advanced layout (kv-cache-calculator integration): the per-model formula
@@ -78,7 +81,7 @@ export function KVCacheConfig({
     <div className={cn('flex flex-col gap-3', className)}>
       <div className="flex items-center justify-between">
         <span className="text-xs font-medium text-fg-default">
-          {advanced ? 'KV Cache Formula' : 'KV Cache Strategy'}
+          {advanced ? t('KV Cache Formula', 'KV Cache 公式') : t('KV Cache Strategy', 'KV Cache 策略')}
         </span>
         <span className="text-[10px] font-mono text-fg-muted">
           {(kvPerTokenPerLayer / 1024).toFixed(1)} KB/token/layer
@@ -113,7 +116,7 @@ export function KVCacheConfig({
 
           {/* Result */}
           <div className="flex items-center justify-between rounded-md bg-bg-muted px-3 py-2">
-            <span className="text-xs text-fg-muted">Estimated KV</span>
+            <span className="text-xs text-fg-muted">{t('Estimated KV', '估算 KV 占用')}</span>
             <span className="text-sm font-mono font-semibold text-fg-primary">
               {advanced.totalGB.toFixed(2)} GB
             </span>
@@ -130,7 +133,7 @@ export function KVCacheConfig({
       ) : (
         <>
           {/* Variant selector */}
-          <div className="flex flex-wrap gap-1" role="radiogroup" aria-label="KV cache variant">
+          <div className="flex flex-wrap gap-1" role="radiogroup" aria-label={t('KV cache variant', 'KV Cache 变体')}>
             {VARIANT_OPTIONS.map(opt => {
               const isSelected = variant === opt.key;
               return (
@@ -157,7 +160,7 @@ export function KVCacheConfig({
           {variant === 'sliding_window' && (
             <div className="flex flex-col gap-1">
               <label className="text-[10px] text-fg-muted">
-                Window size: <span className="font-mono">{windowSize.toLocaleString()}</span> tokens
+                {t('Window size:', '窗口大小：')} <span className="font-mono">{windowSize.toLocaleString()}</span> tokens
               </label>
               <input
                 type="range"
@@ -175,7 +178,7 @@ export function KVCacheConfig({
           {variant === 'prefix_cache' && (
             <div className="flex flex-col gap-1">
               <label className="text-[10px] text-fg-muted">
-                Prefix reuse: <span className="font-mono">{reusePercent}%</span>
+                {t('Prefix reuse:', '前缀复用：')} <span className="font-mono">{reusePercent}%</span>
               </label>
               <input
                 type="range"
@@ -194,7 +197,7 @@ export function KVCacheConfig({
 
           {/* Result */}
           <div className="flex items-center justify-between rounded-md bg-bg-muted px-3 py-2">
-            <span className="text-xs text-fg-muted">Estimated KV</span>
+            <span className="text-xs text-fg-muted">{t('Estimated KV', '估算 KV 占用')}</span>
             <span className="text-sm font-mono font-semibold text-fg-primary">
               {legacy.kvCacheGB.toFixed(2)} GB
             </span>

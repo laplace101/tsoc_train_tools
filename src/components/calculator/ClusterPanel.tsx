@@ -1,6 +1,7 @@
 import { Network } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ClusterRecommendation } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
 
 interface ClusterPanelProps {
   cluster: ClusterRecommendation;
@@ -17,24 +18,25 @@ function KVRow({ label, value }: { label: string; value: string }) {
 }
 
 export function ClusterPanel({ cluster, className }: ClusterPanelProps) {
+  const { t } = useLanguage();
   return (
     <div className={cn('rounded-lg border border-border-subtle bg-bg-muted p-4', className)}>
       <div className="flex items-center gap-2 mb-3">
         <Network size={14} className="text-fg-muted" />
         <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-muted">
-          Cluster Setup
+          {t('Cluster Setup', '集群配置')}
         </h3>
       </div>
 
       <div className="flex flex-col">
-        <KVRow label="Topology" value={cluster.topology} />
-        <KVRow label="Framework" value={cluster.framework} />
-        <KVRow label="Launch args" value={cluster.frameworkArgs} />
+        <KVRow label={t('Topology', '拓扑')} value={cluster.topology} />
+        <KVRow label={t('Framework', '框架')} value={cluster.framework} />
+        <KVRow label={t('Launch args', '启动参数')} value={cluster.frameworkArgs} />
         {cluster.alternativeTopology && (
-          <KVRow label="Alt. topology" value={cluster.alternativeTopology} />
+          <KVRow label={t('Alt. topology', '备选拓扑')} value={cluster.alternativeTopology} />
         )}
         {cluster.alternativeRuntime && (
-          <KVRow label="Alt. runtime" value={cluster.alternativeRuntime} />
+          <KVRow label={t('Alt. runtime', '备选运行时')} value={cluster.alternativeRuntime} />
         )}
       </div>
     </div>

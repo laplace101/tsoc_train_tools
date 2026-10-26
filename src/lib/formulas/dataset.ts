@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 /**
  * Dataset size estimation for LLM training.
  *
@@ -83,8 +84,8 @@ export function estimateDataset(
 /** Reference datasets for comparison */
 export const REFERENCE_DATASETS = [
   { name: 'FineWeb', tokens: 15e12, rawSizeGB: 44_000, description: '15T tokens, 44TB raw' },
-  { name: 'The Pile', tokens: 825e9 / 2, rawSizeGB: 825, description: '825GB raw text' },
+  { get name() { return t('The Pile', 'The Pile'); }, tokens: 825e9 / 2, rawSizeGB: 825, description: '825GB raw text' },
   { name: 'SlimPajama', tokens: 627e9, rawSizeGB: 627e9 * 4 / 1e9, description: '627B tokens' },
-  { name: 'Typical SFT (small)', tokens: 10_000 * 512, rawSizeGB: 10_000 * 512 * 4 / 1e9, description: '10k examples × 512 tokens' },
-  { name: 'Typical SFT (large)', tokens: 1_000_000 * 512, rawSizeGB: 1_000_000 * 512 * 4 / 1e9, description: '1M examples × 512 tokens' },
+  { get name() { return t('Typical SFT (small)', '典型 SFT（小型）'); }, tokens: 10_000 * 512, rawSizeGB: 10_000 * 512 * 4 / 1e9, description: '10k examples × 512 tokens' },
+  { get name() { return t('Typical SFT (large)', '典型 SFT（大型）'); }, tokens: 1_000_000 * 512, rawSizeGB: 1_000_000 * 512 * 4 / 1e9, description: '1M examples × 512 tokens' },
 ] as const;

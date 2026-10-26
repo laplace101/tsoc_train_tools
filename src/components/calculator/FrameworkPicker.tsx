@@ -2,6 +2,7 @@ import { ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SERVING_FRAMEWORKS, type ServingFramework } from '@/data/serving-frameworks';
 import type { GPUSpec } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
 
 interface FrameworkPickerProps {
   gpu?: GPUSpec | null;
@@ -55,6 +56,7 @@ const HARDWARE_ICONS: Record<string, string> = {
 };
 
 export function FrameworkPicker({ gpu, quantization = 'fp16', mode = 'inference', className }: FrameworkPickerProps) {
+  const { t } = useLanguage();
   const isTraining = mode === 'train' || mode === 'finetune';
   const recommended = getRecommendedFrameworks(gpu, quantization, mode);
 
@@ -63,15 +65,15 @@ export function FrameworkPicker({ gpu, quantization = 'fp16', mode = 'inference'
 
   return (
     <div className={cn('flex flex-col gap-3', className)}>
-      <span className="text-xs font-medium text-fg-default">Serving Framework</span>
+      <span className="text-xs font-medium text-fg-default">{t('Serving Framework', '推理框架')}</span>
 
       {isTraining && gpu?.vendor === 'nvidia' ? (
         <p className="text-xs text-fg-muted italic">
-          Training workloads use PyTorch / DeepSpeed / FSDP — serving frameworks not applicable.
+          {t('Training workloads use PyTorch / DeepSpeed / FSDP — serving frameworks not applicable.', '训练负载使用 PyTorch / DeepSpeed / FSDP，不适用推理框架。')}
         </p>
       ) : recommended.length > 0 ? (
         <div className="flex flex-col gap-1.5">
-          <p className="text-[10px] text-fg-muted">Recommended for your config:</p>
+          <p className="text-[10px] text-fg-muted">{t('Recommended for your config:', '针对当前配置的推荐：')}</p>
           <div className="flex flex-wrap gap-1.5">
             {recommended.map(fw => (
               <a
@@ -91,7 +93,7 @@ export function FrameworkPicker({ gpu, quantization = 'fp16', mode = 'inference'
           </p>
         </div>
       ) : (
-        <p className="text-xs text-fg-muted italic">Select a GPU to get framework recommendations.</p>
+        <p className="text-xs text-fg-muted italic">{t('Select a GPU to get framework recommendations.', '选择 GPU 以获得框架推荐。')}</p>
       )}
 
       {/* Comparison table */}
@@ -99,12 +101,12 @@ export function FrameworkPicker({ gpu, quantization = 'fp16', mode = 'inference'
         <table className="w-full text-[10px] border-collapse">
           <thead>
             <tr className="border-b border-border-subtle">
-              <th className="text-left py-1 px-1 text-fg-muted font-medium">Framework</th>
-              <th className="text-center py-1 px-1 text-fg-muted font-medium">HW</th>
-              <th className="text-center py-1 px-1 text-fg-muted font-medium">PA</th>
+              <th className="text-left py-1 px-1 text-fg-muted font-medium">{t('Framework', '框架')}</th>
+              <th className="text-center py-1 px-1 text-fg-muted font-medium">{t('HW', '硬件')}</th>
+              <th className="text-center py-1 px-1 text-fg-muted font-medium">{t('PA', '并行')}</th>
               <th className="text-center py-1 px-1 text-fg-muted font-medium">Pfx$</th>
-              <th className="text-center py-1 px-1 text-fg-muted font-medium">Spec</th>
-              <th className="text-right py-1 px-1 text-fg-muted font-medium">Eff.</th>
+              <th className="text-center py-1 px-1 text-fg-muted font-medium">{t('Spec', '投机')}</th>
+              <th className="text-right py-1 px-1 text-fg-muted font-medium">{t('Eff.', '效率')}</th>
             </tr>
           </thead>
           <tbody>

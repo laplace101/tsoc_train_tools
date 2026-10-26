@@ -5,11 +5,12 @@ import { useCalculatorStore } from '@/store/calculator-store';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useLanguage } from '@/lib/language';
 import type { WorkloadMode } from '@/lib/formulas/types';
+import { t } from '@/lib/i18n';
 
 // Calculator modes — Reverse is a separate page, not a mode
 const CALC_TABS: { mode: WorkloadMode; label: { en: string; cn: string }; icon: React.ReactNode; key: string }[] = [
-  { mode: 'inference', label: { en: 'Inference', cn: '推理' }, icon: <Zap size={14} />, key: 'i' },
-  { mode: 'train',     label: { en: 'Train', cn: '训练' },     icon: <Wrench size={14} />, key: 't' },
+  { mode: 'inference', label: { get en() { return t('Inference', '推理'); }, cn: '推理' }, icon: <Zap size={14} />, key: 'i' },
+  { mode: 'train',     label: { get en() { return t('Train', '训练'); }, cn: '训练' },     icon: <Wrench size={14} />, key: 't' },
 ];
 
 interface ModeTabsBarProps {
@@ -41,12 +42,12 @@ export function ModeTabsBar({ onShare, onCompare }: ModeTabsBarProps) {
     <div
       className="h-12 border-b border-border-subtle bg-bg-base sticky top-12 z-[19] flex items-center px-6 gap-1"
       role="navigation"
-      aria-label="Calculator modes"
+      aria-label={t('Calculator modes', '计算器模式')}
     >
       {/* Mode tabs */}
       <div
         role="tablist"
-        aria-label="Workload mode"
+        aria-label={t('Workload mode', '工作负载模式')}
         className="flex items-center gap-1"
         onKeyDown={handleKeyDown}
       >

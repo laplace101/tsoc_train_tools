@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/lib/language';
 
 /* ── Context ── */
 interface DialogContextValue {
@@ -10,8 +11,9 @@ interface DialogContextValue {
 const DialogContext = React.createContext<DialogContextValue | null>(null);
 
 function useDialogContext() {
+  const { t } = useLanguage();
   const ctx = React.useContext(DialogContext);
-  if (!ctx) throw new Error('Dialog compound components must be used within <Dialog>');
+  if (!ctx) throw new Error(t('Dialog compound components must be used within <Dialog>', 'Dialog 复合组件必须在 <Dialog> 内部使用'));
   return ctx;
 }
 

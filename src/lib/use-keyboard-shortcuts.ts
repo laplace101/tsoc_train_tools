@@ -4,6 +4,7 @@ import { useTheme } from '@/lib/use-theme';
 import { useCalculatorStore } from '@/store/calculator-store';
 import { useToast } from '@/components/feedback/Toast';
 import { registerKeyboardShortcuts } from '@/lib/keyboard-shortcuts';
+import { useLanguage } from '@/lib/language';
 
 interface UseKeyboardShortcutsOptions {
   onOpenModelSearch: () => void;
@@ -14,6 +15,7 @@ export function useKeyboardShortcuts({
   onOpenModelSearch,
   onOpenShortcutsModal,
 }: UseKeyboardShortcutsOptions) {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { toggleTheme } = useTheme();
   const { setMode, addCompareConfig, compareConfigs, getShareURL } = useCalculatorStore();
@@ -36,17 +38,17 @@ export function useKeyboardShortcuts({
           document.execCommand('copy');
           document.body.removeChild(input);
         }
-        showToast('Link copied to clipboard', 'success');
+        showToast(t('Link copied to clipboard', '链接已复制到剪贴板'), 'success');
       },
       openShortcutsModal: onOpenShortcutsModal,
       setMode,
       addCompare: () => {
         if (compareConfigs.length >= 3) {
-          showToast('Maximum 3 configurations', 'error');
+          showToast(t('Maximum 3 configurations', '最多只能保留 3 个配置'), 'error');
           return;
         }
         addCompareConfig();
-        showToast('Added to compare — opening compare page', 'success');
+        showToast(t('Added to compare — opening compare page', '已加入对比 —— 正在打开对比页'), 'success');
         navigate('/compare');
       },
       navigate: (path) => navigate(path),
@@ -63,5 +65,6 @@ export function useKeyboardShortcuts({
     getShareURL,
     showToast,
     navigate,
+    t,
   ]);
 }

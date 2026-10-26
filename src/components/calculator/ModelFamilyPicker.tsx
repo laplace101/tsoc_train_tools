@@ -3,6 +3,8 @@ import { Layers, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { InfoTooltip } from '@/components/primitives/InfoTooltip';
 import type { ModelSpec } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
+import { t } from '@/lib/i18n';
 
 /** Value meaning "no family filter" — show every model. */
 export const ALL_FAMILIES = 'all';
@@ -17,7 +19,7 @@ const FAMILY_DISPLAY: Record<string, string> = {
   zephyr: 'Zephyr', smollm2: 'SmolLM2', nous: 'Nous', solar: 'Solar',
   internlm2_5: 'InternLM2.5', internlm3: 'InternLM3', baichuan2: 'Baichuan2',
   snowflake: 'Snowflake', vicuna: 'Vicuna', platypus2: 'Platypus2',
-  multilingual: 'Multilingual', gte: 'GTE', nv: 'NV', grok: 'Grok',
+  get multilingual() { return t('Multilingual', '多语言'); }, gte: 'GTE', nv: 'NV', grok: 'Grok',
   jamba: 'Jamba', moonlight: 'Moonlight', kimi: 'Kimi', glm: 'GLM',
   reka: 'Reka', xlam: 'XLAM', stable: 'Stable', smollm: 'SmolLM',
   smollm3: 'SmolLM3', smolvlm: 'SmolVLM', smolvlm2: 'SmolVLM2',
@@ -25,11 +27,11 @@ const FAMILY_DISPLAY: Record<string, string> = {
   minicpm: 'MiniCPM', minicpm3: 'MiniCPM3', minicpm4: 'MiniCPM4',
   wizardcoder: 'WizardCoder', wizardmath: 'WizardMath', starling: 'Starling',
   magicoder: 'Magicoder', llava: 'LLaVA', seamless: 'Seamless', hf: 'HF',
-  paraphrase: 'Paraphrase', e5: 'E5', jina: 'Jina', mxbai: 'MXBai',
+  get paraphrase() { return t('Paraphrase', '改写'); }, e5: 'E5', jina: 'Jina', mxbai: 'MXBai',
   'stella_en_400m_v5': 'Stella 400M v5', 'stella_en_1.5b_v5': 'Stella 1.5B v5',
   clip: 'CLIP', siglip2: 'SigLIP2', cohere: 'Cohere',
   'qwen3.6': 'Qwen3.6', 'qwen3.5': 'Qwen3.5', 'qwen3.8': 'Qwen3.8', mimo: 'Xiaomi MiMo',
-  minimax: 'MiniMax', all: 'All',
+  minimax: 'MiniMax', get all() { return t('All', '全部'); },
 };
 
 function formatFamily(family: string): string {
@@ -49,6 +51,7 @@ interface ModelFamilyPickerProps {
 }
 
 export function ModelFamilyPicker({ models, value, onChange, className }: ModelFamilyPickerProps) {
+  const { t } = useLanguage();
   // Family → model count, sorted by count descending so major families are on top.
   const familyCounts = React.useMemo(() => {
     const counts = new Map<string, number>();
@@ -62,7 +65,7 @@ export function ModelFamilyPicker({ models, value, onChange, className }: ModelF
     <div className={cn('flex flex-col gap-1.5', className)}>
       <label className="text-xs font-medium text-fg-default flex items-center gap-1.5">
         <Layers size={14} className="text-fg-muted" />
-        Model family
+        {t('Model family', '模型系列')}
         <InfoTooltip paramKey="modelFamily" />
       </label>
 
@@ -70,10 +73,10 @@ export function ModelFamilyPicker({ models, value, onChange, className }: ModelF
         <select
           value={value}
           onChange={e => onChange(e.target.value)}
-          aria-label="Model family"
+          aria-label={t('Model family', '模型系列')}
           className="w-full h-9 appearance-none px-3 pr-9 rounded-md border border-border-subtle bg-bg-muted text-sm text-fg-default hover:bg-bg-emphasis focus:outline-none focus:ring-2 focus:ring-ring"
         >
-          <option value={ALL_FAMILIES}>All models ({models.length})</option>
+          <option value={ALL_FAMILIES}>{t(`All models (${models.length})`, `全部模型（${models.length}）`)}</option>
           {familyCounts.map(([family, count]) => (
             <option key={family} value={family}>
               {formatFamily(family)} ({count})

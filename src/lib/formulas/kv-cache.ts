@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 /**
  * KV Cache variant formulas for display/estimation purposes.
  * The main computeTotalVRAM in vram.ts still uses kvcache.ts.
@@ -38,7 +39,7 @@ export function computeKVSlidingWindow(input: KVVariantInput, windowSize: number
     kvCacheGB: rawBytes / 1e9,
     rawBytes,
     variant: 'sliding_window',
-    note: `Window size ${windowSize.toLocaleString()} tokens; effective seq = ${effectiveSeq.toLocaleString()}`,
+    note: `窗口大小 ${windowSize.toLocaleString()} tokens；实际序列长度 = ${effectiveSeq.toLocaleString()}`,
   };
 }
 
@@ -52,7 +53,7 @@ export function computeKVPaged(input: KVVariantInput): KVVariantResult {
     kvCacheGB: standard.kvCacheGB,
     rawBytes: standard.rawBytes,
     variant: 'paged',
-    note: 'PagedAttention: fragmentation drops from 60–80% → <4%, effectively 1.5–4× more sequences fit in same VRAM',
+    note: t('PagedAttention: fragmentation drops from 60–80% → <4%, effectively 1.5–4× more sequences fit in same VRAM', 'PagedAttention：碎片率从 60–80% 降到 <4%，同样的显存实际上能多容纳 1.5–4× 的并发序列'),
   };
 }
 
@@ -69,7 +70,7 @@ export function computeKVPrefixCache(input: KVVariantInput, reusePercent: number
     kvCacheGB: rawBytes / 1e9,
     rawBytes,
     variant: 'prefix_cache',
-    note: `${clampedReuse}% prefix reuse → saves ${(standard.kvCacheGB * (clampedReuse / 100)).toFixed(2)} GB`,
+    note: `${clampedReuse}% 前缀复用 → 节省 ${(standard.kvCacheGB * (clampedReuse / 100)).toFixed(2)} GB`,
   };
 }
 

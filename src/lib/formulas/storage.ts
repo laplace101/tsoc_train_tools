@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 /**
  * Storage capacity formulas for training data, checkpoints, and logs.
  */
@@ -50,9 +51,9 @@ export function computeTotalStorage(
  * Recommend storage tier based on required bandwidth (MB/s).
  */
 export function recommendStorageTier(requiredMBs: number): string {
-  if (requiredMBs <= 200)    return 'HDD (~200 MB/s)';
-  if (requiredMBs <= 550)    return 'SATA SSD (~550 MB/s)';
-  if (requiredMBs <= 7000)   return 'NVMe Gen4 (~7 GB/s)';
-  if (requiredMBs <= 14000)  return 'NVMe Gen5 (~14 GB/s)';
-  return 'Parallel FS / Lustre (100+ GB/s)';
+  if (requiredMBs <= 200)    return t('HDD (~200 MB/s)', 'HDD（约 200 MB/s）');
+  if (requiredMBs <= 550)    return t('SATA SSD (~550 MB/s)', 'SATA SSD（约 550 MB/s）');
+  if (requiredMBs <= 7000)   return t('NVMe Gen4 (~7 GB/s)', 'NVMe Gen4（约 7 GB/s）');
+  if (requiredMBs <= 14000)  return t('NVMe Gen5 (~14 GB/s)', 'NVMe Gen5（约 14 GB/s）');
+  return t('Parallel FS / Lustre (100+ GB/s)', '并行文件系统 / Lustre（100+ GB/s）');
 }

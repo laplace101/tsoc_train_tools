@@ -1,3 +1,4 @@
+import { useLanguage } from '@/lib/language';
 interface PrefillDecodeBreakdownProps {
   ttftMs: number;
   tpotMs: number;
@@ -10,6 +11,7 @@ function formatMs(ms: number): string {
 }
 
 export function PrefillDecodeBreakdown({ ttftMs, tpotMs, avgOutputTokens }: PrefillDecodeBreakdownProps) {
+  const { t } = useLanguage();
   const decodeTimeMs = tpotMs * avgOutputTokens;
   const totalMs = ttftMs + decodeTimeMs;
 
@@ -19,7 +21,7 @@ export function PrefillDecodeBreakdown({ ttftMs, tpotMs, avgOutputTokens }: Pref
 
   return (
     <div className="flex flex-col gap-2">
-      <span className="text-xs font-medium text-fg-default">Inference Timeline</span>
+      <span className="text-xs font-medium text-fg-default">{t('Inference Timeline', '推理时间线')}</span>
 
       {/* Timeline bar */}
       <div className="flex rounded overflow-hidden h-8 text-xs font-medium">
@@ -28,7 +30,7 @@ export function PrefillDecodeBreakdown({ ttftMs, tpotMs, avgOutputTokens }: Pref
           style={{ width: `${Math.max(prefillPct, 15)}%` }}
           title={`Prefill: ${formatMs(ttftMs)}`}
         >
-          Prefill
+          {t('Prefill', '预填充')}
         </div>
         <div
           className="flex items-center justify-center bg-blue-500 text-white px-2 truncate flex-1"

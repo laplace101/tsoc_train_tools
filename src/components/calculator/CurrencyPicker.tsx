@@ -6,23 +6,25 @@
 import { useEffect, useState } from "react";
 import { SUPPORTED_CURRENCIES, getExchangeRate, getRatesFetchedAt } from "../../lib/currency";
 import type { SupportedCurrency } from "../../lib/currency";
+import { t } from '@/lib/i18n';
+import { useLanguage } from '@/lib/language';
 
 const STORAGE_KEY = "llm-calc-currency";
 
 const CURRENCY_LABELS: Record<string, string> = {
-  USD: "USD — US Dollar",
-  EUR: "EUR — Euro",
-  GBP: "GBP — British Pound",
-  JPY: "JPY — Japanese Yen",
-  INR: "INR — Indian Rupee",
-  CNY: "CNY — Chinese Yuan",
-  KRW: "KRW — Korean Won",
-  CAD: "CAD — Canadian Dollar",
-  AUD: "AUD — Australian Dollar",
-  SGD: "SGD — Singapore Dollar",
-  BRL: "BRL — Brazilian Real",
-  CHF: "CHF — Swiss Franc",
-  SEK: "SEK — Swedish Krona",
+  get USD() { return t('USD — US Dollar', 'USD — 美元'); },
+  get EUR() { return t('EUR — Euro', 'EUR — 欧元'); },
+  get GBP() { return t('GBP — British Pound', 'GBP — 英镑'); },
+  get JPY() { return t('JPY — Japanese Yen', 'JPY — 日元'); },
+  get INR() { return t('INR — Indian Rupee', 'INR — 印度卢比'); },
+  get CNY() { return t('CNY — Chinese Yuan', 'CNY — 人民币'); },
+  get KRW() { return t('KRW — Korean Won', 'KRW — 韩元'); },
+  get CAD() { return t('CAD — Canadian Dollar', 'CAD — 加拿大元'); },
+  get AUD() { return t('AUD — Australian Dollar', 'AUD — 澳大利亚元'); },
+  get SGD() { return t('SGD — Singapore Dollar', 'SGD — 新加坡元'); },
+  get BRL() { return t('BRL — Brazilian Real', 'BRL — 巴西雷亚尔'); },
+  get CHF() { return t('CHF — Swiss Franc', 'CHF — 瑞士法郎'); },
+  get SEK() { return t('SEK — Swedish Krona', 'SEK — 瑞典克朗'); },
 };
 
 interface CurrencyPickerProps {
@@ -31,6 +33,7 @@ interface CurrencyPickerProps {
 }
 
 export function CurrencyPicker({ value, onChange }: CurrencyPickerProps) {
+  const { t } = useLanguage();
   const [currency, setCurrency] = useState<SupportedCurrency>(() => {
     if (value) return value;
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -60,12 +63,12 @@ export function CurrencyPicker({ value, onChange }: CurrencyPickerProps) {
   });
 
   return (
-    <div className="flex items-center gap-1.5" title={`Rates as of ${rateDate}`}>
+    <div className="flex items-center gap-1.5" title={t(`Rates as of ${rateDate}`, `汇率更新于 ${rateDate}`)}>
       <select
         value={currency}
         onChange={handleChange}
         className="text-xs bg-transparent border border-border rounded px-1.5 py-0.5 text-muted-foreground hover:text-foreground focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer"
-        aria-label="Select display currency"
+        aria-label={t('Select display currency', '选择显示货币')}
       >
         {SUPPORTED_CURRENCIES.map((c) => (
           <option key={c} value={c}>

@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import type { TrainingMethodId, TrainingMethodMemory } from '@/lib/formulas/training-methods';
+import { useLanguage } from '@/lib/language';
 import {
   TRAINING_METHOD_LABELS,
   TRAINING_METHOD_FORMULA,
@@ -29,10 +30,11 @@ export function TrainingMethodPicker({
   onChange,
   className,
 }: TrainingMethodPickerProps) {
+  const { t } = useLanguage();
   return (
     <div className={cn('flex flex-col gap-2', className)}>
       <label htmlFor="training-method-select" className="text-xs font-medium text-fg-default">
-        Training Method
+        {t('Training Method', '训练方式')}
       </label>
 
       <select
@@ -41,7 +43,7 @@ export function TrainingMethodPicker({
         onChange={(e) => onChange(e.target.value as TrainingMethodId | '')}
         className="h-9 px-3 rounded-md border border-border-subtle bg-bg-muted text-sm text-fg-default focus:outline-none focus:ring-2 focus:ring-ring"
       >
-        <option value="">— Select method —</option>
+        <option value="">{t('— Select method —', '— 选择训练方式 —')}</option>
         {TRAINING_METHOD_GROUPS.map((group) => (
           <optgroup key={group.label} label={group.label}>
             {group.methods.map((id) => (
@@ -65,11 +67,11 @@ export function TrainingMethodPicker({
             </span>
           </div>
 
-          <BreakdownRow label="Weights" value={memory.breakdown.weightsGB} />
-          <BreakdownRow label="Gradients" value={memory.breakdown.gradientsGB} />
-          <BreakdownRow label="Optimizer" value={memory.breakdown.optimizerGB} />
-          <BreakdownRow label="Activations" value={memory.breakdown.activationsGB} />
-          <BreakdownRow label="Extra models" value={memory.breakdown.extraModelsGB} />
+          <BreakdownRow label={t('Weights', '权重')} value={memory.breakdown.weightsGB} />
+          <BreakdownRow label={t('Gradients', '梯度')} value={memory.breakdown.gradientsGB} />
+          <BreakdownRow label={t('Optimizer', '优化器')} value={memory.breakdown.optimizerGB} />
+          <BreakdownRow label={t('Activations', '激活值')} value={memory.breakdown.activationsGB} />
+          <BreakdownRow label={t('Extra models', '额外模型')} value={memory.breakdown.extraModelsGB} />
 
           <div className="pt-1 border-t border-border-subtle">
             <p className="text-[10px] text-fg-muted">{memory.note}</p>

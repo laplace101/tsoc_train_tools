@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { CheckCircle, XCircle, Info, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/lib/language';
 
 export type ToastVariant = 'success' | 'error' | 'info';
 
@@ -22,6 +23,7 @@ const VARIANT_CONFIG = {
 };
 
 function ToastItem({ toast, onDismiss }: ToastItemProps) {
+  const { t } = useLanguage();
   const variant = toast.variant ?? 'info';
   const config = VARIANT_CONFIG[variant];
   const Icon = config.icon;
@@ -46,7 +48,7 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
       <button
         onClick={() => onDismiss(toast.id)}
         className="text-fg-muted hover:text-fg-default transition-colors flex-shrink-0"
-        aria-label="Dismiss notification"
+        aria-label={t('Dismiss notification', '关闭通知')}
       >
         <X size={14} />
       </button>
@@ -69,6 +71,7 @@ export function useToast() {
 }
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
+  const { t } = useLanguage();
   const [toasts, setToasts] = React.useState<ToastMessage[]>([]);
 
   const showToast = React.useCallback((message: string, variant: ToastVariant = 'info') => {
@@ -86,7 +89,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {/* Toast container */}
       <div
         className="fixed bottom-4 right-4 z-[70] flex flex-col gap-2 w-80 pointer-events-none"
-        aria-label="Notifications"
+        aria-label={t('Notifications', '通知')}
       >
         {toasts.map(toast => (
           <div key={toast.id} className="pointer-events-auto">

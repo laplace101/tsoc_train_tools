@@ -5,6 +5,8 @@ import Fuse from 'fuse.js';
 import { cn } from '@/lib/utils';
 import { InfoTooltip } from '@/components/primitives/InfoTooltip';
 import type { ModelSpec } from '@/lib/formulas/types';
+import { useLanguage } from '@/lib/language';
+import { t } from '@/lib/i18n';
 
 interface ModelPickerProps {
   models: ModelSpec[];
@@ -29,9 +31,9 @@ function getBadges(model: ModelSpec): string[] {
   if (model.moe) b.push('MoE');
   if (model.displayName.toLowerCase().includes('vision')) b.push('VLM');
   if (model.displayName.toLowerCase().includes('instruct') || model.displayName.toLowerCase().includes('chat')) {
-    b.push('Instruct');
+    b.push(t('Instruct', '指令版'));
   } else {
-    b.push('Base');
+    b.push(t('Base', '基座版'));
   }
   return b;
 }
@@ -48,6 +50,7 @@ function saveRecentId(id: string) {
 }
 
 export function ModelPicker({ models, value, onSelect, open: externalOpen, onOpenChange: externalOnOpenChange, className }: ModelPickerProps) {
+  const { t } = useLanguage();
   const [open, setOpenRaw] = React.useState(false);
   const [search, setSearch] = React.useState('');
   const triggerRef = React.useRef<HTMLButtonElement>(null);
@@ -153,7 +156,7 @@ export function ModelPicker({ models, value, onSelect, open: externalOpen, onOpe
         <input
           ref={searchRef}
           type="text"
-          placeholder="Search models..."
+          placeholder={t('Search models...', '搜索模型...')}
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="flex-1 h-10 bg-transparent text-sm text-fg-default placeholder:text-fg-muted outline-none"
@@ -163,13 +166,13 @@ export function ModelPicker({ models, value, onSelect, open: externalOpen, onOpe
       {/* List */}
       <div className="overflow-y-auto max-h-[380px]">
         {filtered.length === 0 && (
-          <p className="py-6 text-center text-sm text-fg-muted">No models found.</p>
+          <p className="py-6 text-center text-sm text-fg-muted">{t('No models found.', '没有找到模型。')}</p>
         )}
 
         {/* Recent */}
         {!search && recentModels.length > 0 && (
           <div>
-            <div className="px-3 py-1.5 text-[11px] font-semibold text-fg-muted uppercase tracking-wider">Recent</div>
+            <div className="px-3 py-1.5 text-[11px] font-semibold text-fg-muted uppercase tracking-wider">{t('Recent', '最近使用')}</div>
             {recentModels.map(model => (
               <ModelRow
                 key={`r-${model.id}`}
@@ -205,7 +208,7 @@ export function ModelPicker({ models, value, onSelect, open: externalOpen, onOpe
     <div className={cn('flex flex-col gap-1.5', className)}>
       <label className="text-xs font-medium text-fg-default flex items-center gap-1.5">
         <Cpu size={14} className="text-fg-muted" />
-        Model
+        {t('Model', '模型')}
         <InfoTooltip paramKey="model" />
         <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-border bg-bg-muted px-1.5 font-mono text-[10px] font-medium text-fg-muted">
           ⌘K
@@ -229,7 +232,7 @@ export function ModelPicker({ models, value, onSelect, open: externalOpen, onOpe
             <span className="truncate">{value.displayName}</span>
           </span>
         ) : (
-          <span className="text-fg-muted">Select model...</span>
+          <span className="text-fg-muted">{t('Select model...', '选择模型...')}</span>
         )}
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </button>

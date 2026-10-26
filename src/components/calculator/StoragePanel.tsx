@@ -2,6 +2,7 @@ import { HardDrive } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { computeTotalStorage, recommendStorageTier } from '@/lib/formulas/storage';
 import { computeCheckpointWriteBandwidth, checkCheckpointFeasibility } from '@/lib/formulas/disk-iops';
+import { useLanguage } from '@/lib/language';
 
 interface StoragePanelProps {
   numTokens: number;           // training tokens
@@ -36,6 +37,7 @@ export function StoragePanel({
   diskBandwidthMBs,
   className,
 }: StoragePanelProps) {
+  const { t } = useLanguage();
   const storage = computeTotalStorage(numTokens, numCheckpoints, numParams);
   const ckptWriteMBs = computeCheckpointWriteBandwidth(numParams, checkpointTimeBudgetSec);
   const storageTier = recommendStorageTier(ckptWriteMBs);
@@ -49,22 +51,22 @@ export function StoragePanel({
       <div className="flex items-center gap-2 mb-3">
         <HardDrive size={14} className="text-fg-muted" />
         <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-muted">
-          Storage
+          {t('Storage', '存储')}
         </h3>
       </div>
 
       <div className="flex flex-col">
-        <KVRow label="Training data" value={formatGB(storage.dataGB)} />
-        <KVRow label="Checkpoints" value={`${formatGB(storage.checkpointsGB)} (×${numCheckpoints})`} />
-        <KVRow label="Logs" value={formatGB(storage.logsGB)} />
-        <KVRow label="Headroom (20%)" value={formatGB(storage.headroomGB)} />
-        <KVRow label="Total" value={formatGB(storage.totalGB)} />
-        <KVRow label="Ckpt write BW" value={`${ckptWriteMBs.toFixed(0)} MB/s`} />
-        <KVRow label="Ckpt budget" value={`${checkpointTimeBudgetSec}s`} />
-        <KVRow label="Recommended tier" value={storageTier} />
+        <KVRow label={t('Training data', '训练数据')} value={formatGB(storage.dataGB)} />
+        <KVRow label={t('Checkpoints', '检查点')} value={`${formatGB(storage.checkpointsGB)} (×${numCheckpoints})`} />
+        <KVRow label={t('Logs', '日志')} value={formatGB(storage.logsGB)} />
+        <KVRow label={t('Headroom (20%)', '预留余量（20%）')} value={formatGB(storage.headroomGB)} />
+        <KVRow label={t('Total', '合计')} value={formatGB(storage.totalGB)} />
+        <KVRow label={t('Ckpt write BW', '检查点写带宽')} value={`${ckptWriteMBs.toFixed(0)} MB/s`} />
+        <KVRow label={t('Ckpt budget', '检查点预算')} value={`${checkpointTimeBudgetSec}s`} />
+        <KVRow label={t('Recommended tier', '推荐档位')} value={storageTier} />
         {feasibility && (
           <KVRow
-            label="Feasibility"
+            label={t('Feasibility', '可行性')}
             value={feasibility.feasible ? '✓ Feasible' : '✗ Exceeds disk BW'}
             warn={!feasibility.feasible}
           />

@@ -1,6 +1,8 @@
+import { t } from '@/lib/i18n';
 import * as React from 'react';
 import { Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/lib/language';
 import {
   VISION_ENCODERS,
   AUDIO_ENCODERS,
@@ -35,9 +37,9 @@ function getImageTokens(spec: VisionEncoderSpec): number {
 }
 
 function formatImageTokens(spec: VisionEncoderSpec): string {
-  const t = spec.imageTokensPerImage;
-  if (typeof t === 'number') return `${t}`;
-  return `${t.min}–${t.max} (dynamic)`;
+  const tokens = spec.imageTokensPerImage;
+  if (typeof tokens === 'number') return `${tokens}`;
+  return t(`${tokens.min}–${tokens.max} (dynamic)`, `${tokens.min}–${tokens.max}（动态）`);
 }
 
 export function MultimodalPanel({
@@ -48,6 +50,7 @@ export function MultimodalPanel({
   batchSize,
   className,
 }: MultimodalPanelProps) {
+  const { t } = useLanguage();
   const [visionEncoderIdx, setVisionEncoderIdx] = React.useState(0);
   const [audioEnabled, setAudioEnabled] = React.useState(false);
   const [imagesPerBatch, setImagesPerBatch] = React.useState(1);
@@ -72,14 +75,14 @@ export function MultimodalPanel({
       <div className="flex items-center gap-2 mb-3">
         <Eye size={14} className="text-fg-muted" />
         <h3 className="text-xs font-semibold uppercase tracking-wider text-fg-muted">
-          Multimodal Extras
+          {t('Multimodal Extras', '多模态附加项')}
         </h3>
       </div>
 
       <div className="space-y-3 mb-4">
         {/* Vision Encoder */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="vision-encoder" className="text-xs text-fg-muted">Vision Encoder</label>
+          <label htmlFor="vision-encoder" className="text-xs text-fg-muted">{t('Vision Encoder', '视觉编码器')}</label>
           <select
             id="vision-encoder"
             value={visionEncoderIdx}
@@ -94,7 +97,7 @@ export function MultimodalPanel({
 
         {/* Images per batch */}
         <div className="flex items-center gap-2">
-          <label htmlFor="images-per-batch" className="text-xs text-fg-muted w-44 flex-shrink-0">Images / request</label>
+          <label htmlFor="images-per-batch" className="text-xs text-fg-muted w-44 flex-shrink-0">{t('Images / request', '每次请求图片数')}</label>
           <input
             id="images-per-batch"
             type="number"
@@ -135,13 +138,13 @@ export function MultimodalPanel({
 
       {/* Outputs */}
       <div className="border-t border-border-subtle pt-3 flex flex-col">
-        <KVRow label="Vision Encoder VRAM" value={`${visionEncoder.vramGB} GB`} highlight />
-        <KVRow label="Image Tokens" value={formatImageTokens(visionEncoder)} />
-        <KVRow label="KV Cache Extra" value={`${kvExtra.toFixed(3)} GB`} highlight />
+        <KVRow label={t('Vision Encoder VRAM', '视觉编码器显存')} value={`${visionEncoder.vramGB} GB`} highlight />
+        <KVRow label={t('Image Tokens', '图像 token 数')} value={formatImageTokens(visionEncoder)} />
+        <KVRow label={t('KV Cache Extra', 'KV Cache 额外占用')} value={`${kvExtra.toFixed(3)} GB`} highlight />
         {audioEnabled && (
-          <KVRow label="Audio Encoder VRAM" value={`${audioEncoder.vramGB} GB`} />
+          <KVRow label={t('Audio Encoder VRAM', '音频编码器显存')} value={`${audioEncoder.vramGB} GB`} />
         )}
-        <KVRow label="Total Multimodal" value={`${totalVRAM.toFixed(2)} GB`} highlight />
+        <KVRow label={t('Total Multimodal', '多模态总计')} value={`${totalVRAM.toFixed(2)} GB`} highlight />
       </div>
     </div>
   );

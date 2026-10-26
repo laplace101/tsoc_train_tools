@@ -12,9 +12,10 @@ import { Guides } from '@/pages/Guides';
 import { useCalculatorStore } from '@/store/calculator-store';
 import { useToast } from '@/components/feedback/Toast';
 import { useKeyboardShortcuts } from '@/lib/use-keyboard-shortcuts';
-import { LanguageProvider } from '@/lib/language';
+import { LanguageProvider, useLanguage } from '@/lib/language';
 
 function AppContent() {
+  const { t } = useLanguage();
   const location = useLocation();
   const { getShareURL, addCompareConfig, compareConfigs } = useCalculatorStore();
   const { showToast } = useToast();
@@ -50,16 +51,16 @@ function AppContent() {
       document.execCommand('copy');
       document.body.removeChild(input);
     }
-    showToast('Link copied to clipboard', 'success');
+    showToast(t('Link copied to clipboard', '链接已复制到剪贴板'), 'success');
   };
 
   const handleCompare = () => {
     if (compareConfigs.length >= 3) {
-      showToast('Maximum 3 configurations', 'error');
+      showToast(t('Maximum 3 configurations', '最多只能保留 3 个配置'), 'error');
       return;
     }
     addCompareConfig();
-    showToast('Added to compare', 'success');
+    showToast(t('Added to compare', '已加入对比'), 'success');
     setCompareOpen(true);
   };
 
