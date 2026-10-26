@@ -1,0 +1,67 @@
+[
+  {
+    "id": "Qwen/Qwen3.8-27B",
+    "ok": true,
+    "replaced": true
+  },
+  {
+    "id": "Qwen/Qwen3.8-2.4T-A95B",
+    "ok": true,
+    "replaced": true
+  },
+  {
+    "id": "zai-org/GLM-4.6V",
+    "ok": true,
+    "replaced": true
+  },
+  {
+    "id": "zai-org/GLM-4.6V-Flash",
+    "ok": true,
+    "replaced": true
+  },
+  {
+    "id": "zai-org/GLM-4.7-Flash",
+    "ok": true,
+    "replaced": true
+  },
+  {
+    "id": "zai-org/GLM-4.7",
+    "ok": true,
+    "replaced": true
+  },
+  {
+    "id": "moonshotai/Kimi-K2.7-Code",
+    "ok": true,
+    "replaced": true
+  },
+  {
+    "id": "moonshotai/Kimi-K3",
+    "ok": true,
+    "replaced": true
+  },
+  {
+    "id": "deepseek-ai/DeepSeek-V4-Flash-0731",
+    "ok": true,
+    "replaced": true
+  },
+  {
+    "id": "deepseek-ai/DeepSeek-V4-Flash-Base",
+    "ok": true,
+    "replaced": true
+  },
+  {
+    "id": "deepseek-ai/DeepSeek-V4-Pro-0813",
+    "ok": true,
+    "replaced": true
+  },
+  {
+    "id": "deepseek-ai/DeepSeek-V4-Pro-DSpark",
+    "ok": true,
+    "replaced": true
+  },
+  {
+    "id": "deepseek-ai/DeepSeek-V4-Pro-Base",
+    "ok": true,
+    "replaced": true
+  }
+]

@@ -1,0 +1,1526 @@
+[
+  {
+    "id": "aws-g5.xlarge",
+    "provider": "aws",
+    "instanceType": "g5.xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-a10",
+        "count": 1
+      }
+    ],
+    "vcpus": 4,
+    "ramGB": 16,
+    "storageGB": 250,
+    "networkGbps": 10,
+    "interconnect": "pcie",
+    "pricing": {
+      "onDemandUSDPerHour": 1.006,
+      "spotUSDPerHour": 0.35
+    },
+    "regions": [
+      "us-east-1",
+      "us-west-2",
+      "eu-west-1"
+    ],
+    "notes": "Entry-level inference instance",
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "aws-g6.xlarge",
+    "provider": "aws",
+    "instanceType": "g6.xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-l4",
+        "count": 1
+      }
+    ],
+    "vcpus": 4,
+    "ramGB": 16,
+    "storageGB": 250,
+    "networkGbps": 10,
+    "interconnect": "pcie",
+    "pricing": {
+      "onDemandUSDPerHour": 0.805,
+      "spotUSDPerHour": 0.3
+    },
+    "regions": [
+      "us-east-1",
+      "us-west-2",
+      "eu-west-1"
+    ],
+    "notes": "Cheapest modern GPU instance",
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "aws-g6e.xlarge",
+    "provider": "aws",
+    "instanceType": "g6e.xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-l40s",
+        "count": 1
+      }
+    ],
+    "vcpus": 4,
+    "ramGB": 32,
+    "storageGB": 250,
+    "networkGbps": 10,
+    "interconnect": "pcie",
+    "pricing": {
+      "onDemandUSDPerHour": 1.861,
+      "spotUSDPerHour": 0.7
+    },
+    "regions": [
+      "us-east-1",
+      "us-west-2",
+      "eu-west-1"
+    ],
+    "notes": "Best mid-tier inference instance",
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "aws-g6e.12xlarge",
+    "provider": "aws",
+    "instanceType": "g6e.12xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-l40s",
+        "count": 4
+      }
+    ],
+    "vcpus": 48,
+    "ramGB": 192,
+    "storageGB": 1000,
+    "networkGbps": 40,
+    "interconnect": "pcie",
+    "pricing": {
+      "onDemandUSDPerHour": 10.49,
+      "spotUSDPerHour": 3.8
+    },
+    "regions": [
+      "us-east-1",
+      "us-west-2",
+      "eu-west-1"
+    ],
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "aws-p4d.24xlarge",
+    "provider": "aws",
+    "instanceType": "p4d.24xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-a100-40gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 96,
+    "ramGB": 1152,
+    "storageGB": 8000,
+    "networkGbps": 400,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 32.77,
+      "spotUSDPerHour": 11
+    },
+    "regions": [
+      "us-east-1",
+      "us-west-2",
+      "eu-west-1"
+    ],
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "aws-p5.48xlarge",
+    "provider": "aws",
+    "instanceType": "p5.48xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-h100-sxm-80gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 192,
+    "ramGB": 2048,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 98.32,
+      "spotUSDPerHour": 32
+    },
+    "regions": [
+      "us-east-1",
+      "us-west-2"
+    ],
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "azure-nc24ads-a100-v4",
+    "provider": "azure",
+    "instanceType": "NC24ads A100 v4",
+    "gpus": [
+      {
+        "id": "nvidia-a100-80gb-sxm",
+        "count": 1
+      }
+    ],
+    "vcpus": 24,
+    "ramGB": 220,
+    "storageGB": 960,
+    "networkGbps": 40,
+    "interconnect": "pcie",
+    "pricing": {
+      "onDemandUSDPerHour": 3.67,
+      "spotUSDPerHour": 1.1
+    },
+    "regions": [
+      "eastus",
+      "westus2",
+      "westeurope"
+    ],
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "azure-nd96amsr-a100-v4",
+    "provider": "azure",
+    "instanceType": "ND96amsr A100 v4",
+    "gpus": [
+      {
+        "id": "nvidia-a100-80gb-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 96,
+    "ramGB": 1900,
+    "storageGB": 6400,
+    "networkGbps": 1600,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 32.77,
+      "spotUSDPerHour": 11
+    },
+    "regions": [
+      "eastus",
+      "westus2",
+      "westeurope"
+    ],
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "azure-nd-h100-v5",
+    "provider": "azure",
+    "instanceType": "ND H100 v5",
+    "gpus": [
+      {
+        "id": "nvidia-h100-sxm-80gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 96,
+    "ramGB": 1900,
+    "storageGB": 6400,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 98.32,
+      "spotUSDPerHour": 30
+    },
+    "regions": [
+      "eastus",
+      "westus2",
+      "westeurope"
+    ],
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "gcp-g2-standard-4",
+    "provider": "gcp",
+    "instanceType": "g2-standard-4",
+    "gpus": [
+      {
+        "id": "nvidia-l4",
+        "count": 1
+      }
+    ],
+    "vcpus": 4,
+    "ramGB": 16,
+    "storageGB": 375,
+    "networkGbps": 10,
+    "interconnect": "pcie",
+    "pricing": {
+      "onDemandUSDPerHour": 0.71,
+      "spotUSDPerHour": 0.3
+    },
+    "regions": [
+      "us-central1",
+      "us-east1",
+      "europe-west1"
+    ],
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "gcp-a2-ultragpu-1g",
+    "provider": "gcp",
+    "instanceType": "a2-ultragpu-1g",
+    "gpus": [
+      {
+        "id": "nvidia-a100-80gb-sxm",
+        "count": 1
+      }
+    ],
+    "vcpus": 12,
+    "ramGB": 170,
+    "storageGB": 375,
+    "networkGbps": 24,
+    "interconnect": "pcie",
+    "pricing": {
+      "onDemandUSDPerHour": 3.67,
+      "spotUSDPerHour": 1.3
+    },
+    "regions": [
+      "us-central1",
+      "us-east1",
+      "europe-west1"
+    ],
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "gcp-a3-highgpu-8g",
+    "provider": "gcp",
+    "instanceType": "a3-highgpu-8g",
+    "gpus": [
+      {
+        "id": "nvidia-h100-sxm-80gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 208,
+    "ramGB": 1872,
+    "storageGB": 6000,
+    "networkGbps": 1600,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 88.49,
+      "spotUSDPerHour": 26
+    },
+    "regions": [
+      "us-central1",
+      "us-east1"
+    ],
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "lambda-1xh100",
+    "provider": "lambda",
+    "instanceType": "1x H100 80GB",
+    "gpus": [
+      {
+        "id": "nvidia-h100-sxm-80gb",
+        "count": 1
+      }
+    ],
+    "vcpus": 26,
+    "ramGB": 200,
+    "storageGB": 1000,
+    "networkGbps": 100,
+    "pricing": {
+      "onDemandUSDPerHour": 2.49
+    },
+    "regions": [
+      "us-tx-3",
+      "us-az-1"
+    ],
+    "notes": "No-commit, pay-as-you-go",
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "lambda-8xh100",
+    "provider": "lambda",
+    "instanceType": "8x H100 80GB",
+    "gpus": [
+      {
+        "id": "nvidia-h100-sxm-80gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 208,
+    "ramGB": 1800,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 23.92
+    },
+    "regions": [
+      "us-tx-3",
+      "us-az-1"
+    ],
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "lambda-8xh200",
+    "provider": "lambda",
+    "instanceType": "8x H200 141GB",
+    "gpus": [
+      {
+        "id": "nvidia-h200-sxm-141gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 208,
+    "ramGB": 1800,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 28.8
+    },
+    "regions": [
+      "us-tx-3"
+    ],
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "runpod-1x4090",
+    "provider": "runpod",
+    "instanceType": "1x RTX 4090",
+    "gpus": [
+      {
+        "id": "nvidia-rtx-4090",
+        "count": 1
+      }
+    ],
+    "vcpus": 16,
+    "ramGB": 62,
+    "storageGB": 500,
+    "networkGbps": 10,
+    "interconnect": "pcie",
+    "pricing": {
+      "onDemandUSDPerHour": 0.34
+    },
+    "regions": [
+      "us-east",
+      "eu-west"
+    ],
+    "notes": "Secure Cloud",
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "runpod-1xa100-80gb",
+    "provider": "runpod",
+    "instanceType": "1x A100 80GB",
+    "gpus": [
+      {
+        "id": "nvidia-a100-80gb-sxm",
+        "count": 1
+      }
+    ],
+    "vcpus": 16,
+    "ramGB": 117,
+    "storageGB": 500,
+    "networkGbps": 10,
+    "pricing": {
+      "onDemandUSDPerHour": 1.64
+    },
+    "regions": [
+      "us-east",
+      "eu-west"
+    ],
+    "notes": "Secure Cloud",
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "runpod-1xh100-80gb",
+    "provider": "runpod",
+    "instanceType": "1x H100 80GB",
+    "gpus": [
+      {
+        "id": "nvidia-h100-sxm-80gb",
+        "count": 1
+      }
+    ],
+    "vcpus": 16,
+    "ramGB": 200,
+    "storageGB": 500,
+    "networkGbps": 25,
+    "pricing": {
+      "onDemandUSDPerHour": 2.49
+    },
+    "regions": [
+      "us-east",
+      "eu-west"
+    ],
+    "notes": "Secure Cloud",
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "runpod-1xh200",
+    "provider": "runpod",
+    "instanceType": "1x H200",
+    "gpus": [
+      {
+        "id": "nvidia-h200-sxm-141gb",
+        "count": 1
+      }
+    ],
+    "vcpus": 16,
+    "ramGB": 200,
+    "storageGB": 500,
+    "networkGbps": 25,
+    "pricing": {
+      "onDemandUSDPerHour": 3.39
+    },
+    "regions": [
+      "us-east"
+    ],
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "together-llama-3.1-70b-serverless",
+    "provider": "together",
+    "instanceType": "Llama-3.1-70B Serverless",
+    "gpus": [
+      {
+        "id": "nvidia-h100-sxm-80gb",
+        "count": 1
+      }
+    ],
+    "vcpus": 0,
+    "ramGB": 0,
+    "storageGB": 0,
+    "networkGbps": 0,
+    "pricing": {
+      "onDemandUSDPerHour": 0.88
+    },
+    "regions": [
+      "us"
+    ],
+    "notes": "Per-token pricing: $0.88/M tokens. No infrastructure management required.",
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "coreweave-8xh100",
+    "provider": "coreweave",
+    "instanceType": "8x H100 80GB",
+    "gpus": [
+      {
+        "id": "nvidia-h100-sxm-80gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 192,
+    "ramGB": 1800,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 40,
+      "reserved1yUSDPerHour": 32
+    },
+    "regions": [
+      "us-east",
+      "us-west"
+    ],
+    "notes": "Enterprise, reserved pricing available",
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "aws-p4de.24xlarge",
+    "provider": "aws",
+    "instanceType": "p4de.24xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-a100-80gb-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 96,
+    "ramGB": 1152,
+    "storageGB": 8000,
+    "networkGbps": 400,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 40.96,
+      "spotUSDPerHour": 14
+    },
+    "regions": [
+      "us-east-1",
+      "us-west-2"
+    ],
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "aws-p5e.48xlarge",
+    "provider": "aws",
+    "instanceType": "p5e.48xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-h200-sxm-141gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 192,
+    "ramGB": 2048,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 125,
+      "spotUSDPerHour": 35
+    },
+    "regions": [
+      "us-east-1",
+      "us-west-2"
+    ],
+    "notes": "H200-based instance for large model training and inference",
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "azure-nd-h200-v5",
+    "provider": "azure",
+    "instanceType": "ND H200 v5",
+    "gpus": [
+      {
+        "id": "nvidia-h200-sxm-141gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 96,
+    "ramGB": 1900,
+    "storageGB": 6400,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 127,
+      "spotUSDPerHour": 38
+    },
+    "regions": [
+      "eastus",
+      "westus2",
+      "westeurope"
+    ],
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "gcp-a2-ultragpu-8g",
+    "provider": "gcp",
+    "instanceType": "a2-ultragpu-8g",
+    "gpus": [
+      {
+        "id": "nvidia-a100-80gb-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 96,
+    "ramGB": 1360,
+    "storageGB": 6000,
+    "networkGbps": 100,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 40.22,
+      "spotUSDPerHour": 13
+    },
+    "regions": [
+      "us-central1",
+      "us-east1",
+      "europe-west1"
+    ],
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "vast-1xh100",
+    "provider": "vast",
+    "instanceType": "1x H100 80GB",
+    "gpus": [
+      {
+        "id": "nvidia-h100-sxm-80gb",
+        "count": 1
+      }
+    ],
+    "vcpus": 16,
+    "ramGB": 128,
+    "storageGB": 500,
+    "networkGbps": 10,
+    "pricing": {
+      "onDemandUSDPerHour": 2.15
+    },
+    "regions": [
+      "us-east",
+      "us-west",
+      "eu-west"
+    ],
+    "notes": "Marketplace pricing, varies by host",
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "runpod-community-1x4090",
+    "provider": "runpod",
+    "instanceType": "1x RTX 4090 Community",
+    "gpus": [
+      {
+        "id": "nvidia-rtx-4090",
+        "count": 1
+      }
+    ],
+    "vcpus": 16,
+    "ramGB": 62,
+    "storageGB": 500,
+    "networkGbps": 10,
+    "interconnect": "pcie",
+    "pricing": {
+      "onDemandUSDPerHour": 0.24
+    },
+    "regions": [
+      "us-east",
+      "eu-west"
+    ],
+    "notes": "Community Cloud, lower cost than Secure Cloud",
+    "lastPriceUpdate": "2026-04-16"
+  },
+  {
+    "id": "aws-p5en.48xlarge",
+    "provider": "aws",
+    "instanceType": "p5en.48xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-h200-sxm-141gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 192,
+    "ramGB": 2048,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 63.3,
+      "spotUSDPerHour": 20
+    },
+    "regions": [
+      "us-east-1",
+      "us-west-2"
+    ],
+    "notes": "Enhanced networking H200 instance",
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "aws-p6-b200.48xlarge",
+    "provider": "aws",
+    "instanceType": "p6-b200.48xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 192,
+    "ramGB": 2048,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 113.93,
+      "spotUSDPerHour": 40
+    },
+    "regions": [
+      "us-east-1",
+      "us-west-2"
+    ],
+    "notes": "Blackwell B200 instance, latest generation",
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "azure-nd-b200-v6",
+    "provider": "azure",
+    "instanceType": "ND B200 v6",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 192,
+    "ramGB": 2048,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 120,
+      "spotUSDPerHour": 40
+    },
+    "regions": [
+      "eastus",
+      "westus2"
+    ],
+    "notes": "Blackwell B200 Azure instance",
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "gcp-a3-megagpu-8g",
+    "provider": "gcp",
+    "instanceType": "a3-megagpu-8g",
+    "gpus": [
+      {
+        "id": "nvidia-h100-sxm-80gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 208,
+    "ramGB": 1872,
+    "storageGB": 6000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 112,
+      "spotUSDPerHour": 35
+    },
+    "regions": [
+      "us-central1",
+      "us-east1"
+    ],
+    "notes": "High-bandwidth H100 cluster instance",
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "gcp-a4-highgpu-8g",
+    "provider": "gcp",
+    "instanceType": "a4-highgpu-8g",
+    "gpus": [
+      {
+        "id": "nvidia-h200-sxm-141gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 208,
+    "ramGB": 1872,
+    "storageGB": 6000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 130,
+      "spotUSDPerHour": 42
+    },
+    "regions": [
+      "us-central1",
+      "us-east1"
+    ],
+    "notes": "H200-based GCP instance",
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "lambda-1xb200",
+    "provider": "lambda",
+    "instanceType": "1x B200 192GB",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 1
+      }
+    ],
+    "vcpus": 26,
+    "ramGB": 256,
+    "storageGB": 1000,
+    "networkGbps": 100,
+    "pricing": {
+      "onDemandUSDPerHour": 4.5
+    },
+    "regions": [
+      "us-tx-3"
+    ],
+    "notes": "Blackwell B200, latest generation",
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "lambda-8xb200",
+    "provider": "lambda",
+    "instanceType": "8x B200 192GB",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 208,
+    "ramGB": 2048,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 36
+    },
+    "regions": [
+      "us-tx-3"
+    ],
+    "notes": "Blackwell B200 cluster",
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "runpod-1xb200",
+    "provider": "runpod",
+    "instanceType": "1x B200 192GB",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 1
+      }
+    ],
+    "vcpus": 16,
+    "ramGB": 256,
+    "storageGB": 500,
+    "networkGbps": 25,
+    "pricing": {
+      "onDemandUSDPerHour": 4.99
+    },
+    "regions": [
+      "us-east"
+    ],
+    "notes": "Blackwell B200, Secure Cloud",
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "coreweave-8xh200",
+    "provider": "coreweave",
+    "instanceType": "8x H200 141GB",
+    "gpus": [
+      {
+        "id": "nvidia-h200-sxm-141gb",
+        "count": 8
+      }
+    ],
+    "vcpus": 192,
+    "ramGB": 1800,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 50,
+      "reserved1yUSDPerHour": 40
+    },
+    "regions": [
+      "us-east",
+      "us-west"
+    ],
+    "notes": "H200 cluster, enterprise reserved pricing available",
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "coreweave-8xb200",
+    "provider": "coreweave",
+    "instanceType": "8x B200 192GB",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 192,
+    "ramGB": 2048,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 72,
+      "reserved1yUSDPerHour": 58
+    },
+    "regions": [
+      "us-east",
+      "us-west"
+    ],
+    "notes": "Blackwell B200 cluster, latest generation",
+    "lastPriceUpdate": "2026-04-20"
+  },
+  {
+    "id": "aws-p6-b300.48xlarge",
+    "provider": "aws",
+    "instanceType": "p6-b300.48xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-b300-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 192,
+    "ramGB": 4096,
+    "storageGB": 30000,
+    "networkGbps": 6400,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 93.6,
+      "spotUSDPerHour": 34
+    },
+    "regions": [
+      "us-west-2",
+      "us-east-1"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "aws-p6e-gb200.36xlarge",
+    "provider": "aws",
+    "instanceType": "p6e-gb200.36xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 4
+      }
+    ],
+    "vcpus": 144,
+    "ramGB": 960,
+    "storageGB": 22500,
+    "networkGbps": 1700,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 42.33
+    },
+    "regions": [
+      "us-east-1"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "aws-u-p6e-gb200x36",
+    "provider": "aws",
+    "instanceType": "u-p6e-gb200x36",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 36
+      }
+    ],
+    "vcpus": 1296,
+    "ramGB": 8640,
+    "storageGB": 202500,
+    "networkGbps": 14400,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 380.95
+    },
+    "regions": [
+      "us-east-1"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "aws-u-p6e-gb200x72",
+    "provider": "aws",
+    "instanceType": "u-p6e-gb200x72",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 72
+      }
+    ],
+    "vcpus": 2592,
+    "ramGB": 17280,
+    "storageGB": 405000,
+    "networkGbps": 28800,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 761.9
+    },
+    "regions": [
+      "us-east-1"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "aws-p6e-gb300.36xlarge",
+    "provider": "aws",
+    "instanceType": "p6e-gb300.36xlarge",
+    "gpus": [
+      {
+        "id": "nvidia-b300-sxm",
+        "count": 4
+      }
+    ],
+    "vcpus": 144,
+    "ramGB": 960,
+    "storageGB": 22500,
+    "networkGbps": 1700,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 55
+    },
+    "regions": [
+      "us-east-1"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "aws-u-p6e-gb300x72",
+    "provider": "aws",
+    "instanceType": "u-p6e-gb300x72",
+    "gpus": [
+      {
+        "id": "nvidia-b300-sxm",
+        "count": 72
+      }
+    ],
+    "vcpus": 2592,
+    "ramGB": 17280,
+    "storageGB": 405000,
+    "networkGbps": 28800,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 990
+    },
+    "regions": [
+      "us-east-1"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "aws-trn2.48xlarge",
+    "provider": "aws",
+    "instanceType": "trn2.48xlarge",
+    "gpus": [
+      {
+        "id": "aws-trainium2",
+        "count": 16
+      }
+    ],
+    "vcpus": 192,
+    "ramGB": 2048,
+    "storageGB": 7600,
+    "networkGbps": 3200,
+    "interconnect": "neuronlink",
+    "pricing": {
+      "onDemandUSDPerHour": 16.0158,
+      "spotUSDPerHour": 5.5
+    },
+    "regions": [
+      "us-east-2",
+      "us-west-2"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "aws-trn2-ultraserver",
+    "provider": "aws",
+    "instanceType": "trn2u.ultra",
+    "gpus": [
+      {
+        "id": "aws-trainium2",
+        "count": 64
+      }
+    ],
+    "vcpus": 768,
+    "ramGB": 8192,
+    "storageGB": 30400,
+    "networkGbps": 12800,
+    "interconnect": "neuronlink",
+    "pricing": {
+      "onDemandUSDPerHour": 64.5
+    },
+    "regions": [
+      "us-east-2"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "azure-nd-gb200-v6",
+    "provider": "azure",
+    "instanceType": "ND GB200 v6",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 4
+      }
+    ],
+    "vcpus": 128,
+    "ramGB": 1440,
+    "storageGB": 14000,
+    "networkGbps": 1600,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 42.5
+    },
+    "regions": [
+      "eastus",
+      "southcentralus"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "azure-nd-gb300-v6",
+    "provider": "azure",
+    "instanceType": "ND GB300 v6",
+    "gpus": [
+      {
+        "id": "nvidia-b300-sxm",
+        "count": 4
+      }
+    ],
+    "vcpus": 128,
+    "ramGB": 1440,
+    "storageGB": 14000,
+    "networkGbps": 1600,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 56
+    },
+    "regions": [
+      "eastus",
+      "southcentralus"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "gcp-a4-highgpu-8g-b200",
+    "provider": "gcp",
+    "instanceType": "a4-highgpu-8g",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 224,
+    "ramGB": 3968,
+    "storageGB": 12000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 115,
+      "spotUSDPerHour": 38
+    },
+    "regions": [
+      "us-central1",
+      "us-east5",
+      "europe-west4"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "gcp-a4x-highgpu-4g",
+    "provider": "gcp",
+    "instanceType": "a4x-highgpu-4g",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 4
+      }
+    ],
+    "vcpus": 140,
+    "ramGB": 884,
+    "storageGB": 12000,
+    "networkGbps": 1600,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 45
+    },
+    "regions": [
+      "us-central1",
+      "us-east5"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "gcp-a4x-max-highgpu-4g",
+    "provider": "gcp",
+    "instanceType": "a4x-max-highgpu-4g",
+    "gpus": [
+      {
+        "id": "nvidia-b300-sxm",
+        "count": 4
+      }
+    ],
+    "vcpus": 144,
+    "ramGB": 960,
+    "storageGB": 12000,
+    "networkGbps": 1600,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 60
+    },
+    "regions": [
+      "us-central1"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "lambda-1xb300",
+    "provider": "lambda",
+    "instanceType": "1x B300 288GB",
+    "gpus": [
+      {
+        "id": "nvidia-b300-sxm",
+        "count": 1
+      }
+    ],
+    "vcpus": 28,
+    "ramGB": 288,
+    "storageGB": 1000,
+    "networkGbps": 100,
+    "pricing": {
+      "onDemandUSDPerHour": 5.49
+    },
+    "regions": [
+      "us-tx-3"
+    ],
+    "notes": "Blackwell Ultra (B300), 288 GB HBM3e. 1-Click cluster option available.",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "lambda-8xb300",
+    "provider": "lambda",
+    "instanceType": "8x B300 288GB",
+    "gpus": [
+      {
+        "id": "nvidia-b300-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 208,
+    "ramGB": 2304,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 43
+    },
+    "regions": [
+      "us-tx-3"
+    ],
+    "notes": "HGX B300 cluster — 2.3 TB HBM3e, 1.5x FP4 throughput vs HGX B200.",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "lambda-gb200-nvl72",
+    "provider": "lambda",
+    "instanceType": "GB200 NVL72",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 72
+      }
+    ],
+    "vcpus": 2592,
+    "ramGB": 17280,
+    "storageGB": 405000,
+    "networkGbps": 28800,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 720
+    },
+    "regions": [
+      "us-tx-3"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "lambda-gb300-nvl72",
+    "provider": "lambda",
+    "instanceType": "GB300 NVL72",
+    "gpus": [
+      {
+        "id": "nvidia-b300-sxm",
+        "count": 72
+      }
+    ],
+    "vcpus": 2592,
+    "ramGB": 17280,
+    "storageGB": 405000,
+    "networkGbps": 28800,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 950
+    },
+    "regions": [
+      "us-tx-3"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "runpod-8xb200",
+    "provider": "runpod",
+    "instanceType": "8x B200 192GB",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 128,
+    "ramGB": 2048,
+    "storageGB": 4000,
+    "networkGbps": 400,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 39.92
+    },
+    "regions": [
+      "us-east"
+    ],
+    "notes": "Secure Cloud, HGX B200 node",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "runpod-1xb300",
+    "provider": "runpod",
+    "instanceType": "1x B300 288GB",
+    "gpus": [
+      {
+        "id": "nvidia-b300-sxm",
+        "count": 1
+      }
+    ],
+    "vcpus": 16,
+    "ramGB": 288,
+    "storageGB": 500,
+    "networkGbps": 25,
+    "pricing": {
+      "onDemandUSDPerHour": 5.99
+    },
+    "regions": [
+      "us-east"
+    ],
+    "notes": "Blackwell Ultra (B300), Secure Cloud",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "runpod-8xb300",
+    "provider": "runpod",
+    "instanceType": "8x B300 288GB",
+    "gpus": [
+      {
+        "id": "nvidia-b300-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 128,
+    "ramGB": 2304,
+    "storageGB": 4000,
+    "networkGbps": 400,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 47.92
+    },
+    "regions": [
+      "us-east"
+    ],
+    "notes": "HGX B300 Secure Cloud node",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "vast-1xb200",
+    "provider": "vast",
+    "instanceType": "1x B200 192GB",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 1
+      }
+    ],
+    "vcpus": 16,
+    "ramGB": 192,
+    "storageGB": 500,
+    "networkGbps": 10,
+    "pricing": {
+      "onDemandUSDPerHour": 3.79
+    },
+    "regions": [
+      "us-east",
+      "us-west",
+      "eu-west"
+    ],
+    "notes": "Marketplace pricing — often the cheapest single-B200 on the market.",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "coreweave-8xb300",
+    "provider": "coreweave",
+    "instanceType": "8x B300 288GB",
+    "gpus": [
+      {
+        "id": "nvidia-b300-sxm",
+        "count": 8
+      }
+    ],
+    "vcpus": 192,
+    "ramGB": 2304,
+    "storageGB": 8000,
+    "networkGbps": 3200,
+    "interconnect": "nvswitch",
+    "pricing": {
+      "onDemandUSDPerHour": 85,
+      "reserved1yUSDPerHour": 68
+    },
+    "regions": [
+      "us-east",
+      "us-west"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "coreweave-gb200-nvl72",
+    "provider": "coreweave",
+    "instanceType": "GB200 NVL72",
+    "gpus": [
+      {
+        "id": "nvidia-b200-sxm",
+        "count": 72
+      }
+    ],
+    "vcpus": 2592,
+    "ramGB": 17280,
+    "storageGB": 405000,
+    "networkGbps": 28800,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 756,
+      "reserved1yUSDPerHour": 600
+    },
+    "regions": [
+      "us-east",
+      "us-west"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  },
+  {
+    "id": "coreweave-gb300-nvl72",
+    "provider": "coreweave",
+    "instanceType": "GB300 NVL72",
+    "gpus": [
+      {
+        "id": "nvidia-b300-sxm",
+        "count": 72
+      }
+    ],
+    "vcpus": 2592,
+    "ramGB": 17280,
+    "storageGB": 405000,
+    "networkGbps": 28800,
+    "interconnect": "nvlink",
+    "pricing": {
+      "onDemandUSDPerHour": 990,
+      "reserved1yUSDPerHour": 792
+    },
+    "regions": [
+      "us-east",
+      "us-west"
+    ],
+    "notes": ">-",
+    "lastPriceUpdate": "2026-04-22"
+  }
+]

@@ -1,0 +1,611 @@
+import { create } from 'zustand';
+import type {
+  ModelSpec, GPUSpec, CloudInstance,
+  VRAMBreakdown, GPURecommendations, GPUFitResult, CloudRecommendation,
+  CostMetricsResult, ClusterRecommendation, StackRecommendation,
+  WorkloadMode, TrainingOptions, AdvancedSettings, CalculatorState,
+} from '@/lib/formulas/types';
+import {
+  getPrecisionConfig, getKVPrecisionConfig,
+  computeTotalVRAM, computeThroughput, computeCostMetrics,
+  recommendGPUs, recommendCloudInstances,
+  recommendCluster, recommendStack, classifyGPUFit,
+  buildLoraTargetModules,
+} from '@/lib/formulas';
+import { serializeState, parseState, getDefaultState } from '@/lib/url-serializer';
+
+// ── Static data (loaded once) ─────────────────────────────────────────────────
+import modelsData from '@/data/models.json';
+import gpusData from '@/data/gpus.json';
+import cloudData from '@/data/cloud.json';
+
+const MODEL_DB = modelsData as ModelSpec[];
+const GPU_DB = gpusData as GPUSpec[];
+const CLOUD_DB = cloudData as CloudInstance[];
+
+// ── Default values ────────────────────────────────────────────────────────────
+const DEFAULT_EFFICIENCY = 0.8; // vLLM default
+
+// ── Advanced KV defaults ───────────────────────────────────────────────────────
+/**
+ * Default indexer cache precision for a model with an indexer side-cache
+ * (DSA/MiniMax/DeepSeek-V4). DeepSeek-V4 ships an FP4 indexer upstream;
+ * everything else defaults to the KV precision.
+ */
+function defaultIndexerPrecision(model: ModelSpec): string {
+  if (model?.kv?.formula === 'deepseek_v4_hybrid') return 'int4';
+  return 'fp16';
+}
+
+// ── Store interface ───────────────────────────────────────────────────────────
+export interface CalculatorStore {
+  // ── Static data
+  modelDb: ModelSpec[];
+  gpuDb: GPUSpec[];
+  cloudDb: CloudInstance[];
+
+  // ── Inputs
+  selectedModel: ModelSpec | null;
+  selectedGPU: GPUSpec | null;
+  precision: string;
+  kvPrecision: string;
+  indexerPrecision: string;
+  includeDraftKvCache: boolean;
+  includeLinearAttentionState: boolean;
+  contextLength: number;
+  batchSize: number;
+  mode: WorkloadMode;
+  trainingOptions: TrainingOptions;
+  advancedSettings: AdvancedSettings;
+
+  // ── Network / Storage inputs
+  numGPUs: number;
+  parallelismType: 'tp' | 'pp' | 'zero3' | 'moe';
+
+  // ── Computed results
+  breakdown: VRAMBreakdown | null;
+  gpuRecommendations: GPURecommendations | null;
+  topGPU: GPUFitResult | null;
+  cloudRecommendations: CloudRecommendation[] | null;
+  costMetrics: CostMetricsResult | null;
+  clusterRecommendation: ClusterRecommendation | null;
+  stackRecommendation: StackRecommendation | null;
+
+  // ── Concurrent user capacity (Spec 10)
+  concurrentUsers: number;
+  avgPromptTokens: number;
+  avgOutputTokens: number;
+  sloTTFTMs: number;
+  sloTPOTMs: number;
+  batchMode: boolean;
+
+  // ── Compare configs (up to 3)
+  compareConfigs: CalculatorState[];
+
+  // ── Actions
+  setModel: (model: ModelSpec) => void;
+  setGPU: (gpu: GPUSpec | null) => void;
+  setPrecision: (precision: string) => void;
+  setKVPrecision: (kvPrecision: string) => void;
+  setIndexerPrecision: (indexerPrecision: string) => void;
+  setIncludeDraftKvCache: (enabled: boolean) => void;
+  setIncludeLinearAttentionState: (enabled: boolean) => void;
+  setContextLength: (ctx: number) => void;
+  setBatchSize: (batch: number) => void;
+  setMode: (mode: WorkloadMode) => void;
+  setTrainingOptions: (opts: Partial<TrainingOptions>) => void;
+  setAdvancedSettings: (settings: Partial<AdvancedSettings>) => void;
+  setNumGPUs: (n: number) => void;
+  setParallelismType: (t: 'tp' | 'pp' | 'zero3' | 'moe') => void;
+  setConcurrentUsers: (n: number) => void;
+  setAvgPromptTokens: (n: number) => void;
+  setAvgOutputTokens: (n: number) => void;
+  setSloTTFT: (ms: number) => void;
+  setSloTPOT: (ms: number) => void;
+  setBatchMode: (b: boolean) => void;
+  addCompareConfig: () => void;
+  removeCompareConfig: (index: number) => void;
+  loadFromURL: (queryString: string) => void;
+  getShareURL: () => string;
+  recompute: () => void;
+}
+
+// ── Default training options ──────────────────────────────────────────────────
+const defaultTrainingOptions: TrainingOptions = {
+  mode: 'lora',
+  gradientCheckpointing: true,
+  loraRank: 8,
+  loraModules: ['q_proj', 'k_proj', 'v_proj', 'o_proj'],
+  flashAttention: true,
+  checkpointMode: 'selective',
+};
+
+const defaultAdvancedSettings: AdvancedSettings = {
+  framework: 'vLLM',
+  overheadMultiplier: 1.0,
+  tokenizer: 'default',
+};
+
+// ── Store implementation ──────────────────────────────────────────────────────
+export const useCalculatorStore = create<CalculatorStore>((set, get) => {
+  // Read URL on init — but never default to 'reverse' (that's a separate page)
+  const urlState = typeof window !== 'undefined' && window.location.search
+    ? parseState(window.location.search, MODEL_DB)
+    : null;
+  const rawInitState = urlState ?? getDefaultState(MODEL_DB);
+  // Force inference if mode is reverse/scale/finetune (legacy modes)
+  const initialState = {
+    ...rawInitState,
+    mode: (['reverse', 'finetune', 'scale'].includes(rawInitState.mode)
+      ? rawInitState.mode === 'finetune' ? 'train' : 'inference'
+      : rawInitState.mode) as WorkloadMode,
+  };
+  const initialModel = MODEL_DB.find(m => m.id === initialState.model) ?? MODEL_DB[0] ?? null;
+
+  return {
+    // Static data
+    modelDb: MODEL_DB,
+    gpuDb: GPU_DB,
+    cloudDb: CLOUD_DB,
+
+    // Inputs
+    selectedModel: initialModel,
+    selectedGPU: null,
+    precision: initialState.precision,
+    kvPrecision: initialState.kvPrecision,
+    indexerPrecision: initialState.indexerPrecision ?? defaultIndexerPrecision(initialModel),
+    includeDraftKvCache: initialState.includeDraftKvCache ?? false,
+    includeLinearAttentionState: initialState.includeLinearAttentionState ?? false,
+    contextLength: initialState.ctx,
+    batchSize: initialState.batch,
+    mode: initialState.mode,
+    trainingOptions: defaultTrainingOptions,
+    advancedSettings: defaultAdvancedSettings,
+
+    // Network / Storage
+    numGPUs: 1,
+    parallelismType: 'tp' as const,
+
+    // Concurrent user capacity (Spec 10)
+    concurrentUsers: 10,
+    avgPromptTokens: 1024,
+    avgOutputTokens: 256,
+    sloTTFTMs: 500,
+    sloTPOTMs: 50,
+    batchMode: false,
+
+    // Computed (null until first recompute)
+    breakdown: null,
+    gpuRecommendations: null,
+    topGPU: null,
+    cloudRecommendations: null,
+    costMetrics: null,
+    clusterRecommendation: null,
+    stackRecommendation: null,
+
+    // Compare
+    compareConfigs: [],
+
+    // ── Actions ────────────────────────────────────────────────────────────
+
+    setModel: (model) => {
+      // Clamp context to model's max
+      const { contextLength } = get();
+      const clampedCtx = Math.min(contextLength, model.architecture.maxContextLength);
+      set({
+        selectedModel: model,
+        contextLength: clampedCtx,
+        // Reset advanced-KV knobs to the new model's defaults
+        indexerPrecision: defaultIndexerPrecision(model),
+        includeDraftKvCache: false,
+        includeLinearAttentionState: false,
+      });
+      get().recompute();
+    },
+
+    setGPU: (gpu) => {
+      set({ selectedGPU: gpu });
+      // Recompute so the metrics (throughput / TTFT / cost) follow the selected GPU
+      get().recompute();
+    },
+
+    setPrecision: (precision) => {
+      set({ precision });
+      get().recompute();
+    },
+
+    setKVPrecision: (kvPrecision) => {
+      set({ kvPrecision });
+      get().recompute();
+    },
+
+    setIndexerPrecision: (indexerPrecision) => {
+      set({ indexerPrecision });
+      get().recompute();
+    },
+
+    setIncludeDraftKvCache: (includeDraftKvCache) => {
+      set({ includeDraftKvCache });
+      get().recompute();
+    },
+
+    setIncludeLinearAttentionState: (includeLinearAttentionState) => {
+      set({ includeLinearAttentionState });
+      get().recompute();
+    },
+
+    setContextLength: (ctx) => {
+      // Allow values beyond model's native max (user gets a warning in UI)
+      // Hard cap at 10M tokens (largest step)
+      const hardMax = 10_485_760;
+      set({ contextLength: Math.max(512, Math.min(ctx, hardMax)) });
+      get().recompute();
+    },
+
+    setBatchSize: (batch) => {
+      set({ batchSize: Math.max(1, Math.min(256, batch)) });
+      get().recompute();
+    },
+
+    setMode: (mode) => {
+      // Map legacy modes: finetune → train, scale → inference
+      const resolved = mode === 'finetune' ? 'train'
+        : mode === 'scale' ? 'inference'
+        : mode;
+      set({ mode: resolved });
+      get().recompute();
+    },
+
+    setTrainingOptions: (opts) => {
+      set(state => ({ trainingOptions: { ...state.trainingOptions, ...opts } }));
+      get().recompute();
+    },
+
+    setAdvancedSettings: (settings) => {
+      set(state => ({ advancedSettings: { ...state.advancedSettings, ...settings } }));
+      get().recompute();
+    },
+
+    setNumGPUs: (n) => {
+      set({ numGPUs: Math.max(1, n) });
+      get().recompute();
+    },
+
+    setParallelismType: (t) => {
+      set({ parallelismType: t });
+      get().recompute();
+    },
+
+    setConcurrentUsers: (n) => {
+      set({ concurrentUsers: Math.max(1, Math.min(10000, n)) });
+      // Recompute to update VRAM with new concurrent user count
+      get().recompute();
+    },
+
+    setAvgPromptTokens: (n) => {
+      set({ avgPromptTokens: Math.max(32, Math.min(131072, n)) });
+      // Recompute to update KV cache with new prompt length
+      get().recompute();
+    },
+
+    setAvgOutputTokens: (n) => {
+      set({ avgOutputTokens: Math.max(16, Math.min(8192, n)) });
+      // Recompute to update KV cache with new output length
+      get().recompute();
+    },
+
+    setSloTTFT: (ms) => {
+      set({ sloTTFTMs: ms });
+    },
+
+    setSloTPOT: (ms) => {
+      set({ sloTPOTMs: ms });
+    },
+
+    setBatchMode: (b) => {
+      set({ batchMode: b });
+    },
+
+    addCompareConfig: () => {
+      const {
+        compareConfigs, selectedModel, precision, kvPrecision,
+        indexerPrecision, includeDraftKvCache, includeLinearAttentionState,
+        contextLength, batchSize, mode,
+      } = get();
+      if (compareConfigs.length >= 3 || !selectedModel) return;
+      const config: CalculatorState = {
+        model: selectedModel.id,
+        precision,
+        kvPrecision,
+        ctx: contextLength,
+        batch: batchSize,
+        mode,
+        indexerPrecision: indexerPrecision !== defaultIndexerPrecision(selectedModel) ? indexerPrecision : undefined,
+        includeDraftKvCache: includeDraftKvCache || undefined,
+        includeLinearAttentionState: includeLinearAttentionState || undefined,
+      };
+      set({ compareConfigs: [...compareConfigs, config] });
+    },
+
+    removeCompareConfig: (index) => {
+      set(state => ({
+        compareConfigs: state.compareConfigs.filter((_, i) => i !== index),
+      }));
+    },
+
+    loadFromURL: (queryString) => {
+      const parsed = parseState(queryString, MODEL_DB);
+      const model = MODEL_DB.find(m => m.id === parsed.model) ?? MODEL_DB[0] ?? null;
+      set({
+        selectedModel: model,
+        precision: parsed.precision,
+        kvPrecision: parsed.kvPrecision,
+        indexerPrecision: parsed.indexerPrecision ?? defaultIndexerPrecision(model),
+        includeDraftKvCache: parsed.includeDraftKvCache ?? false,
+        includeLinearAttentionState: parsed.includeLinearAttentionState ?? false,
+        contextLength: parsed.ctx,
+        batchSize: parsed.batch,
+        mode: parsed.mode,
+      });
+      if (parsed.trainingMethod) {
+        set(state => ({
+          trainingOptions: {
+            ...state.trainingOptions,
+            trainingMethodId: parsed.trainingMethod,
+          },
+        }));
+      }
+      // Spec 10: Concurrent user capacity
+      if (parsed.users !== undefined) set({ concurrentUsers: parsed.users });
+      if (parsed.avgPrompt !== undefined) set({ avgPromptTokens: parsed.avgPrompt });
+      if (parsed.avgOutput !== undefined) set({ avgOutputTokens: parsed.avgOutput });
+      if (parsed.sloTtft !== undefined) set({ sloTTFTMs: parsed.sloTtft });
+      if (parsed.sloTpot !== undefined) set({ sloTPOTMs: parsed.sloTpot });
+      if (parsed.batch10 !== undefined) set({ batchMode: parsed.batch10 });
+      get().recompute();
+    },
+
+    getShareURL: () => {
+      const {
+        selectedModel, precision, kvPrecision, indexerPrecision,
+        includeDraftKvCache, includeLinearAttentionState,
+        contextLength, batchSize, mode, trainingOptions,
+        concurrentUsers, avgPromptTokens, avgOutputTokens, sloTTFTMs, sloTPOTMs, batchMode,
+      } = get();
+      if (!selectedModel) return window.location.href;
+      // Never serialize 'reverse' as a mode — it's a separate page/route
+      const safeMode = (mode === 'reverse' as any) ? 'inference' : mode;
+      const state: CalculatorState = {
+        model: selectedModel.id,
+        precision,
+        kvPrecision,
+        indexerPrecision: indexerPrecision !== defaultIndexerPrecision(selectedModel) ? indexerPrecision : undefined,
+        includeDraftKvCache: includeDraftKvCache || undefined,
+        includeLinearAttentionState: includeLinearAttentionState || undefined,
+        ctx: contextLength,
+        batch: batchSize,
+        mode: safeMode,
+        trainingMethod: trainingOptions.trainingMethodId,
+        users: concurrentUsers !== 10 ? concurrentUsers : undefined,
+        avgPrompt: avgPromptTokens !== 1024 ? avgPromptTokens : undefined,
+        avgOutput: avgOutputTokens !== 256 ? avgOutputTokens : undefined,
+        sloTtft: sloTTFTMs !== 500 ? sloTTFTMs : undefined,
+        sloTpot: sloTPOTMs !== 50 ? sloTPOTMs : undefined,
+        batch10: batchMode || undefined,
+      };
+      return window.location.origin + window.location.pathname + serializeState(state);
+    },
+
+    recompute: () => {
+      const {
+        selectedModel, selectedGPU, precision, kvPrecision, indexerPrecision,
+        includeDraftKvCache, includeLinearAttentionState,
+        contextLength, batchSize,
+        mode, trainingOptions, gpuDb, cloudDb, numGPUs, parallelismType,
+      } = get();
+
+      if (!selectedModel) return;
+
+      const precisionConfig = getPrecisionConfig(precision);
+      const kvPrecisionConfig = getKVPrecisionConfig(kvPrecision);
+      const indexerPrecisionConfig = getKVPrecisionConfig(indexerPrecision);
+
+      // ── Trainer parallelism (TP/PP/DP) ────────────────────────────────────
+      // For training, derive TP/PP/DP from the parallel strategy so the
+      // breakdown is sized per GPU. Non-training modes keep the flat total/numGPUs
+      // split further below; MoE keeps its dedicated expert-sharding branch.
+      const isTrainLike = mode === 'train' || mode === 'finetune';
+      let trainTP = 1;
+      let trainPP = 1;
+      let trainDP = Math.max(1, numGPUs);
+      if (isTrainLike && parallelismType !== 'moe') {
+        if (parallelismType === 'tp' || parallelismType === 'zero3') {
+          // Tensor parallel (and ZeRO-3, treated like TP for VRAM): shard across all GPUs.
+          trainTP = Math.max(1, numGPUs);
+          trainPP = 1;
+          trainDP = 1;
+        } else if (parallelismType === 'pp') {
+          // Pipeline parallel: shard layers across stages, replicate activations per stage.
+          trainTP = 1;
+          trainPP = Math.max(1, numGPUs);
+          trainDP = 1;
+        }
+      }
+      // Build the expanded LoRA target modules so the formula layer can derive
+      // N_trainable from the user's selected modules × rank (not the full params).
+      const isLoRAMethod = isTrainLike &&
+        (trainingOptions.mode === 'lora' || trainingOptions.mode === 'qlora') &&
+        selectedModel?.architecture;
+      const loraTargetModules = isLoRAMethod
+        ? buildLoraTargetModules(
+            trainingOptions.loraModules ?? ['q_proj', 'k_proj', 'v_proj', 'o_proj'],
+            selectedModel!.architecture.hiddenSize,
+            selectedModel!.architecture.intermediateSize,
+            selectedModel!.architecture.numLayers,
+          )
+        : undefined;
+
+      const trainTrainingOptions = isTrainLike
+        ? { ...trainingOptions, tp: trainTP, pp: trainPP, dp: trainDP, loraTargetModules }
+        : trainingOptions;
+
+      // VRAM breakdown (total across all GPUs)
+      const breakdown = computeTotalVRAM(
+        selectedModel,
+        precisionConfig,
+        kvPrecisionConfig,
+        contextLength,
+        batchSize,
+        mode,
+        trainTrainingOptions,
+        {
+          indexerBytesPerElement: indexerPrecisionConfig.bytesPerParam,
+          includeDraftKvCache,
+          includeLinearAttentionState,
+        }
+      );
+
+      // Per-GPU VRAM split depends on parallelism strategy:
+      //   tp    — tensor parallel: weights + KV cache split evenly across all GPUs
+      //   pp    — pipeline parallel: weights split by layers, KV cache per stage
+      //   zero3 — ZeRO-3: weights sharded, activations replicated → same as TP for VRAM
+      //   moe   — MoE expert parallel: expert weights sharded, attention replicated
+      // For VRAM estimation purposes TP/PP/ZeRO-3 all divide total evenly.
+      // MoE keeps attention weights on every GPU; only expert weights are sharded.
+      let vramPerGPU: number;
+      if (parallelismType === 'moe' && selectedModel.moe && selectedModel.paramsActive) {
+        // Attention + shared weights stay on every GPU; expert weights are sharded
+        const activeParams = selectedModel.paramsActive;
+        const totalParams = selectedModel.paramsTotal;
+        const expertParams = totalParams - activeParams;
+        const bytesPerParam = precisionConfig.bytesPerParam;
+        const sharedWeightsGB = (activeParams * bytesPerParam) / 1e9;
+        const expertWeightsPerGPU = (expertParams * bytesPerParam) / 1e9 / Math.max(1, numGPUs);
+        const kvAndOverheadGB = breakdown.totalGB - (totalParams * bytesPerParam) / 1e9;
+        vramPerGPU = sharedWeightsGB + expertWeightsPerGPU + Math.max(0, kvAndOverheadGB) / Math.max(1, numGPUs);
+      } else if (isTrainLike) {
+        // Training with a derived TP/PP: computeTotalVRAM already sharded the
+        // per-GPU breakdown, so the total is already per-GPU — do not divide again.
+        vramPerGPU = breakdown.totalGB;
+      } else {
+        // TP / PP / ZeRO-3: divide total evenly
+        vramPerGPU = breakdown.totalGB / Math.max(1, numGPUs);
+      }
+
+      // Active weights for throughput (use paramsActive for MoE)
+      const activeParams = selectedModel.paramsActive ?? selectedModel.paramsTotal;
+      const activeWeightsGB = (activeParams * precisionConfig.bytesPerParam) / 1e9;
+      const activeWeightsPerGPU = activeWeightsGB / Math.max(1, numGPUs);
+
+      // GPU recommendations — based on per-GPU VRAM requirement
+      const gpuRecommendations = recommendGPUs(
+        vramPerGPU,
+        gpuDb,
+        { activeWeightsGB: activeWeightsPerGPU, efficiencyFactor: DEFAULT_EFFICIENCY }
+      );
+
+      // Cloud recommendations — based on total VRAM (multi-GPU instances)
+      const rawCloudRecs = recommendCloudInstances(
+        breakdown.totalGB,
+        cloudDb,
+        gpuDb
+      );
+
+      // Build a GPU bandwidth lookup for enriching cloud cost per million tokens
+      const gpuBandwidthMap = new Map<string, number>(
+        gpuDb.map(g => [g.id, g.memoryBandwidthGBs])
+      );
+
+      // Enrich each cloud recommendation with costPerMillionTokens based on
+      // the instance's own GPU bandwidth (total across all GPUs in the instance)
+      const enrichedCloudRecs: CloudRecommendation[] = rawCloudRecs.map(rec => {
+        const totalBandwidthGBs = rec.instance.gpus.reduce((sum, g) => {
+          const bw = gpuBandwidthMap.get(g.id) ?? 0;
+          return sum + bw * g.count;
+        }, 0);
+
+        let costPerMillionTokens: number | undefined;
+        if (totalBandwidthGBs > 0 && rec.onDemandPerHour > 0) {
+          const instanceThroughput = computeThroughput({
+            memoryBandwidthGBs: totalBandwidthGBs,
+            activeWeightsGB: activeWeightsGB,
+            efficiencyFactor: DEFAULT_EFFICIENCY,
+          });
+          const metrics = computeCostMetrics({
+            tokensPerSecond: instanceThroughput.tokensPerSecond,
+            hourlyCloudCost: rec.onDemandPerHour,
+            contextLength,
+            activeWeightsGB,
+            computeTFLOPS: 0,
+          });
+          costPerMillionTokens = metrics.costPerMillionTokens;
+        }
+
+        return { ...rec, costPerMillionTokens };
+      });
+
+      // Re-sort by costPerMillionTokens (cheapest first), fall back to $/h
+      enrichedCloudRecs.sort((a, b) => {
+        const aCost = a.costPerMillionTokens ?? a.onDemandPerHour * 1e6;
+        const bCost = b.costPerMillionTokens ?? b.onDemandPerHour * 1e6;
+        return aCost - bCost;
+      });
+
+      // Re-mark best price after sort
+      enrichedCloudRecs.forEach((r, i) => { r.isBestPrice = i === 0; });
+
+      const cloudRecommendations = enrichedCloudRecs;
+
+      // Cost metrics (use cheapest cloud instance, scale throughput by numGPUs)
+      const cheapestCloud = cloudRecommendations[0];
+      // Prefer the user's manually-selected GPU; fall back to the best auto-recommended fit.
+      const topGPU: GPUFitResult | null = selectedGPU
+        ? {
+            gpu: selectedGPU,
+            fitStatus: classifyGPUFit(vramPerGPU, selectedGPU.memoryGB),
+            utilizationPercent: Math.round((vramPerGPU / selectedGPU.memoryGB) * 100),
+            freeVRAMGB: Math.max(0, selectedGPU.memoryGB - vramPerGPU),
+            tokensPerSecond: computeThroughput({
+              memoryBandwidthGBs: selectedGPU.memoryBandwidthGBs,
+              activeWeightsGB: activeWeightsPerGPU,
+              efficiencyFactor: DEFAULT_EFFICIENCY,
+            }).tokensPerSecond,
+          }
+        : gpuRecommendations.allFits.find(f => f.fitStatus !== 'red') ?? null;
+      let costMetrics: CostMetricsResult | null = null;
+
+      if (topGPU && cheapestCloud) {
+        // topGPU.tokensPerSecond is already the per-GPU throughput (set by
+        // recommendGPUs for auto picks, or computed above for a selected GPU).
+        // Scale by number of GPUs (tensor parallel scales linearly).
+        const scaledThroughput = (topGPU.tokensPerSecond ?? 0) * numGPUs;
+        costMetrics = computeCostMetrics({
+          tokensPerSecond: scaledThroughput,
+          hourlyCloudCost: cheapestCloud.onDemandPerHour,
+          contextLength,
+          activeWeightsGB,
+          computeTFLOPS: topGPU.gpu.flops.fp16 * numGPUs,
+        });
+      }
+
+      // Cluster recommendation
+      const clusterRecommendation = recommendCluster(breakdown.totalGB, mode, gpuDb);
+
+      // Stack recommendation (use top fitting GPU or first in DB)
+      const stackGPU = topGPU?.gpu ?? gpuDb[0];
+      const stackRecommendation = stackGPU
+        ? recommendStack(stackGPU, mode)
+        : null;
+
+      set({
+        breakdown,
+        gpuRecommendations,
+        topGPU,
+        cloudRecommendations,
+        costMetrics,
+        clusterRecommendation,
+        stackRecommendation,
+      });
+    },
+  };
+});
