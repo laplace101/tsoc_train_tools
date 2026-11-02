@@ -1,43 +1,45 @@
-# Contributing to LLMcalc
+# 贡献指南
 
-## Adding New Models
+> 英文版见 [CONTRIBUTING.en.md](CONTRIBUTING.en.md)。
 
-### Quick Start
+## 添加新模型
 
-1. **Add to allowlist** — edit `data/models.yml`:
+### 快速开始
+
+1. **加入白名单** —— 编辑 `data/models.yml`：
    ```yaml
    models:
      - meta-llama/Llama-3.1-8B
-     - your-org/your-new-model   # ← add here
+     - your-org/your-new-model   # ← 在这里添加
    ```
 
-2. **Run ingestion**:
+2. **执行抓取**：
    ```bash
    npx tsx scripts/ingest-models.ts
    ```
 
-3. **Validate**:
+3. **校验**：
    ```bash
    npm run validate
    npm test
    ```
 
-4. **Commit**:
+4. **提交**：
    ```bash
    git add src/data/models.json data/.model-cache.json
    git commit -m "data: add your-new-model"
    ```
 
-### With HuggingFace Token (for gated models)
+### 使用 HuggingFace Token（用于受限模型）
 
 ```bash
 export HF_TOKEN=hf_your_token_here
 npx tsx scripts/ingest-models.ts
 ```
 
-### Manual Overrides
+### 手动覆盖
 
-If the model has fields not in `config.json` (MoE active params, MLA compressed dim), add to `data/models-override.yml`:
+如果模型存在 `config.json` 中没有的字段（MoE 激活参数量、MLA 压缩维度等），在 `data/models-override.yml` 中添加：
 
 ```yaml
 overrides:
@@ -47,39 +49,39 @@ overrides:
     notes: "MoE with MLA attention"
 ```
 
-### What the Script Does
+### 脚本做了什么
 
-1. Fetches `config.json` from HuggingFace Hub
-2. Parses architecture fields (layers, hidden size, attention heads, etc.)
-3. Detects architecture type (dense / MoE / MLA / VLM / SSM / hybrid)
-4. Extracts parameter count from safetensors metadata
-5. Validates all fields against schema
-6. Merges with existing `src/data/models.json`
-7. Writes cache to `data/.model-cache.json` for incremental updates
+1. 从 HuggingFace Hub 拉取 `config.json`
+2. 解析架构字段（层数、隐藏维度、注意力头数等）
+3. 识别架构类型（dense / MoE / MLA / VLM / SSM / hybrid）
+4. 从 safetensors 元数据中提取参数量
+5. 按 schema 校验所有字段
+6. 与现有 `src/data/models.json` 合并
+7. 把缓存写入 `data/.model-cache.json` 以支持增量更新
 
-### Troubleshooting
+### 排查问题
 
-**"No config.json" error:**
-- Model is gated → set `HF_TOKEN` env var
-- Model doesn't exist → check the HuggingFace URL
-- Model has non-standard config → add manual override
+**"No config.json" 错误：**
+- 模型受限（gated）→ 设置 `HF_TOKEN` 环境变量
+- 模型不存在 → 检查 HuggingFace URL
+- 模型的 config 不标准 → 添加手动覆盖
 
-**"Validation failed" error:**
-- Check the error message for missing fields
-- Add manual override in `data/models-override.yml`
-- Or fix the model's `config.json` on HuggingFace
+**"Validation failed" 错误：**
+- 查看错误信息中提示缺失的字段
+- 在 `data/models-override.yml` 中添加手动覆盖
+- 或者直接去 HuggingFace 上修正该模型的 `config.json`
 
 ---
 
-## Adding New GPUs
+## 添加新 GPU
 
-### Quick Start
+### 快速开始
 
-1. **Add to hardware YAML** — edit `data/hardware.yml`:
+1. **加入硬件 YAML** —— 编辑 `data/hardware.yml`：
    ```yaml
    gpus:
-     # ... existing entries ...
-     
+     # ... 已有条目 ...
+
      - id: nvidia-h100-nvl
        vendor: nvidia
        name: H100 NVL 94GB
@@ -97,54 +99,54 @@ overrides:
        notes: "PCIe variant with 94GB HBM3"
    ```
 
-2. **Run refresh**:
+2. **执行刷新**：
    ```bash
    npx tsx scripts/refresh-hardware.ts
    ```
 
-3. **Validate**:
+3. **校验**：
    ```bash
    npm run validate
    npm test
    ```
 
-4. **Commit**:
+4. **提交**：
    ```bash
    git add src/data/gpus.json data/hardware.yml
    git commit -m "data: add H100 NVL 94GB"
    ```
 
-### Required Fields
+### 必填字段
 
-- `id` — unique identifier (kebab-case)
-- `vendor` — `nvidia` | `amd` | `apple` | `intel` | `google-tpu`
-- `name` — display name
-- `category` — `consumer` | `workstation` | `datacenter` | `apple-silicon` | `tpu`
-- `memoryGB` — VRAM in GB (1-1024)
-- `memoryBandwidthGBs` — HBM bandwidth in GB/s
-- `flops` — object with `fp32`, `fp16`, `int8` (TFLOPS or TOPS)
-- `tdpWatts` — thermal design power (1-5000)
-- `formFactor` — `pcie` | `sxm` | `oam` | `integrated` | `mxm`
-- `releaseYear` — 2000-2035
+- `id` —— 唯一标识（kebab-case）
+- `vendor` —— `nvidia` | `amd` | `apple` | `intel` | `google-tpu`
+- `name` —— 显示名称
+- `category` —— `consumer` | `workstation` | `datacenter` | `apple-silicon` | `tpu`
+- `memoryGB` —— 显存容量，单位 GB（1-1024）
+- `memoryBandwidthGBs` —— HBM 带宽，单位 GB/s
+- `flops` —— 包含 `fp32`、`fp16`、`int8` 的对象（TFLOPS 或 TOPS）
+- `tdpWatts` —— 设计功耗（1-5000）
+- `formFactor` —— `pcie` | `sxm` | `oam` | `integrated` | `mxm`
+- `releaseYear` —— 2000-2035
 
-### Optional Fields
+### 可选字段
 
-- `nvlink` — `{ perGPU_GBs: number }` for NVLink bandwidth
-- `msrpUSD` — manufacturer suggested retail price
-- `streetUSD` — actual market price
-- `notes` — any additional info
+- `nvlink` —— `{ perGPU_GBs: number }`，NVLink 带宽
+- `msrpUSD` —— 官方建议零售价
+- `streetUSD` —— 实际市场价格
+- `notes` —— 任何补充说明
 
 ---
 
-## Adding Cloud Instances
+## 添加云实例
 
-### Quick Start
+### 快速开始
 
-1. **Add to cloud overrides** — edit `data/cloud-overrides.yml`:
+1. **加入云实例覆盖文件** —— 编辑 `data/cloud-overrides.yml`：
    ```yaml
    instances:
-     # ... existing entries ...
-     
+     # ... 已有条目 ...
+
      - id: aws-p6.48xlarge
        provider: aws
        instanceType: p6.48xlarge
@@ -165,18 +167,18 @@ overrides:
        lastPriceUpdate: "2026-04-20"
    ```
 
-2. **Run refresh**:
+2. **执行刷新**：
    ```bash
    npx tsx scripts/refresh-cloud-prices.ts
    ```
 
-3. **Validate**:
+3. **校验**：
    ```bash
    npm run validate
    npm test
    ```
 
-4. **Commit**:
+4. **提交**：
    ```bash
    git add src/data/cloud.json data/cloud-overrides.yml
    git commit -m "data: add AWS p6.48xlarge (B200)"
@@ -184,102 +186,102 @@ overrides:
 
 ---
 
-## Automated Daily Updates
+## 每日自动更新
 
-The GitHub Actions workflows run automatically:
+GitHub Actions 工作流会自动运行：
 
-- **Models**: Daily at 3:17 UTC (`.github/workflows/ingest-models.yml`)
-- **Prices**: Daily at 4:00 UTC (`.github/workflows/refresh-prices.yml`)
+- **模型**：每天 3:17 UTC（`.github/workflows/ingest-models.yml`）
+- **价格**：每天 4:00 UTC（`.github/workflows/refresh-prices.yml`）
 
-Both create auto-PRs when data changes. Review and merge the PRs to update the live site.
+数据有变化时两者都会自动创建 PR。审核并合并 PR 即可更新线上站点。
 
-### Manual Trigger
+### 手动触发
 
-Go to GitHub Actions → select workflow → "Run workflow" → choose options.
+进入 GitHub Actions → 选择工作流 → "Run workflow" → 选择参数。
 
 ---
 
-## Testing Your Changes
+## 测试你的改动
 
-### 1. Validate data schema
+### 1. 校验数据 schema
 
 ```bash
 npm run validate
 ```
 
-This checks:
-- All required fields present
-- Sanity ranges (VRAM 1-1024 GB, params 1M-2T, etc.)
-- Type correctness
+它会检查：
+- 所有必填字段是否齐全
+- 数值范围是否合理（显存 1-1024 GB、参数量 1M-2T 等）
+- 类型是否正确
 
-### 2. Run unit tests
+### 2. 运行单元测试
 
 ```bash
 npm test
 ```
 
-All 244 tests must pass.
+244 个测试必须全部通过。
 
-### 3. Build the app
+### 3. 构建应用
 
 ```bash
 npm run build
 ```
 
-Must complete with 0 TypeScript errors.
+必须以 0 个 TypeScript 错误完成。
 
-### 4. Test locally
+### 4. 本地测试
 
 ```bash
 npm run dev
 ```
 
-Open http://localhost:5173 and verify:
-- New model appears in the model picker
-- New GPU appears in GPU recommendations
-- New cloud instance appears in the cloud table
-- All calculations work correctly
+打开 http://localhost:5173 并确认：
+- 新模型出现在模型选择器中
+- 新 GPU 出现在 GPU 推荐中
+- 新云实例出现在云实例表中
+- 所有计算结果正确
 
-### 5. Test in Docker
+### 5. 在 Docker 中测试
 
 ```bash
 docker compose up --build
 ```
 
-Open http://localhost:3000 and verify the production build works.
+打开 http://localhost:3000 并确认生产构建正常工作。
 
 ---
 
-## Data File Locations
+## 数据文件位置
 
-| File | Purpose | Updated by |
+| 文件 | 用途 | 更新方式 |
 |---|---|---|
-| `src/data/models.json` | Model database (bundled with app) | `ingest-models.ts` |
-| `src/data/gpus.json` | GPU database (bundled with app) | `refresh-hardware.ts` |
-| `src/data/cloud.json` | Cloud pricing (bundled with app) | `refresh-cloud-prices.ts` |
-| `src/data/exchange-rates.json` | Currency rates (bundled with app) | `refresh-cloud-prices.ts` |
-| `src/data/meta.json` | Data versions and timestamps | All scripts |
-| `data/models.yml` | Model allowlist (source of truth) | Manual |
-| `data/models-override.yml` | Manual model overrides | Manual |
-| `data/hardware.yml` | GPU specs (source of truth) | Manual |
-| `data/cloud-overrides.yml` | Cloud pricing (source of truth) | Manual |
-| `data/.model-cache.json` | Incremental update cache | `ingest-models.ts` |
+| `src/data/models.json` | 模型数据库（随应用打包） | `ingest-models.ts` |
+| `src/data/gpus.json` | GPU 数据库（随应用打包） | `refresh-hardware.ts` |
+| `src/data/cloud.json` | 云实例价格（随应用打包） | `refresh-cloud-prices.ts` |
+| `src/data/exchange-rates.json` | 汇率（随应用打包） | `refresh-cloud-prices.ts` |
+| `src/data/meta.json` | 数据版本与时间戳 | 所有脚本 |
+| `data/models.yml` | 模型白名单（事实来源） | 手动 |
+| `data/models-override.yml` | 模型手动覆盖 | 手动 |
+| `data/hardware.yml` | GPU 规格（事实来源） | 手动 |
+| `data/cloud-overrides.yml` | 云实例价格（事实来源） | 手动 |
+| `data/.model-cache.json` | 增量更新缓存 | `ingest-models.ts` |
 
 ---
 
-## Common Issues
+## 常见问题
 
-### "No config.json" for gated models
+### 受限模型报 "No config.json"
 
-**Solution**: Set `HF_TOKEN` environment variable:
+**解决方案**：设置 `HF_TOKEN` 环境变量：
 ```bash
 export HF_TOKEN=hf_your_token_here
 npx tsx scripts/ingest-models.ts
 ```
 
-### "Validation failed" errors
+### "Validation failed" 错误
 
-**Solution**: Check the error message and add manual override:
+**解决方案**：查看错误信息并添加手动覆盖：
 ```yaml
 # data/models-override.yml
 overrides:
@@ -288,26 +290,26 @@ overrides:
     notes: "Manual override for MoE active params"
 ```
 
-### Script hangs or times out
+### 脚本卡住或超时
 
-**Solution**: The HuggingFace API may be slow. The script has a 45-minute timeout in CI. For local runs, be patient or reduce the allowlist temporarily.
+**解决方案**：HuggingFace API 可能较慢。脚本在 CI 中有 45 分钟超时。本地运行时请耐心等待，或临时减少白名单条目。
 
-### Exchange rates fetch fails
+### 汇率获取失败
 
-**Solution**: The script uses fallback rates from `src/data/exchange-rates.json`. If Frankfurter API is down, the bundled rates are used.
+**解决方案**：脚本会回退使用 `src/data/exchange-rates.json` 中的备用汇率。若 Frankfurter API 不可用，将直接使用内置汇率。
 
 ---
 
-## Full Refresh (ignore cache)
+## 完整刷新（忽略缓存）
 
 ```bash
 FULL_REFRESH=true npx tsx scripts/ingest-models.ts
 ```
 
-This re-fetches all models even if `lastModified` hasn't changed.
+即使 `lastModified` 没有变化，也会重新拉取全部模型。
 
 ---
 
-## Questions?
+## 有疑问？
 
-Open an issue on GitHub or check the inline comments in the script files for implementation details.
+在 GitHub 上提 issue，或查看脚本文件中的注释了解实现细节。
