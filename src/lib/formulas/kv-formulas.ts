@@ -290,7 +290,7 @@ function calculateElementsPerSequence(
         },
       ],
       note: indexerPlan.sharedIndexerLayers > 0
-        ? 'Production estimate uses latent KV plus independently stored indexer state; shared indexer layers reuse the full indexer layers\' selection. Expanded HF-compatible cache is not included.'
+        ? t('Production estimate uses latent KV plus independently stored indexer state; shared indexer layers reuse the full indexer layers\' selection. Expanded HF-compatible cache is not included.', '生产估算使用隐变量 KV 加上独立存储的 indexer 状态；共享 indexer 层复用完整 indexer 层的选择结果。不含展开后的 HF 兼容缓存。')
         : t('Production estimate uses latent KV plus indexer state; expanded HF-compatible cache is not included.', '生产估算使用隐变量 KV 加上 indexer 状态，不含展开后的 HF 兼容缓存。'),
       byteGroups: [
         { role: 'kv', label: t('KV cache', 'KV 缓存'), elements: kvElementsPerToken * tokens },

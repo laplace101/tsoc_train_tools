@@ -41,7 +41,7 @@ const FRAMEWORK_TIMES: Record<Framework, {
     compilePerBillionParams: 0.1,
     warmupBase: 2,
     warmupPerBillionParams: 0.05,
-    notes: 'llama.cpp: minimal compile; fast startup',
+    get notes() { return t('llama.cpp: minimal compile; fast startup', 'llama.cpp：编译量极小；启动快'); },
   },
   ollama: {
     compileBase: 3,

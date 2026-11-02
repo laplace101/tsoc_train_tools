@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { getLang, setCurrentLang, type Lang } from '@/lib/i18n';
+import { getLang, setCurrentLang, interpolate, type Lang, type TranslateValues } from '@/lib/i18n';
 
 export type { Lang };
 
 interface LanguageContextValue {
   lang: Lang;
   setLang: (lang: Lang) => void;
-  t: (en: string, cn: string) => string;
+  t: (en: string, cn: string, values?: TranslateValues) => string;
 }
 
 const LanguageContext = React.createContext<LanguageContextValue>({
@@ -29,7 +29,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     () => ({
       lang,
       setLang,
-      t: (en: string, cn: string) => (lang === 'en' ? en : cn),
+      // Share one implementation with the module-level translator so React
+      // and non-React call sites interpolate placeholders identically.
+      t: (en: string, cn: string, values?: TranslateValues) =>
+        interpolate(lang === 'en' ? en : cn, values),
     }),
     [lang, setLang]
   );

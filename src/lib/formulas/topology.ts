@@ -44,7 +44,7 @@ export function recommendTopology(
 
   if (numGPUs <= 512) {
     return {
-      description: '2-tier fat-tree or rail-optimized',
+      description: t('2-tier fat-tree or rail-optimized', '双层胖树或 rail 优化'),
       interconnect: 'InfiniBand NDR/XDR (400-800 Gb/s)',
       notes: workload === 'training'
         ? t('2-tier fat-tree with rail-optimized routing; use ZeRO-3 or 3D parallelism', '双层胖树 + rail 优化路由；建议使用 ZeRO-3 或 3D 并行')
@@ -53,10 +53,10 @@ export function recommendTopology(
   }
 
   return {
-    description: '3-tier spine-leaf',
+    description: t('3-tier spine-leaf', '三层 spine-leaf'),
     interconnect: 'InfiniBand XDR (800 Gb/s) + NVLink intra-node',
     notes: workload === 'training'
-      ? '3-tier spine-leaf with 1:1 oversubscription; pipeline parallelism across pods'
+      ? t('3-tier spine-leaf with 1:1 oversubscription; pipeline parallelism across pods', '三层 spine-leaf，1:1 超配比；跨 Pod 做流水线并行')
       : t('Hierarchical fabric; route inference requests to GPU pods by model shard', '分层组网；按模型分片把推理请求路由到对应 GPU Pod'),
   };
 }

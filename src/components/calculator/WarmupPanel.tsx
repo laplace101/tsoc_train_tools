@@ -29,9 +29,9 @@ interface StorageTier {
 
 const STORAGE_TIERS: StorageTier[] = [
   { get label() { return t('HDD (0.15 GB/s)', '机械硬盘 (0.15 GB/s)'); },      bandwidthGBs: 0.15 },
-  { label: 'SATA SSD (0.55 GB/s)', bandwidthGBs: 0.55 },
-  { label: 'NVMe Gen4 (7 GB/s)',   bandwidthGBs: 7 },
-  { label: 'NVMe Gen5 (14 GB/s)',  bandwidthGBs: 14 },
+  { get label() { return t('SATA SSD (0.55 GB/s)', 'SATA 固态硬盘 (0.55 GB/s)'); }, bandwidthGBs: 0.55 },
+  { get label() { return t('NVMe Gen4 (7 GB/s)', 'NVMe Gen4 (7 GB/s)'); },     bandwidthGBs: 7 },
+  { get label() { return t('NVMe Gen5 (14 GB/s)', 'NVMe Gen5 (14 GB/s)'); },   bandwidthGBs: 14 },
 ];
 
 const FRAMEWORK_OPTIONS: { value: Framework; label: string }[] = [

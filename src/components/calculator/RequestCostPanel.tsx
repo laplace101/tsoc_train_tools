@@ -57,7 +57,7 @@ export function RequestCostPanel({
         <Row label={t('Per 1M input tokens', '每 100 万输入 token')} value={formatCost(costPerMInputTokens)} />
         <Row label={t('Per 1M output tokens', '每 100 万输出 token')} value={formatCost(costPerMOutputTokens)} />
         <Row label={t('Per user / hour', '每用户 / 小时')} value={formatCost(costPerUserPerHour)} />
-        <Row label={t('Per user / month', '每用户 / 月')} value={formatCost(costPerUserPerMonth)} sub="(8h/day, 22 days)" />
+        <Row label={t('Per user / month', '每用户 / 月')} value={formatCost(costPerUserPerMonth)} sub={t('(8h/day, 22 days)', '（8 小时/天，22 天）')} />
 
         {/* API comparison */}
         <div className="mt-2 pt-2 border-t border-border-subtle">

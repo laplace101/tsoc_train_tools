@@ -127,7 +127,7 @@ export function computeTrainingMethodMemory(
         totalGB,
         breakdown: { weightsGB, gradientsGB, optimizerGB, activationsGB, extraModelsGB },
         multiplier,
-        note: '18N: policy(16N) + reference model(2N)',
+        note: t('18N: policy(16N) + reference model(2N)', '18N：策略模型(16N) + 参考模型(2N)'),
       };
     }
 
@@ -183,7 +183,7 @@ export function computeTrainingMethodMemory(
         totalGB,
         breakdown: { weightsGB, gradientsGB, optimizerGB, activationsGB, extraModelsGB },
         multiplier,
-        note: '16N: reference-free single model',
+        note: t('16N: reference-free single model', '16N：无参考模型，单模型'),
       };
     }
 

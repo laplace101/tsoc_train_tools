@@ -184,7 +184,7 @@ export function UserExperienceSummary({
       {doubleGPUMaxUsers !== undefined && doubleGPUCostPerHour !== undefined && (
         <div className="border-t border-border-subtle pt-2 bg-bg-muted/50 rounded px-2 py-1.5">
           <p className="text-[10px] font-medium text-fg-default">
-            What if? With 2× GPUs: {doubleGPUMaxUsers.toLocaleString()} users, same latency, {formatCost(doubleGPUCostPerHour)}/h
+            {t('What if? With 2× GPUs: {users} users, same latency, {cost}/h', '如果换成 2 倍 GPU 呢：{users} 个用户，时延不变，{cost}/小时', { users: doubleGPUMaxUsers.toLocaleString(), cost: formatCost(doubleGPUCostPerHour) })}
           </p>
         </div>
       )}

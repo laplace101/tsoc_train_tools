@@ -10,7 +10,7 @@ import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { LanguageProvider } from '@/lib/language';
 import { ToastProvider } from '@/components/feedback/Toast';
-import { DEFAULT_LANG } from '@/lib/i18n';
+import { DEFAULT_LANG, t, interpolate } from '@/lib/i18n';
 import { Home } from '@/pages/Home';
 import { Hardware } from '@/pages/Hardware';
 import { Models } from '@/pages/Models';
@@ -47,5 +47,20 @@ describe('i18n', () => {
     const text = renderPage(<Home />);
     expect(text.length).toBeGreaterThan(0);
     expect(text).not.toContain('Batch Size');
+  });
+
+  it('interpolates placeholders in the selected language', () => {
+    expect(interpolate('users: {n}', { n: 42 })).toBe('users: 42');
+    // Unknown placeholders stay literal rather than becoming "undefined".
+    expect(interpolate('users: {n} {missing}', { n: 42 })).toBe('users: 42 {missing}');
+    // Default language is Chinese, so t() picks the Chinese template.
+    expect(t('Hi {name}', '你好 {name}', { name: '小明' })).toBe('你好 小明');
+    expect(t('Hi {name}', '你好 {name}')).toBe('你好 {name}');
+  });
+
+  it('does not leak untranslated English prose in Chinese mode', () => {
+    const text = renderPage(<Home />);
+    expect(text).not.toContain('What if?');
+    expect(text).not.toContain('Latency:');
   });
 });

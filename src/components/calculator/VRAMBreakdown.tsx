@@ -15,7 +15,7 @@ interface VRAMBreakdownProps {
 
 const SEGMENTS = [
   { key: 'weightsGB',    get label() { return t('Weights', '权重'); },    color: 'bg-[#7c3aed] dark:bg-[#8b5cf6]',  dot: 'bg-[#7c3aed] dark:bg-[#8b5cf6]' },
-  { key: 'kvCacheGB',    label: 'KV Cache',   color: 'bg-[#0891b2] dark:bg-[#06b6d4]',  dot: 'bg-[#0891b2] dark:bg-[#06b6d4]' },
+  { key: 'kvCacheGB',    get label() { return t('KV Cache', 'KV 缓存'); }, color: 'bg-[#0891b2] dark:bg-[#06b6d4]',  dot: 'bg-[#0891b2] dark:bg-[#06b6d4]' },
   { key: 'activationsGB',get label() { return t('Activations', '激活值'); },color: 'bg-[#ca8a04] dark:bg-[#eab308]',  dot: 'bg-[#ca8a04] dark:bg-[#eab308]' },
   { key: 'gradientsGB',  get label() { return t('Gradients', '梯度'); },  color: 'bg-[#db2777] dark:bg-[#ec4899]',  dot: 'bg-[#db2777] dark:bg-[#ec4899]' },
   { key: 'optimizerGB',  get label() { return t('Optimizer', '优化器'); },  color: 'bg-[#ea580c] dark:bg-[#f97316]',  dot: 'bg-[#ea580c] dark:bg-[#f97316]' },

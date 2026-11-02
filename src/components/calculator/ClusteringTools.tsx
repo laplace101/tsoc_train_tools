@@ -50,7 +50,7 @@ function ToolCard({ tool }: { tool: ClusteringTool }) {
 
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] text-fg-muted">
         <span><span className="font-medium">{t('Max size:', '最大规模：')}</span> {tool.maxClusterSize}</span>
-        <span><span className="font-medium">Latency:</span> {tool.latencyOverhead}</span>
+        <span><span className="font-medium">{t('Latency:', '延迟：')}</span> {tool.latencyOverhead}</span>
       </div>
 
       <div className="flex flex-wrap gap-1">

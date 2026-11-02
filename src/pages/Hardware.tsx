@@ -38,8 +38,8 @@ const CATEGORY_LABELS: Record<string, string> = {
   get consumer() { return t('Consumer', '消费级'); },
   get workstation() { return t('Workstation', '工作站'); },
   get datacenter() { return t('Datacenter', '数据中心'); },
-  'apple-silicon': 'Apple Silicon',
-  tpu:           'TPU',
+  get 'apple-silicon'() { return t('Apple Silicon', 'Apple Silicon'); },
+  get tpu() { return t('TPU', 'TPU'); },
 };
 
 export function Hardware() {

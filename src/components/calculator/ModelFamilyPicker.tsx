@@ -30,7 +30,7 @@ const FAMILY_DISPLAY: Record<string, string> = {
   get paraphrase() { return t('Paraphrase', '改写'); }, e5: 'E5', jina: 'Jina', mxbai: 'MXBai',
   'stella_en_400m_v5': 'Stella 400M v5', 'stella_en_1.5b_v5': 'Stella 1.5B v5',
   clip: 'CLIP', siglip2: 'SigLIP2', cohere: 'Cohere',
-  'qwen3.6': 'Qwen3.6', 'qwen3.5': 'Qwen3.5', 'qwen3.8': 'Qwen3.8', mimo: 'Xiaomi MiMo',
+  'qwen3.6': 'Qwen3.6', 'qwen3.5': 'Qwen3.5', 'qwen3.8': 'Qwen3.8', get mimo() { return t('Xiaomi MiMo', 'Xiaomi MiMo'); },
   minimax: 'MiniMax', get all() { return t('All', '全部'); },
 };
 

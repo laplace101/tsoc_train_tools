@@ -18,9 +18,9 @@ interface GPUPickerProps {
 const CATEGORY_CONFIG: Record<string, { label: string; color: string }> = {
   datacenter: { get label() { return t('Datacenter', '数据中心'); }, color: 'bg-blue-500/10 text-blue-400' },
   consumer:   { get label() { return t('Consumer', '消费级'); },   color: 'bg-green-500/10 text-green-400' },
-  'apple-silicon': { label: 'Apple Silicon', color: 'bg-gray-500/10 text-gray-400' },
+  'apple-silicon': { get label() { return t('Apple Silicon', 'Apple Silicon'); }, color: 'bg-gray-500/10 text-gray-400' },
   'wafer-scale': { get label() { return t('Wafer Scale', '晶圆级'); }, color: 'bg-purple-500/10 text-purple-400' },
-  tpu:        { label: 'TPU',        color: 'bg-orange-500/10 text-orange-400' },
+  tpu:        { get label() { return t('TPU', 'TPU'); },          color: 'bg-orange-500/10 text-orange-400' },
   edge:       { get label() { return t('Edge', '边缘计算'); },       color: 'bg-cyan-500/10 text-cyan-400' },
   workstation: { get label() { return t('Workstation', '工作站'); }, color: 'bg-rose-500/10 text-rose-400' },
 };

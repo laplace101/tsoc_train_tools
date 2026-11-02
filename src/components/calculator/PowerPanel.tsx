@@ -53,7 +53,7 @@ export function PowerPanel({ gpuCount, gpuTDPWatts, className }: PowerPanelProps
       <div className="space-y-3 mb-4">
         {/* GPU TDP (read-only, auto-filled) */}
         <div className="flex items-center justify-between gap-2">
-          <label className="text-xs text-fg-muted w-40 flex-shrink-0">GPU TDP</label>
+          <label className="text-xs text-fg-muted w-40 flex-shrink-0">{t('GPU TDP', 'GPU 功耗 (TDP)')}</label>
           <span className="text-xs font-mono text-fg-default">{gpuTDPWatts} W × {gpuCount}</span>
         </div>
 

@@ -12,12 +12,12 @@ interface SpeculativeConfigProps {
 }
 
 const DRAFT_METHODS: { key: SpeculativeMethod; label: string; description: string }[] = [
-  { key: 'draft_model',   label: 'Draft Model 1B', get description() { return t('Small draft model (e.g. Llama 3.2 1B)', '小型草稿模型（如 Llama 3.2 1B）'); } },
-  { key: 'medusa',        label: 'Medusa',          get description() { return t('Multi-head decoding, no draft model', '多头解码，无需草稿模型'); } },
-  { key: 'eagle2',        label: 'EAGLE-2',         get description() { return t('Feature-level draft, high speedup', '特征级草稿，加速比高'); } },
-  { key: 'eagle3',        label: 'EAGLE-3',         get description() { return t('Latest EAGLE variant, best speedup', '最新的 EAGLE 变体，加速比最高'); } },
-  { key: 'lookahead',     label: 'Lookahead',       get description() { return t('Jacobi decoding, no extra model', 'Jacobi 解码，无需额外模型'); } },
-  { key: 'prompt_lookup', label: 'Prompt Lookup',   get description() { return t('Copy from prompt, RAG-friendly', '从提示词复制，对 RAG 友好'); } },
+  { key: 'draft_model',   get label() { return t('Draft Model 1B', '草稿模型 1B'); }, get description() { return t('Small draft model (e.g. Llama 3.2 1B)', '小型草稿模型（如 Llama 3.2 1B）'); } },
+  { key: 'medusa',        get label() { return t('Medusa', 'Medusa'); },           get description() { return t('Multi-head decoding, no draft model', '多头解码，无需草稿模型'); } },
+  { key: 'eagle2',        get label() { return t('EAGLE-2', 'EAGLE-2'); },         get description() { return t('Feature-level draft, high speedup', '特征级草稿，加速比高'); } },
+  { key: 'eagle3',        get label() { return t('EAGLE-3', 'EAGLE-3'); },         get description() { return t('Latest EAGLE variant, best speedup', '最新的 EAGLE 变体，加速比最高'); } },
+  { key: 'lookahead',     get label() { return t('Lookahead', 'Lookahead'); },     get description() { return t('Jacobi decoding, no extra model', 'Jacobi 解码，无需额外模型'); } },
+  { key: 'prompt_lookup', get label() { return t('Prompt Lookup', 'Prompt Lookup'); }, get description() { return t('Copy from prompt, RAG-friendly', '从提示词复制，对 RAG 友好'); } },
 ];
 
 // Approximate overhead for a 1B draft model

@@ -83,9 +83,9 @@ export function estimateDataset(
 
 /** Reference datasets for comparison */
 export const REFERENCE_DATASETS = [
-  { name: 'FineWeb', tokens: 15e12, rawSizeGB: 44_000, description: '15T tokens, 44TB raw' },
-  { get name() { return t('The Pile', 'The Pile'); }, tokens: 825e9 / 2, rawSizeGB: 825, description: '825GB raw text' },
-  { name: 'SlimPajama', tokens: 627e9, rawSizeGB: 627e9 * 4 / 1e9, description: '627B tokens' },
-  { get name() { return t('Typical SFT (small)', '典型 SFT（小型）'); }, tokens: 10_000 * 512, rawSizeGB: 10_000 * 512 * 4 / 1e9, description: '10k examples × 512 tokens' },
-  { get name() { return t('Typical SFT (large)', '典型 SFT（大型）'); }, tokens: 1_000_000 * 512, rawSizeGB: 1_000_000 * 512 * 4 / 1e9, description: '1M examples × 512 tokens' },
+  { name: 'FineWeb', tokens: 15e12, rawSizeGB: 44_000, get description() { return t('15T tokens, 44TB raw', '15T token，44TB 原始文本'); } },
+  { get name() { return t('The Pile', 'The Pile'); }, tokens: 825e9 / 2, rawSizeGB: 825, get description() { return t('825GB raw text', '825GB 原始文本'); } },
+  { name: 'SlimPajama', tokens: 627e9, rawSizeGB: 627e9 * 4 / 1e9, get description() { return t('627B tokens', '627B token'); } },
+  { get name() { return t('Typical SFT (small)', '典型 SFT（小型）'); }, tokens: 10_000 * 512, rawSizeGB: 10_000 * 512 * 4 / 1e9, get description() { return t('10k examples × 512 tokens', '1 万条样本 × 512 token'); } },
+  { get name() { return t('Typical SFT (large)', '典型 SFT（大型）'); }, tokens: 1_000_000 * 512, rawSizeGB: 1_000_000 * 512 * 4 / 1e9, get description() { return t('1M examples × 512 tokens', '100 万条样本 × 512 token'); } },
 ] as const;

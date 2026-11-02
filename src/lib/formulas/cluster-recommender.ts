@@ -26,7 +26,7 @@ export function recommendCluster(
   if (mode === 'inference' || mode === 'scale') {
     framework = 'vLLM';
     frameworkArgs = '--tensor-parallel-size 1';
-    alternativeRuntime = 'llama.cpp (easier setup, ~15% slower)';
+    alternativeRuntime = t('llama.cpp (easier setup, ~15% slower)', 'llama.cpp（部署更简单，约慢 15%）');
   } else if (mode === 'finetune') {
     framework = 'HuggingFace TRL + PEFT + accelerate';
     frameworkArgs = '--gradient_checkpointing --bf16';

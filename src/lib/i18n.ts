@@ -34,7 +34,21 @@ export function setCurrentLang(lang: Lang): void {
   }
 }
 
-/** 按当前语言返回对应文案：英文返回 en，中文返回 cn。 */
-export function t(en: string, cn: string): string {
-  return currentLang === 'en' ? en : cn;
+/** 占位符插值参数：把 {name} 替换为对应值。 */
+export type TranslateValues = Record<string, string | number>;
+
+/** 把文案中的 {key} 占位符替换为 values[key]；未提供的占位符原样保留。 */
+export function interpolate(text: string, values?: TranslateValues): string {
+  if (!values) return text;
+  return text.replace(/\{(\w+)\}/g, (match, key: string) =>
+    key in values ? String(values[key]) : match,
+  );
+}
+
+/**
+ * 按当前语言返回对应文案：英文返回 en，中文返回 cn。
+ * 可选的 values 用于插值：文案中的 {key} 会被替换为 values[key]。
+ */
+export function t(en: string, cn: string, values?: TranslateValues): string {
+  return interpolate(currentLang === 'en' ? en : cn, values);
 }
